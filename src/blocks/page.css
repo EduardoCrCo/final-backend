@@ -1,0 +1,15 @@
+.page {
+  font-family: "Inter-Regular", Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 0;
+  margin: auto;
+  /* Mantenido display: flex y flex-direction: column para layout normal */
+  display: flex;
+  flex-direction: column;
+  /* Cambiado min-height para permitir contenido más alto */
+  min-height: 100vh;
+  position: relative;
+  /*z-index: 1;  Asegura que el contenido esté por encima del video de fondo */
+  background-color: black;
+}

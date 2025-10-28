@@ -1,0 +1,78 @@
+.about {
+  padding: 120px 0;
+  max-width: 100vw;
+  min-height: 100vh;
+  background: linear-gradient(
+    90deg,
+    rgb(3, 9, 23) 0%,
+    rgb(41, 62, 40) 51%,
+    rgb(6, 13, 29) 100%
+  );
+}
+
+.about__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.about__photo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.about__info {
+  flex: 1;
+}
+
+.about__title {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.about__description {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  color: #ddd;
+}
+
+.about__skills {
+  margin-top: 32px;
+  color: #ddd;
+}
+
+.about__skills h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.about__skills ul {
+  list-style: none;
+  padding: 0;
+}
+
+.about__skills li {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.about__links {
+  margin-top: 32px;
+}
+
+.about__link {
+  display: inline-block;
+  margin-right: 16px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.about__link:hover {
+  text-decoration: underline;
+}

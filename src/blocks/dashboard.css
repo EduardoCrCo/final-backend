@@ -1,0 +1,22 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  /* background: linear-gradient(
+    90deg,
+    rgb(158, 161, 161) 0%,
+    rgb(213, 136, 28) 51%,
+    rgb(187, 211, 219) 100%
+  );
+  min-height: 100vh;
+} */
+
+  background: linear-gradient(
+    90deg,
+    rgb(3, 9, 23) 0%,
+    rgb(48, 47, 47) 51%,
+    rgb(6, 13, 29) 100%
+  );
+  min-height: 100vh;
+}

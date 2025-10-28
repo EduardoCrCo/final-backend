@@ -1,0 +1,154 @@
+/* Hover user/logout slide */
+.header__user-hover-area {
+  display: flex;
+  align-items: center;
+  /* position: relative; */
+}
+
+.header__user-name {
+  /* margin-left: 8px; */
+  color: #222;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.header__logout-btn {
+  margin-left: 0;
+  background: #eee;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.3s, transform 0.3s;
+  position: relative;
+  z-index: 2;
+}
+
+.header__user-hover-area:hover .header__logout-btn,
+.header__user-name:focus + .header__logout-btn {
+  opacity: 1;
+  transform: translateX(0);
+}
+.header {
+  width: 100%;
+  padding: 0;
+  background-color: rgba(133, 133, 133, 0.5); /* Fondo semitransparente */
+  backdrop-filter: blur(10px);
+  color: white;
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  position: fixed; /* Fijo en la parte superior */
+  top: 0;
+  left: 0;
+  z-index: 100; /*Asegura que esté por encima de otros elementos */
+}
+
+.header__container {
+  width: 1480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.header__logo-name-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  padding-left: 20px;
+}
+
+.header__logo {
+  display: flex;
+  height: 40px;
+  width: 200px;
+  align-items: center;
+}
+
+.header__title {
+  font-family: "Inter-Bold", Arial, Helvetica, sans-serif;
+  font-size: 2em;
+  margin: 10px 5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.header__spacer {
+  /* height: 60px; Ajusta este valor según la altura de tu header */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  /* position: relative; */
+}
+
+/* .header ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0 20px;
+} */
+
+.header__account {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.header__signup-button {
+  border-radius: 20px;
+  border: 1px solid transparent;
+  /* padding: 0.6em 1.2em; */
+  padding: 3px 15px;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: rgba(133, 133, 133, 0.5);
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: white;
+}
+
+.header-profile__avatar {
+  display: flex;
+  align-items: center;
+  min-width: 120px;
+  height: 40px;
+  margin: 0 15px;
+  position: relative;
+  overflow: visible;
+  background: transparent;
+}
+
+.header-profile__avatar-image {
+  display: flex;
+  width: 47.5px;
+  height: 47.5px;
+  position: absolute;
+  top: -3.75px;
+  right: -2.5px;
+  clip-path: circle(40%);
+  object-fit: contain;
+}
+
+.header__profile-avatar__edit_icon {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 15px;
+  height: 15px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.header__profile-avatar__edit_icon:hover {
+  opacity: 60%;
+}

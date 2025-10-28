@@ -1,0 +1,121 @@
+.register__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 80%;
+  margin-top: 12px;
+}
+
+.register__form-subtitle {
+  font-size: 16px;
+  color: #000;
+  padding-top: 10px;
+}
+
+.register__form-title {
+  font-size: 30px;
+  color: #fff;
+  margin: 20px 0 50px;
+}
+
+.register__form-fieldset {
+  display: flex;
+  flex-direction: column;
+  width: 358px;
+  gap: 20px;
+  border: none; /* Quita el borde del fieldset */
+}
+
+.form__input {
+  background-color: #fff;
+  width: 358px;
+  height: 40px;
+  color: #000;
+  border: 0;
+  border-radius: 20px;
+  border-bottom: 2px solid #c4c4c4;
+  padding-left: 12px;
+}
+.form__input::placeholder {
+  color: #000;
+  /* padding-left: 12px; */
+}
+
+.form__input-name {
+  background-color: #fff;
+  color: #000;
+}
+
+.form__input-email {
+  background-color: #fff;
+  color: #000;
+}
+
+.form__input-password {
+  background-color: #fff;
+  color: #000;
+}
+
+.register__footer {
+  width: 358px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.register__form-submit_button {
+  width: 358px; /* Ocupa todo el ancho del formulario */
+  padding: 12px 0; /* Ajusta el alto */
+  font-size: 1rem; /* Tamaño de texto */
+  background: #fff; /* Color de fondo */
+  color: #000; /* Color de texto */
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 80px 0 20px;
+}
+.register__form-submit_button:hover {
+  /* background: #241e1e; */
+  opacity: 0.8;
+  /* color: white;
+  transform: scale(1.02); */
+}
+
+.register__form-footer {
+  text-align: center;
+  align-items: baseline;
+  width: 100%;
+  color: #fff;
+  /*margin-top: 24px;  Opcional: separa del formulario */
+  /*margin-bottom: 20px;  Opcional: separa del borde inferior */
+}
+
+.register__form-footer-link {
+  color: #161515;
+  text-decoration: none; /* Opcional: quita el subrayado */
+  font-weight: bold; /* Opcional: resalta el enlace */
+  font-size: 16px;
+}
+
+/* @media screen and (max-width: 640px) {
+  .register__form {
+    width: 90%;
+  }
+
+  .register__form-fieldset {
+    width: 100%;
+  }
+
+  .register__form-submit_button {
+    max-width: 260px;
+  }
+
+  .form__input.form__input-email,
+  .form__input.form__input-password {
+    align-self: center;
+    max-width: 260px;
+  }
+} */

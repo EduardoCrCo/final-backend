@@ -1,0 +1,13 @@
+.reviews {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(
+    90deg,
+    rgb(3, 9, 23) 0%,
+    rgb(100, 84, 53) 51%,
+    rgb(6, 13, 29) 100%
+  );
+  min-height: 100vh;
+}
