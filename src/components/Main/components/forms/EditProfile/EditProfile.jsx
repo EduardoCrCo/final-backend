@@ -1,20 +1,33 @@
 import { useState, useContext } from "react";
 import { CurrentUserContext } from "../../../../../context/CurrentUserContext";
+import api from "../../../../../utils/api";
 
 export const EditProfile = ({ onClose }) => {
   const userContext = useContext(CurrentUserContext);
-  const { currentUser, handleUpdateUser } = userContext;
+  const { currentUser, setCurrentUser } = userContext;
 
   const [name, setName] = useState(currentUser?.name || "");
   // const [about, setAbout] = useState(currentUser?.about || "");
 
   const handleNameChange = (e) => {
+    console.log(currentUser);
     setName(e.target.value);
   };
 
   // const handleAboutChange = (e) => {
   //   setAbout(e.target.value);
   // };
+
+  const handleUpdateUser = (userData) => {
+    (async () => {
+      await api
+        .updateUser(userData.name, currentUser.about)
+        .then((updatedUser) => {
+          setCurrentUser(updatedUser);
+          localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+        });
+    })();
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

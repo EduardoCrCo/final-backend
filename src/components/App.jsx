@@ -36,17 +36,6 @@ export const App = () => {
       });
   }, []);
 
-  const handleUpdateUser = (userData) => {
-    (async () => {
-      await api
-        .updateUser(userData.name, currentUser.about)
-        .then((updatedUser) => {
-          setCurrentUser(updatedUser);
-          localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-        });
-    })();
-  };
-
   // const handleUpdateUser = async (userData) => {
   //   try {
   //     // The updateUser function eventually calls the problematic fetch logic in api.js
@@ -61,12 +50,6 @@ export const App = () => {
   //     // setError(error.message);
   //   }
   // };
-
-  const handleLogout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("jwt"); // <-- elimina el token
-  };
 
   const handleRegistration = (name, email, password) => {
     auth
@@ -96,7 +79,7 @@ export const App = () => {
   };
 
   return (
-    <CurrentUserContext.Provider value={{ currentUser, handleUpdateUser }}>
+    <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
       <div className="page">
         <Header
           showInfoTooltip={handleShowInfoTooltip}
@@ -104,7 +87,7 @@ export const App = () => {
           setPopupType={setPopupType}
           handlePopupClose={handlePopupClose}
           handleRegistration={handleRegistration}
-          handleLogout={handleLogout}
+          //handleLogout={handleLogout}
         />
         <Routes>
           <Route path="/" element={<Main />} />

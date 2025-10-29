@@ -1,4 +1,4 @@
-import Logo from "../../images/mavic-air-2.PNG";
+import Logo from "../../images/drone-logo.png";
 import Avatar from "../../images/avatar.png";
 import EditAvatar from "../../images/editAvatar.svg";
 import { NavBar } from "../NavBar/NavBar";
@@ -11,10 +11,10 @@ export const Header = ({
   setPopupType,
   showInfoTooltip,
   handleRegistration,
-  handleLogout,
+  //handleLogout,
   handlePopupClose,
 }) => {
-  const { currentUser } = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
 
   const signupPopupType = {
     children: (
@@ -25,6 +25,13 @@ export const Header = ({
       />
     ),
     className: "form-popup",
+  };
+
+  const handleLogout = () => {
+    console.log("Logging out user:", currentUser);
+    setCurrentUser(null);
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("jwt"); // <-- elimina el token
   };
 
   const handleSignupClick = () => {
@@ -40,13 +47,13 @@ export const Header = ({
       <div className="header__container">
         <div className="header__logo-name-container">
           <img className="header__logo" src={Logo} alt="Drone logo" />
-          <h1 className="header__title">DroneVision</h1>
+          {/* <h1 className="header__title">DroneVision</h1> */}
         </div>
 
         <div className="header__spacer">
           <NavBar />
           <div className="header__account">
-            {!currentUser && (
+            {(!currentUser || Object.keys(currentUser).length === 0) && (
               <button
                 className="header__signup-button"
                 type="button"
@@ -66,7 +73,8 @@ export const Header = ({
                 alt="icono de editar imagen de perfil"
                 className="header__profile-avatar__edit_icon"
               />
-              {currentUser && (
+              {/* {currentUser && ( */}
+              {currentUser && Object.keys(currentUser).length > 0 && (
                 <div className="header__user-hover-area">
                   <button
                     className="header__user-name-button"
