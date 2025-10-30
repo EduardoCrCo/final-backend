@@ -18,6 +18,24 @@
   );
 }
 
+.main-content__title {
+  padding: 30px;
+  color: rgb(241, 231, 231);
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.main-content__subtitle {
+  padding: 10px;
+  color: rgb(241, 231, 231);
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
 .search-bar__container {
   min-width: 100vw;
   display: flex;
@@ -27,5 +45,5 @@
   position: relative;
   overflow: hidden;
   justify-content: center;
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
 }

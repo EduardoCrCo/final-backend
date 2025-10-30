@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { SearchBar } from "../Main/components/SearchBar/SearchBar";
 import { Videos } from "../Main/components/Videos/Videos";
 import { mockVideos } from "../../utils/utils";
+
 // import {VideosContext} from "../../context/VideosContext";
 
 export const Main = () => {
@@ -46,6 +47,10 @@ export const Main = () => {
   return (
     // <VideosContext.Provider value={{ videos, setVideos }}>
     <main className="main-content">
+      <h1 className="main-content__title">Explora el mundo desde el aire</h1>
+      <h3 className="main-content__subtitle">
+        Los mejores videos para aficionados
+      </h3>
       <section className="search-bar__container">
         <SearchBar
           onSearch={handleSearch}
