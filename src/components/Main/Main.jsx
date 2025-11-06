@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { SearchBar } from "../Main/components/SearchBar/SearchBar";
 import { Videos } from "../Main/components/Videos/Videos";
+import { searchYouTube } from "../../utils/ThirdPartyApi";
 
 export const Main = () => {
   const [youtubeInfo, setYoutubeInfo] = useState(null);
@@ -11,24 +12,19 @@ export const Main = () => {
   const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
-    // Limpia resultados previos al cambiar el término
     setYoutubeResults([]);
     if (!youtubeQuery.trim() || youtubeQuery.length < 2) return;
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(
-      youtubeQuery
-    )}&key=AIzaSyBWCByxdt8pq3BOuCp27_UJgdjVRpNnBdE`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        const ytResults = (data.items || []).map((item) => ({
-          id: item.id.videoId,
-          title: item.snippet.title,
+    searchYouTube(youtubeQuery, 12)
+      .then((results) => {
+        const ytResults = (results || []).map((item) => ({
+          id: item.videoId,
+          title: item.title,
           type: "youtube",
           video: {
-            videoId: item.id.videoId,
-            title: item.snippet.title,
-            thumbnails: [{ url: item.snippet.thumbnails?.default?.url }],
-            channelName: item.snippet.channelTitle,
+            videoId: item.videoId,
+            title: item.title,
+            thumbnails: item.thumbnails,
+            channelName: item.channelName,
           },
         }));
         setYoutubeResults(ytResults);
@@ -48,20 +44,6 @@ export const Main = () => {
   useEffect(() => {
     localStorage.setItem("selectedVideos", JSON.stringify(selectedVideos));
   }, [selectedVideos]);
-
-  // const handleAddVideos = (video) => {
-  //   //evitamos duplicados
-  //   if (!videos.find((v) => v.id === video.id)) {
-  //     setVideos([video, ...videos]);
-  //   }
-  //   setSearchResults([]); //limpiamos resultados
-  //   setIsPopupOpen(false); //cerramos el popup
-  // };
-
-  // Eliminar video por id
-  // const handleDeleteVideo = (id) => {
-  //   setVideos((prev) => prev.filter((video) => video.id !== id));
-  // };
 
   return (
     <main className="main-content">
