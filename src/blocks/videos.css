@@ -1,12 +1,14 @@
 .videos__container {
   padding-top: 4em;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 .videos__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  /* grid-template-rows: repeat(2, 1fr); */
   max-width: 1480px;
   column-gap: 2em;
   row-gap: 3em;
@@ -14,7 +16,7 @@
   object-fit: cover;
 }
 
-.grid-video {
+/* .grid-video {
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -25,7 +27,7 @@
   height: 100%;
   overflow: hidden;
   position: relative;
-}
+} */
 
 .videos__grid-wrapper {
   max-width: 100%;
@@ -35,38 +37,89 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 12px;
 }
 
-.videos__list {
-  list-style-type: none;
-  padding: 20px;
-  margin: 0;
-  gap: 2em;
-  display: flex;
-  flex-direction: column;
-  max-height: 70vh;
-  /* overflow-y: auto; */
-  width: 300px;
+.videos__thumbnail {
+  width: 100%;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
 .videos__title {
   font-size: 1.2em;
   font-weight: bold;
-  color: #fff;
-  margin: 10px 0;
-  text-align: start;
+  color: #000;
+  margin: 8px 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.videos__channel-name {
+  font-size: 13px;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.videos__channel-link {
+  font-size: 13px;
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.videos__save-like-trash-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* position: absolute;
+  top: 12px;
+  right: 12px; */
+  /* gap: 8px;
+  margin-top: 8px; */
+}
+
+.videos__save-button {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background-color: rgba(25, 118, 210, 0);
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.videos__like-button {
+  margin-top: 8px;
+  background-color: rgba(25, 118, 210, 0);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
 }
 
 .videos__delete-btn {
   margin-top: 8px;
-  color: #fff;
-  border: none;
+  background-color: rgba(25, 118, 210, 0);
+
   border-radius: 6px;
   padding: 6px 12px;
 }
 
 .videos__delete-btn.enabled {
-  background: #e74c3c;
+  /* background: #e74c3c; */
+  background-color: rgba(25, 118, 210, 0);
   cursor: pointer;
   opacity: 1;
 }

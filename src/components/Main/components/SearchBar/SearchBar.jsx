@@ -1,14 +1,16 @@
 import { useState, useRef, useEffect } from "react";
-import SearchIcon from "../../../../images/search.png";
+import SearchIcon from "../../../../images/Search.svg";
 
 export const SearchBar = ({ onSearch, searchResults = [], onResultClick }) => {
   const [term, setTerm] = useState("");
+  // El input solo se limpia al seleccionar un resultado o hacer click fuera
   const wrapperRef = useRef(); // Marcador de posición para posible uso futuro
 
   // Cierra el dropdown al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setTerm("");
         onSearch(""); // limpia resultados si hace clic fuera
       }
     };
@@ -18,9 +20,13 @@ export const SearchBar = ({ onSearch, searchResults = [], onResultClick }) => {
     };
   }, [onSearch]);
 
+  // Elimina el efecto que limpia el input automáticamente
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(term);
+    if (term.trim().length > 1) {
+      onSearch(term);
+    }
   };
 
   const handleResultClick = (video) => {
@@ -39,7 +45,16 @@ export const SearchBar = ({ onSearch, searchResults = [], onResultClick }) => {
           placeholder="Buscar videos..."
           className="search-bar__input"
         />
-        <img src={SearchIcon} alt="search" className="search-bar__icon" />
+        <img
+          src={SearchIcon}
+          alt="search"
+          className="search-bar__icon"
+          onClick={() => {
+            if (term.trim().length > 1) {
+              onSearch(term);
+            }
+          }}
+        />
       </form>
       {searchResults.length > 0 && term && (
         <ul className="search-results-dropdown">

@@ -1,15 +1,9 @@
-import { useState, useContext } from "react";
-//import { validateForm } from "../../../../../utils/validateForm";
-import { CurrentUserContext } from "../../../../../context/CurrentUserContext";
-import { authorize } from "../../../../../utils/auth";
-import api from "../../../../../utils/api";
 
+import { useState } from "react";
 import { RegisterForm } from "../RegisterForm/RegisterForm";
 
-export const LoginForm = ({ setPopupType, showInfoTooltip }) => {
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+export const LoginForm = ({ onLogin, setPopupType, showInfoTooltip }) => {
   const [form, setForm] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
 
   const signupPopupType = {
     children: (
@@ -21,76 +15,9 @@ export const LoginForm = ({ setPopupType, showInfoTooltip }) => {
     className: "form-popup",
   };
 
-  const handleLogin = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    authorize({ email: form.email, password: form.password })
-      .then((data) => {
-        console.log("Respuesta authorize:", data);
-        console.log("Token:", data.token);
-        localStorage.setItem("jwt", data.token);
-        console.log(
-          "Token almacenado en localStorage:",
-          localStorage.getItem("jwt")
-        );
-        return api.getUserInfo();
-      })
-      .then((userData) => {
-        console.log("User info:", userData);
-        // resto...
-        console.log(userData);
-        setCurrentUser(userData);
-        localStorage.setItem(
-          "currentUser",
-          JSON.stringify({
-            username: userData.name,
-            email: userData.email,
-            password: form.password,
-          })
-        );
-        // setCurrentUser(userData); // Guarda el usuario en contexto
-        showInfoTooltip && showInfoTooltip("¡Login exitoso!|n|Bienvenido.");
-        setPopupType(null); // Cierra el popup
-      })
-      .catch((err) => {
-        console.error("Error general:", err);
-        showInfoTooltip &&
-          showInfoTooltip("No se pudo obtener usuario|n|Intenta de nuevo.");
-      });
-
-    // authorize({ email: form.email, password: form.password })
-    //   .then((data) => {
-    //     // Guarda el token recibido
-    //     localStorage.setItem("jwt", data.token);
-    //     // Obtiene los datos completos del usuario
-    //     console.log(data);
-    //     api
-    //       .getUserInfo()
-    //       .then((userData) => {
-    //         console.log(userData);
-    //         setCurrentUser({ name: userData.name, email: userData.email });
-    //         localStorage.setItem(
-    //           "currentUser",
-    //           JSON.stringify({
-    //             username: userData.name,
-    //             email: userData.email,
-    //             password: form.password,
-    //           })
-    //         );
-    //         // setCurrentUser(userData); // Guarda el usuario en contexto
-    //         showInfoTooltip && showInfoTooltip("¡Login exitoso!|n|Bienvenido.");
-    //         setPopupType(null); // Cierra el popup
-    //       })
-    //       .catch(() => {
-    //         showInfoTooltip &&
-    //           showInfoTooltip("No se pudo obtener usuario|n|Intenta de nuevo.");
-    //       });
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     showInfoTooltip &&
-    //       showInfoTooltip("Credenciales incorrectas|n|Intenta de nuevo.");
-    //   });
+    onLogin(form.email, form.password, { setPopupType, showInfoTooltip });
   };
 
   const handleSignupClick = (e) => {
@@ -103,7 +30,7 @@ export const LoginForm = ({ setPopupType, showInfoTooltip }) => {
   };
 
   return (
-    <form className="form login__form" onSubmit={handleLogin}>
+    <form className="form login__form" onSubmit={handleSubmit}>
       <span className="login__form-subtitle">Already have an account?</span>
       <h2 className="login__form-title">Sign in</h2>
       <fieldset className="login__form-fieldset">

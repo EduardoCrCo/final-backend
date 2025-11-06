@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { Header } from "./Header/Header";
 import { Footer } from "./Footer/Footer";
 import { Main } from "./Main/Main";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { Reviews } from "./Reviews/Reviews";
 import { AboutMe } from "./AboutMe/AboutMe";
 import { CurrentUserContext } from "../context/CurrentUserContext";
 import { Popup } from "../components/Main/components/Popup/Popup";
 import { InfoTooltip } from "../components/Main/components/forms/InfoTooltip/InfoTooltip";
-//import { RegisterForm } from "./Main/components/forms/RegisterForm/RegisterForm";
+import { LoginForm } from "./Main/components/forms/LoginForm/LoginForm";
 import * as auth from "../utils/auth";
 import api from "../utils/api";
 
@@ -26,16 +26,22 @@ export const App = () => {
   // };
 
   useEffect(() => {
+    // Try to get user info from API (if token is valid)
     api
       .getUserInfo()
       .then((user) => {
         setCurrentUser(user);
       })
       .catch((err) => {
-        console.error(err);
+        // fallback to localStorage if API fails
+        const user = localStorage.getItem("currentUser");
+        if (user) {
+          setCurrentUser(JSON.parse(user));
+        } else {
+          setCurrentUser(null);
+        }
       });
   }, []);
-
   // const handleUpdateUser = async (userData) => {
   //   try {
   //     // The updateUser function eventually calls the problematic fetch logic in api.js
@@ -64,6 +70,34 @@ export const App = () => {
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  // Centralized login handler for LoginForm
+  const handleLogin = async (
+    email,
+    password,
+    { setPopupType, showInfoTooltip }
+  ) => {
+    try {
+      const data = await auth.authorize({ email, password });
+      if (data && data.token) {
+        localStorage.setItem("jwt", data.token);
+        // Optionally, fetch user info after login
+        const user = await api.getUserInfo();
+        setCurrentUser(user);
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        if (typeof setPopupType === "function") setPopupType(null);
+        if (typeof showInfoTooltip === "function")
+          showInfoTooltip("¡Inicio de sesión exitoso!");
+      } else {
+        if (typeof showInfoTooltip === "function")
+          showInfoTooltip("Error: Token no recibido");
+      }
+    } catch (err) {
+      if (typeof showInfoTooltip === "function")
+        showInfoTooltip("Error al iniciar sesión");
+      console.error("Login error:", err);
+    }
   };
 
   const handlePopupClose = (evt) => {
@@ -101,7 +135,12 @@ export const App = () => {
             onClose={handlePopupClose}
             customClassName={popupType.className}
           >
-            {popupType.children}
+            {/* If the popup is LoginForm, inject onLogin handler */}
+            {popupType.children && popupType.children.type === LoginForm ? (
+              <LoginForm {...popupType.children.props} onLogin={handleLogin} />
+            ) : (
+              popupType.children
+            )}
           </Popup>
         )}
         {showTooltip && (

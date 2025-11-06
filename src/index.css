@@ -13,6 +13,7 @@
 @import url("./blocks/navBar.css");
 @import url("./blocks/reviews.css");
 @import url("./blocks/aboutMe.css");
+@import url("./blocks/editProfile.css");
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

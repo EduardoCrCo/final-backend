@@ -5,9 +5,24 @@
   /* position: relative; */
 }
 
+.header__user-name-button {
+  background: none;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* .header__user-name-button:hover {
+  border-color: #646cff;
+} */
+.header__user-name-button:focus,
+.header__user-name-button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
 .header__user-name {
-  /* margin-left: 8px; */
-  color: #222;
+  color: #9fd5e8;
   font-weight: bold;
   cursor: pointer;
   z-index: 1;
@@ -87,14 +102,6 @@
   /* position: relative; */
 }
 
-/* .header ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  margin: 0;
-  padding: 0 20px;
-} */
-
 .header__account {
   display: flex;
   flex-direction: row;
@@ -120,7 +127,7 @@
 .header-profile__avatar {
   display: flex;
   align-items: center;
-  min-width: 120px;
+  min-width: 160px;
   height: 40px;
   margin: 0 15px;
   position: relative;
@@ -139,7 +146,7 @@
   object-fit: contain;
 }
 
-.header__profile-avatar__edit_icon {
+.header__profile-avatar__edit_button {
   position: absolute;
   top: 12px;
   right: 14px;
@@ -149,6 +156,6 @@
   transition: opacity 0.2s;
 }
 
-.header__profile-avatar__edit_icon:hover {
+.header__profile-avatar__edit_button:hover {
   opacity: 60%;
 }

@@ -71,7 +71,7 @@ export const Header = ({
               <img
                 src={EditAvatar}
                 alt="icono de editar imagen de perfil"
-                className="header__profile-avatar__edit_icon"
+                className="header__profile-avatar__edit_button"
               />
               {/* {currentUser && ( */}
               {currentUser && Object.keys(currentUser).length > 0 && (

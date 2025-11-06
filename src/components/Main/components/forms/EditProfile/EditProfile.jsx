@@ -39,9 +39,9 @@ export const EditProfile = ({ onClose }) => {
   };
 
   return (
-    <form className="form form_profile" noValidate onSubmit={handleSubmit}>
-      <h3 className="edit-profile">Editar nombre de usuario</h3>
-      <fieldset className="form__fieldset">
+    <form className="form form__profile" noValidate onSubmit={handleSubmit}>
+      <h1 className="form__profile-title">Editar nombre de usuario</h1>
+      <fieldset className="form__profile-fieldset">
         <input
           type="text"
           name="name"

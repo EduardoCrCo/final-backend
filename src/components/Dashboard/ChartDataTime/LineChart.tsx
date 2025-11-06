@@ -736,7 +736,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
                     <ChartTooltip
                       active={active}
                       payload={cleanPayload}
-                      label={label}
+                      label={label} 
                       valueFormatter={valueFormatter}
                     />
                   )
