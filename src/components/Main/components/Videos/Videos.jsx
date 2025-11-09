@@ -5,20 +5,46 @@ import inactiveLike from "../../../../images/inactiveLike.svg";
 import activeLike from "../../../../images/activeLike.svg";
 import saveIcon from "../../../../images/saveIcon.png";
 
-export const Videos = ({ videos = [], onDelete, onLiked }) => {
+export const Videos = ({
+  videos = [],
+  onDelete,
+  onLiked,
+  onCreateReview,
+  onAddToPlaylist,
+}) => {
   const { currentUser } = useContext(CurrentUserContext);
-
-  // Debug: muestra la estructura de youtubeInfo
-  //console.log("youtubeInfo:", youtubeInfo);
 
   return (
     <div className="videos__grid">
       {videos.length > 0 ? (
         videos.map((item) => (
           <div key={item.video.videoId} className="videos__grid-wrapper">
-            <button className="videos__save-button">
-              <img className="videos__save-icon" src={saveIcon} alt="Guardar" />
-            </button>
+            <div className="buttons">
+              <button
+                className="videos__save-button"
+                onClick={() => onAddToPlaylist && onAddToPlaylist(item.video)}
+              >
+                <img
+                  className="videos__save-icon"
+                  src={saveIcon}
+                  alt="Agregar a playlist"
+                />
+              </button>
+
+              <button
+                className={`videos__delete-btn ${
+                  currentUser ? "enabled" : "disabled"
+                }`}
+                onClick={() => onDelete(item.video.videoId)}
+                disabled={!currentUser}
+              >
+                <img
+                  className="videos__trash-icon"
+                  src={trashIcon}
+                  alt="Eliminar"
+                />
+              </button>
+            </div>
 
             <a
               href={`https://www.youtube.com/watch?v=${item.video.videoId}`}
@@ -43,6 +69,14 @@ export const Videos = ({ videos = [], onDelete, onLiked }) => {
               >
                 Ver video
               </a>
+
+              <button
+                className="videos__review-btn"
+                onClick={() => onCreateReview && onCreateReview(item.video)}
+              >
+                Escribir Review
+              </button>
+
               <div className="videos__save-like-trash-container">
                 <button
                   className={`videos__like-button ${
@@ -59,20 +93,6 @@ export const Videos = ({ videos = [], onDelete, onLiked }) => {
                     }
                     src={item.liked ? activeLike : inactiveLike}
                     alt={item.liked ? "con me gusta" : "sin me gusta"}
-                  />
-                </button>
-
-                <button
-                  className={`videos__delete-btn ${
-                    currentUser ? "enabled" : "disabled"
-                  }`}
-                  onClick={() => onDelete(item.video.videoId)}
-                  disabled={!currentUser}
-                >
-                  <img
-                    className="videos__trash-icon"
-                    src={trashIcon}
-                    alt="Eliminar"
                   />
                 </button>
               </div>

@@ -19,7 +19,9 @@ export const Dashboard = () => {
       </Flex>
 
       <ChartDataTime marginTop="mt-8" />
-      <Link to="/reviews">Go to Reviews</Link>
+      <Link to="/reviews" className="block mt-4 text-blue-200 underline">
+        Go to Reviews
+      </Link>
     </div>
   );
 };

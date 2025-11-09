@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { CommentsList } from "../CommentsList/CommentsList";
+import { ReviewsList } from "../ReviewsList/ReviewsList";
 
-export const ReviewForm = ({ onAddComment }) => {
-  const [comment, setComment] = useState("");
+export const ReviewForm = ({ onAddReview }) => {
+  const [review, setReview] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (comment.trim()) {
-      onAddComment(comment);
-      setComment("");
+    if (review.trim()) {
+      onAddReview(review);
+      setReview("");
     }
   };
 
@@ -20,8 +20,8 @@ export const ReviewForm = ({ onAddComment }) => {
       <textarea
         className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
         rows={4}
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
+        value={review}
+        onChange={(e) => setReview(e.target.value)}
         placeholder="Deja tu comentario aquí..."
       />
       <button

@@ -14,6 +14,7 @@
 @import url("./blocks/reviews.css");
 @import url("./blocks/aboutMe.css");
 @import url("./blocks/editProfile.css");
+@import url("./blocks/playlistModal.css");
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

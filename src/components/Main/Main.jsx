@@ -1,50 +1,18 @@
-import { useState, useEffect } from "react";
 import { SearchBar } from "../Main/components/SearchBar/SearchBar";
 import { Videos } from "../Main/components/Videos/Videos";
-import { searchYouTube } from "../../utils/ThirdPartyApi";
 
-export const Main = () => {
-  const [youtubeInfo, setYoutubeInfo] = useState(null);
-  const [youtubeQuery, setYoutubeQuery] = useState("");
-
-  const [youtubeResults, setYoutubeResults] = useState([]);
-  //const [selectedVideos, setSelectedVideos] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
-
-  useEffect(() => {
-    setYoutubeResults([]);
-    if (!youtubeQuery.trim() || youtubeQuery.length < 2) return;
-    searchYouTube(youtubeQuery, 12)
-      .then((results) => {
-        const ytResults = (results || []).map((item) => ({
-          id: item.videoId,
-          title: item.title,
-          type: "youtube",
-          video: {
-            videoId: item.videoId,
-            title: item.title,
-            thumbnails: item.thumbnails,
-            channelName: item.channelName,
-          },
-        }));
-        setYoutubeResults(ytResults);
-      })
-      .catch((error) => console.error(error));
-  }, [youtubeQuery]);
-
-  //1. estado de los videos locales
-  //aqui se inicia el estado videos con los videos locales que se guardan en localStorage
-  const [selectedVideos, setSelectedVideos] = useState(() => {
-    const saved = localStorage.getItem("selectedVideos");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  //2. Persistencia en localStorage
-  //cada vez que se cambian los videos locales se actualiza el localStorage
-  useEffect(() => {
-    localStorage.setItem("selectedVideos", JSON.stringify(selectedVideos));
-  }, [selectedVideos]);
-
+export const Main = ({
+  youtubeQuery,
+  setYoutubeQuery,
+  youtubeResults,
+  selectedVideos,
+  setSelectedVideos,
+  onDeleteVideo,
+  onLikeVideo,
+  onCreateReview,
+  onAddToPlaylist,
+  youtubeInfo,
+}) => {
   return (
     <main className="main-content">
       <h1 className="main-content__title">Explora el mundo desde el aire</h1>
@@ -75,18 +43,10 @@ export const Main = () => {
         </span>
         <Videos
           videos={selectedVideos}
-          onDelete={(id) =>
-            setSelectedVideos(
-              selectedVideos.filter((v) => v.video.videoId !== id)
-            )
-          }
-          onLiked={(id) =>
-            setSelectedVideos(
-              selectedVideos.map((v) =>
-                v.video.videoId === id ? { ...v, liked: !v.liked } : v
-              )
-            )
-          }
+          onDelete={onDeleteVideo}
+          onLiked={onLikeVideo}
+          onCreateReview={onCreateReview}
+          onAddToPlaylist={onAddToPlaylist}
           youtubeInfo={youtubeInfo}
         />
       </section>

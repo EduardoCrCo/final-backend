@@ -5,12 +5,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 40px;
-  /* background: linear-gradient(
+  background: linear-gradient(
     90deg,
     rgb(3, 9, 23) 0%,
     rgb(48, 47, 47) 51%,
     rgb(6, 13, 29) 100%
-  ); */
+  );
   min-height: 100vh;
 }
 

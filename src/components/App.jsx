@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Header } from "./Header/Header";
 import { Footer } from "./Footer/Footer";
 import { Main } from "./Main/Main";
-import { Routes, Route } from "react-router-dom";
+import { searchYouTube } from "../utils/ThirdPartyApi";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { Reviews } from "./Reviews/Reviews";
 import { AboutMe } from "./AboutMe/AboutMe";
@@ -10,20 +11,90 @@ import { CurrentUserContext } from "../context/CurrentUserContext";
 import { Popup } from "../components/Main/components/Popup/Popup";
 import { InfoTooltip } from "../components/Main/components/forms/InfoTooltip/InfoTooltip";
 import { LoginForm } from "./Main/components/forms/LoginForm/LoginForm";
+import { PlaylistModal } from "./PlaylistModal/PlaylistModal";
 import * as auth from "../utils/auth";
 import api from "../utils/api";
 
 export const App = () => {
+  const navigate = useNavigate();
+
+  // Estado y lógica de negocio para videos y búsqueda YouTube
+  const [youtubeInfo, setYoutubeInfo] = useState(null);
+  const [youtubeQuery, setYoutubeQuery] = useState("");
+  const [youtubeResults, setYoutubeResults] = useState([]);
+  const [selectedVideos, setSelectedVideos] = useState(() => {
+    const saved = localStorage.getItem("selectedVideos");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    setYoutubeResults([]);
+    if (!youtubeQuery.trim() || youtubeQuery.length < 2) return;
+    searchYouTube(youtubeQuery, 12)
+      .then((results) => {
+        const ytResults = (results || []).map((item) => ({
+          id: item.videoId,
+          title: item.title,
+          type: "youtube",
+          video: {
+            videoId: item.videoId,
+            title: item.title,
+            thumbnails: item.thumbnails,
+            channelName: item.channelName,
+          },
+        }));
+        setYoutubeResults(ytResults);
+      })
+      .catch((error) => console.error(error));
+  }, [youtubeQuery]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedVideos", JSON.stringify(selectedVideos));
+  }, [selectedVideos]);
+
+  const handleDeleteVideo = (id) => {
+    setSelectedVideos(selectedVideos.filter((v) => v.video.videoId !== id));
+  };
+
+  const handleLikeVideo = (id) => {
+    setSelectedVideos(
+      selectedVideos.map((v) =>
+        v.video.videoId === id ? { ...v, liked: !v.liked } : v
+      )
+    );
+  };
+
+  const handleCreateReview = (video) => {
+    // Guardar el video seleccionado en localStorage para usarlo en Reviews
+    localStorage.setItem("selectedVideoForReview", JSON.stringify(video));
+    // Navegar a la página de Reviews
+    navigate("/reviews");
+  };
+
+  // Estado para el modal de playlists
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] =
+    useState(null);
+
+  const handleAddToPlaylist = (video) => {
+    setSelectedVideoForPlaylist(video);
+    setShowPlaylistModal(true);
+  };
+
+  const handlePlaylistModalClose = () => {
+    setShowPlaylistModal(false);
+    setSelectedVideoForPlaylist(null);
+  };
+
+  const handleVideoAddedToPlaylist = (playlistId, video) => {
+    console.log(`Video "${video.title}" agregado a playlist ${playlistId}`);
+    // Aquí podrías mostrar una notificación de éxito
+  };
+
   const [popupType, setPopupType] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipMessage, setTooltipMessage] = useState("");
   const [currentUser, setCurrentUser] = useState({});
-
-  // const handleRegistration = (userData) => {
-  //   // Lógica para manejar el registro
-  //   setCurrentUser(userData);
-  //   localStorage.setItem("currentUser", JSON.stringify(userData));
-  // };
 
   useEffect(() => {
     // Try to get user info from API (if token is valid)
@@ -124,7 +195,23 @@ export const App = () => {
           //handleLogout={handleLogout}
         />
         <Routes>
-          <Route path="/" element={<Main />} />
+          <Route
+            path="/"
+            element={
+              <Main
+                youtubeQuery={youtubeQuery}
+                setYoutubeQuery={setYoutubeQuery}
+                youtubeResults={youtubeResults}
+                selectedVideos={selectedVideos}
+                setSelectedVideos={setSelectedVideos}
+                onDeleteVideo={handleDeleteVideo}
+                onLikeVideo={handleLikeVideo}
+                onCreateReview={handleCreateReview}
+                onAddToPlaylist={handleAddToPlaylist}
+                youtubeInfo={youtubeInfo}
+              />
+            }
+          />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/aboutMe" element={<AboutMe />} />
@@ -147,6 +234,14 @@ export const App = () => {
           <InfoTooltip
             message={tooltipMessage}
             onClose={() => setShowTooltip(false)}
+          />
+        )}
+        {showPlaylistModal && (
+          <PlaylistModal
+            isOpen={showPlaylistModal}
+            video={selectedVideoForPlaylist}
+            onClose={handlePlaylistModalClose}
+            onAddToPlaylist={handleVideoAddedToPlaylist}
           />
         )}
       </div>
