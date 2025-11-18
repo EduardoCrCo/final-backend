@@ -1,10 +1,9 @@
 import { useState, useContext } from "react";
 import { CurrentUserContext } from "../../../../../context/CurrentUserContext";
-import api from "../../../../../utils/api";
 
 export const EditProfile = ({ onClose }) => {
   const userContext = useContext(CurrentUserContext);
-  const { currentUser, setCurrentUser } = userContext;
+  const { currentUser, setCurrentUser, handleUpdateUser } = userContext;
 
   const [name, setName] = useState(currentUser?.name || "");
   // const [about, setAbout] = useState(currentUser?.about || "");
@@ -14,27 +13,25 @@ export const EditProfile = ({ onClose }) => {
     setName(e.target.value);
   };
 
-  // const handleAboutChange = (e) => {
-  //   setAbout(e.target.value);
-  // };
-
-  const handleUpdateUser = (userData) => {
-    (async () => {
-      await api
-        .updateUser(userData.name, currentUser.about)
-        .then((updatedUser) => {
-          setCurrentUser(updatedUser);
-          localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-        });
-    })();
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    await handleUpdateUser({ name, about: currentUser.about });
-    if (typeof onClose === "function") {
-      onClose();
+    // console.log("🔄 Enviando actualización de perfil:", {
+    //   name,
+    //   about: currentUser?.about,
+    // });
+
+    if (typeof handleUpdateUser === "function") {
+      try {
+        await handleUpdateUser({ name, about: currentUser?.about });
+        // console.log("✅ Perfil actualizado exitosamente");
+        if (typeof onClose === "function") {
+          onClose();
+        }
+      } catch (error) {
+        console.error("❌ Error al actualizar perfil:", error);
+      }
+    } else {
+      console.warn("handleUpdateUser no es una función válida");
     }
   };
 
@@ -50,6 +47,7 @@ export const EditProfile = ({ onClose }) => {
           placeholder="Nombre"
           required
           onChange={handleNameChange}
+          // onChange={(e) => setName(e.target.value)}
           minLength="2"
           maxLength="40"
           value={name}

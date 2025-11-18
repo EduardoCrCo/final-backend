@@ -1,18 +1,20 @@
-import Logo from "../../images/drone-logo.png";
+import Logo from "../../images/droneAction2.png";
 import Avatar from "../../images/avatar.png";
-import EditAvatar from "../../images/editAvatar.svg";
+import EditAvatarIcon from "../../images/editAvatar.svg";
 import { NavBar } from "../NavBar/NavBar";
 import { useContext } from "react";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
 import { RegisterForm } from "../../components/Main/components/forms/RegisterForm/RegisterForm";
 import { EditProfile } from "../Main/components/forms/EditProfile/EditProfile";
+import { EditAvatar } from "../Main/components/forms/EditAvatar/EditAvatar";
 
 export const Header = ({
   setPopupType,
   showInfoTooltip,
   handleRegistration,
-  //handleLogout,
+  onLogout,
   handlePopupClose,
+  onUpdateUser,
 }) => {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
 
@@ -27,27 +29,28 @@ export const Header = ({
     className: "form-popup",
   };
 
-  const handleLogout = () => {
-    console.log("Logging out user:", currentUser);
-    setCurrentUser(null);
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("jwt"); // <-- elimina el token
-  };
-
   const handleSignupClick = () => {
     setPopupType(signupPopupType);
   };
 
   const userNamePopupType = {
-    children: <EditProfile onClose={handlePopupClose} />,
+    children: (
+      <EditProfile onClose={handlePopupClose} onUpdateUser={onUpdateUser} />
+    ),
     className: "form-popup",
   };
+
+  const editAvatarPopupType = {
+    children: <EditAvatar onClose={handlePopupClose} />,
+    className: "form-popup",
+  };
+
   return (
     <header className="header">
       <div className="header__container">
         <div className="header__logo-name-container">
           <img className="header__logo" src={Logo} alt="Drone logo" />
-          {/* <h1 className="header__title">DroneVision</h1> */}
+          <h1 className="header__title">De Drones</h1>
         </div>
 
         <div className="header__spacer">
@@ -62,18 +65,8 @@ export const Header = ({
                 Sign up / Sign in
               </button>
             )}
+
             <div className="header-profile__avatar">
-              <img
-                src={Avatar}
-                alt="imagen del perfil"
-                className="header-profile__avatar-image"
-              />
-              <img
-                src={EditAvatar}
-                alt="icono de editar imagen de perfil"
-                className="header__profile-avatar__edit_button"
-              />
-              {/* {currentUser && ( */}
               {currentUser && Object.keys(currentUser).length > 0 && (
                 <div className="header__user-hover-area">
                   <button
@@ -81,18 +74,42 @@ export const Header = ({
                     onClick={() => setPopupType(userNamePopupType)}
                   >
                     <span className="header__user-name">
-                      {currentUser.name}
+                      {currentUser?.name}
                     </span>
                   </button>
                   <button
                     className="header__logout-btn"
-                    onClick={handleLogout}
+                    onClick={onLogout}
                     tabIndex={0}
                   >
                     Logout
                   </button>
                 </div>
               )}
+
+              <div className="header-profile__avatar-image-container">
+                <img
+                  src={currentUser?.avatar || Avatar}
+                  alt="imagen del perfil"
+                  className="header-profile__avatar-image"
+                  onLoad={() =>
+                    console.log(
+                      "🖼️ Avatar cargado:",
+                      currentUser?.avatar || "Avatar por defecto"
+                    )
+                  }
+                />
+                <button
+                  className="header__profile-avatar__edit_button"
+                  onClick={() => setPopupType(editAvatarPopupType)}
+                >
+                  <img
+                    className="header__profile-avatar__edit_button-icon"
+                    src={EditAvatarIcon}
+                    alt="icono de editar imagen de perfil"
+                  />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -100,50 +117,3 @@ export const Header = ({
     </header>
   );
 };
-
-// Header.jsx
-// import { useState } from "react";
-// import NavBar from "../NavBar/NavBar";
-// import LoginModal from "./LoginModal";
-// import RegisterModal from "./RegisterModal";
-
-// export const Header = ({ currentUser, onSignOut }) => {
-//   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-//   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
-//   return (
-//     <header className="header">
-//       <div className="header__logo">
-//         <h1>NewsExplorer</h1>
-//       </div>
-
-//       <NavBar
-//         isLoggedIn={!!currentUser}
-//         currentUser={currentUser}
-//         onLoginClick={() => setIsLoginModalOpen(true)}
-//         onRegisterClick={() => setIsRegisterModalOpen(true)}
-//         onSignOut={onSignOut}
-//       />
-
-//       {isLoginModalOpen && (
-//         <LoginModal
-//           onClose={() => setIsLoginModalOpen(false)}
-//           onRegisterClick={() => {
-//             setIsLoginModalOpen(false);
-//             setIsRegisterModalOpen(true);
-//           }}
-//         />
-//       )}
-
-//       {isRegisterModalOpen && (
-//         <RegisterModal
-//           onClose={() => setIsRegisterModalOpen(false)}
-//           onLoginClick={() => {
-//             setIsRegisterModalOpen(false);
-//             setIsLoginModalOpen(true);
-//           }}
-//         />
-//       )}
-//     </header>
-//   );
-// };

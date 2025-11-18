@@ -1,132 +1,227 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
-export const PlaylistModal = ({ isOpen, video, onClose, onAddToPlaylist }) => {
-  const [playlists, setPlaylists] = useState([]);
+export const PlaylistModal = ({
+  isOpen,
+  video,
+  onClose,
+  playlists,
+  setPlaylists,
+}) => {
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const [isCreatingNew, setIsCreatingNew] = useState(false);
+  const [expandedPlaylistId, setExpandedPlaylistId] = useState(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      // Cargar playlists existentes desde localStorage
-      const savedPlaylists =
-        JSON.parse(localStorage.getItem("userPlaylists")) || [];
-      setPlaylists(savedPlaylists);
-    }
-  }, [isOpen]);
+  // ⚡ Ya no cargamos playlists desde localStorage aquí (vienen por props)
 
   const handleCreatePlaylist = () => {
     if (newPlaylistName.trim()) {
       const newPlaylist = {
         id: Date.now(),
-        name: newPlaylistName,
+        name: newPlaylistName.trim(),
         videos: [],
         createdAt: new Date().toISOString(),
       };
       const updatedPlaylists = [...playlists, newPlaylist];
       setPlaylists(updatedPlaylists);
       localStorage.setItem("userPlaylists", JSON.stringify(updatedPlaylists));
+      toast.success("Playlist creada correctamente");
       setNewPlaylistName("");
       setIsCreatingNew(false);
     }
   };
 
+  // Cerrar al hacer clic fuera
+  const handleOverlayClick = (e) => {
+    if (e.target.classList.contains("popup__overlay")) onClose();
+  };
+
   const handleAddToExistingPlaylist = (playlistId) => {
+    if (!video || !video.videoId) {
+      toast.error("El video no es válido.");
+      return;
+    }
+
     const updatedPlaylists = playlists.map((playlist) => {
       if (playlist.id === playlistId) {
-        // Verificar si el video ya está en la playlist
-        const videoExists = playlist.videos.some(
-          (v) => v.videoId === video.videoId
-        );
-        if (!videoExists) {
-          return { ...playlist, videos: [...playlist.videos, video] };
+        const exists = playlist.videos.some((v) => v.videoId === video.videoId);
+        if (exists) {
+          toast.warning("El video ya está en esta playlist.");
+          return playlist;
         }
+        toast.success("Video agregado correctamente.");
+        return { ...playlist, videos: [...playlist.videos, video] };
       }
       return playlist;
     });
+
     setPlaylists(updatedPlaylists);
     localStorage.setItem("userPlaylists", JSON.stringify(updatedPlaylists));
-    onAddToPlaylist(playlistId, video);
     onClose();
+  };
+
+  const handleDeleteVideo = (playlistId, videoId) => {
+    const updatedPlaylists = playlists.map((playlist) =>
+      playlist.id === playlistId
+        ? {
+            ...playlist,
+            videos: playlist.videos.filter((v) => v.videoId !== videoId),
+          }
+        : playlist
+    );
+    setPlaylists(updatedPlaylists);
+    localStorage.setItem("userPlaylists", JSON.stringify(updatedPlaylists));
+    toast.info("Video eliminado de la playlist.");
+  };
+
+  const handleDeletePlaylist = (playlistId) => {
+    const updated = playlists.filter((p) => p.id !== playlistId);
+    setPlaylists(updated);
+    localStorage.setItem("userPlaylists", JSON.stringify(updated));
+    toast.error("Playlist eliminada.");
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-96 max-h-96 overflow-y-auto">
-        <h3 className="text-lg font-bold mb-4">Agregar a Playlist</h3>
-        <p className="text-sm text-gray-600 mb-4">"{video?.title}"</p>
+    <div className="popup popup_opened">
+      <div className="popup__overlay" onClick={handleOverlayClick}></div>
+      <div className="popup__content">
+        <div className="popup__body playlist-modal__body">
+          <button className="popup__close-button" onClick={onClose}>
+            X
+          </button>
 
-        {/* Lista de playlists existentes */}
-        <div className="mb-4">
-          <h4 className="font-medium mb-2">Playlists existentes:</h4>
-          {playlists.length > 0 ? (
-            <div className="space-y-2">
-              {playlists.map((playlist) => (
+          <div className="playlist-modal__content">
+            <h3 className="playlist-modal__title">Playlists</h3>
+            <p className="playlist-modal__video-title">
+              {video ? `"${video.title}"` : "Administrar playlists"}
+            </p>
+
+            {/* Sección de playlists */}
+            <div className="playlist-modal__section">
+              <h4 className="playlist-modal__section-title">Tus playlists:</h4>
+
+              {playlists.length > 0 ? (
+                <div className="playlist-modal__playlist-list">
+                  {playlists.map((playlist) => (
+                    <div
+                      key={playlist.id}
+                      className="playlist-modal__playlist-item"
+                    >
+                      <div className="playlist-modal__playlist-header">
+                        <div>
+                          <strong>{playlist.name}</strong>{" "}
+                          <span>({playlist.videos.length} videos)</span>
+                        </div>
+
+                        <div className="playlist-modal__actions">
+                          <button
+                            onClick={() =>
+                              handleAddToExistingPlaylist(playlist.id)
+                            }
+                            className="playlist-modal__btn playlist-modal__btn--add"
+                          >
+                            ➕
+                          </button>
+                          <button
+                            onClick={() =>
+                              setExpandedPlaylistId(
+                                expandedPlaylistId === playlist.id
+                                  ? null
+                                  : playlist.id
+                              )
+                            }
+                            className="playlist-modal__btn playlist-modal__btn--toggle"
+                          >
+                            {expandedPlaylistId === playlist.id ? "🔽" : "▶"}
+                          </button>
+                          <button
+                            onClick={() => handleDeletePlaylist(playlist.id)}
+                            className="playlist-modal__btn playlist-modal__btn--delete"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+
+                      {expandedPlaylistId === playlist.id && (
+                        <ul className="playlist-modal__video-list">
+                          {playlist.videos.length > 0 ? (
+                            playlist.videos.map((v) => (
+                              <li
+                                key={v.videoId}
+                                className="playlist-modal__video-item"
+                              >
+                                <span>{v.title}</span>
+                                <button
+                                  onClick={() =>
+                                    handleDeleteVideo(playlist.id, v.videoId)
+                                  }
+                                  className="playlist-modal__btn playlist-modal__btn--small"
+                                >
+                                  ❌
+                                </button>
+                              </li>
+                            ))
+                          ) : (
+                            <li className="playlist-modal__empty">
+                              Sin videos aún
+                            </li>
+                          )}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="playlist-modal__empty-message">
+                  No tienes playlists aún
+                </p>
+              )}
+            </div>
+
+            {/* Crear nueva playlist */}
+            <div className="playlist-modal__create-section">
+              {!isCreatingNew ? (
                 <button
-                  key={playlist.id}
-                  onClick={() => handleAddToExistingPlaylist(playlist.id)}
-                  className="w-full text-left p-2 border rounded hover:bg-gray-50"
+                  onClick={() => setIsCreatingNew(true)}
+                  className="playlist-modal__create-button"
                 >
-                  <div className="font-medium">{playlist.name}</div>
-                  <div className="text-sm text-gray-500">
-                    {playlist.videos.length} videos
+                  + Crear nueva playlist
+                </button>
+              ) : (
+                <div className="playlist-modal__create-form">
+                  <input
+                    type="text"
+                    value={newPlaylistName}
+                    onChange={(e) => setNewPlaylistName(e.target.value)}
+                    placeholder="Nombre de la playlist"
+                    className="playlist-modal__input"
+                    autoFocus
+                  />
+                  <div className="playlist-modal__button-group">
+                    <button
+                      onClick={handleCreatePlaylist}
+                      className="playlist-modal__button playlist-modal__button--primary"
+                    >
+                      Crear
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsCreatingNew(false);
+                        setNewPlaylistName("");
+                      }}
+                      className="playlist-modal__button playlist-modal__button--secondary"
+                    >
+                      Cancelar
+                    </button>
                   </div>
-                </button>
-              ))}
+                </div>
+              )}
             </div>
-          ) : (
-            <p className="text-gray-500 text-sm">No tienes playlists aún</p>
-          )}
+          </div>
         </div>
-
-        {/* Crear nueva playlist */}
-        <div className="border-t pt-4">
-          {!isCreatingNew ? (
-            <button
-              onClick={() => setIsCreatingNew(true)}
-              className="w-full p-2 border-2 border-dashed border-gray-300 rounded text-gray-600 hover:border-gray-400"
-            >
-              + Crear nueva playlist
-            </button>
-          ) : (
-            <div className="space-y-2">
-              <input
-                type="text"
-                value={newPlaylistName}
-                onChange={(e) => setNewPlaylistName(e.target.value)}
-                placeholder="Nombre de la playlist"
-                className="w-full p-2 border rounded"
-                autoFocus
-              />
-              <div className="flex gap-2">
-                <button
-                  onClick={handleCreatePlaylist}
-                  className="flex-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-                >
-                  Crear
-                </button>
-                <button
-                  onClick={() => {
-                    setIsCreatingNew(false);
-                    setNewPlaylistName("");
-                  }}
-                  className="flex-1 bg-gray-300 p-2 rounded hover:bg-gray-400"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Botón cerrar */}
-        <button
-          onClick={onClose}
-          className="w-full mt-4 p-2 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Cerrar
-        </button>
       </div>
     </div>
   );

@@ -14,6 +14,9 @@ import { LoginForm } from "./Main/components/forms/LoginForm/LoginForm";
 import { PlaylistModal } from "./PlaylistModal/PlaylistModal";
 import * as auth from "../utils/auth";
 import api from "../utils/api";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+//import { set } from "mongoose";
 
 export const App = () => {
   const navigate = useNavigate();
@@ -94,39 +97,24 @@ export const App = () => {
   const [popupType, setPopupType] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipMessage, setTooltipMessage] = useState("");
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     // Try to get user info from API (if token is valid)
-    api
-      .getUserInfo()
-      .then((user) => {
-        setCurrentUser(user);
-      })
-      .catch((err) => {
-        // fallback to localStorage if API fails
-        const user = localStorage.getItem("currentUser");
-        if (user) {
-          setCurrentUser(JSON.parse(user));
-        } else {
-          setCurrentUser(null);
-        }
-      });
+    if (!currentUser || !currentUser._id) {
+      api
+        .getUserInfo()
+        .then((user) => {
+          setCurrentUser(user);
+          localStorage.setItem("currentUser", JSON.stringify(user));
+        })
+        .catch((err) => {
+          // fallback to localStorage if API fails
+          const user = localStorage.getItem("currentUser");
+          setCurrentUser(user ? JSON.parse(user) : null);
+        });
+    }
   }, []);
-  // const handleUpdateUser = async (userData) => {
-  //   try {
-  //     // The updateUser function eventually calls the problematic fetch logic in api.js
-  //     const updatedUser = await api.updateUser(userData.name);
-  //     // Handle successful update (e.g., update state, show success message)
-  //     console.log("User updated successfully:", updatedUser);
-  //   } catch (error) {
-  //     // This catch block will now handle the "Validation failed" error
-  //     // thrown from api.js, as well as any other errors in the promise chain.
-  //     console.error("Failed to update user:", error.message);
-  //     // You can display this error to the user, e.g., using a state variable
-  //     // setError(error.message);
-  //   }
-  // };
 
   const handleRegistration = (name, email, password) => {
     auth
@@ -143,7 +131,6 @@ export const App = () => {
       });
   };
 
-  // Centralized login handler for LoginForm
   const handleLogin = async (
     email,
     password,
@@ -153,7 +140,6 @@ export const App = () => {
       const data = await auth.authorize({ email, password });
       if (data && data.token) {
         localStorage.setItem("jwt", data.token);
-        // Optionally, fetch user info after login
         const user = await api.getUserInfo();
         setCurrentUser(user);
         localStorage.setItem("currentUser", JSON.stringify(user));
@@ -183,8 +169,76 @@ export const App = () => {
     setShowTooltip(true);
   };
 
+  const handleUpdateAvatar = async (avatarUrl) => {
+    // console.log("🔄 handleUpdateAvatar llamado con URL:", avatarUrl);
+    try {
+      const response = await api.updateAvatar(avatarUrl);
+      // console.log("📡 Respuesta del backend:", response);
+
+      // El backend devuelve { message: "...", user: { ... } }
+      const updatedUser = response.user || response;
+      // console.log("👤 Usuario actualizado:", updatedUser);
+
+      setCurrentUser((prev) => {
+        const newUser = { ...prev, ...updatedUser };
+        // console.log("🔄 Estado anterior:", prev);
+        // console.log("🔄 Nuevo estado:", newUser);
+        localStorage.setItem("currentUser", JSON.stringify(newUser));
+        return newUser;
+      });
+
+      // Mostrar mensaje de éxito
+      handleShowInfoTooltip("Avatar actualizado exitosamente");
+    } catch (error) {
+      console.error("❌ Failed to update avatar:", error.message);
+      handleShowInfoTooltip("Error al actualizar avatar");
+    }
+  };
+
+  const handleUpdateUser = async ({ name, about }) => {
+    // console.log("🔄 handleUpdateUser llamado con:", { name, about });
+    try {
+      const response = await api.updateUser(name, about);
+      // console.log("📡 Respuesta del backend:", response);
+
+      // El backend devuelve { message: "...", user: { ... } }
+      const updatedUser = response.user || response;
+      // console.log("👤 Usuario actualizado:", updatedUser);
+
+      setCurrentUser((prev) => {
+        const newUser = { ...prev, ...updatedUser };
+        // console.log("🔄 Estado anterior:", prev);
+        // console.log("🔄 Nuevo estado:", newUser);
+        localStorage.setItem("currentUser", JSON.stringify(newUser));
+        return newUser;
+      });
+
+      handleShowInfoTooltip("Perfil actualizado exitosamente");
+      return updatedUser;
+    } catch (err) {
+      console.error("❌ Error actualizando usuario:", err);
+      handleShowInfoTooltip("Error al actualizar perfil");
+      throw err;
+    }
+  };
+
+  const handleLogout = () => {
+    console.log("Logging out user:", currentUser);
+    setCurrentUser(null);
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("jwt"); // <-- elimina el token
+  };
+
   return (
-    <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
+    <CurrentUserContext.Provider
+      value={{
+        currentUser,
+        setCurrentUser,
+        handleUpdateAvatar,
+        handleUpdateUser,
+      }}
+    >
+      <ToastContainer position="bottom-center" autoClose={3000} />
       <div className="page">
         <Header
           showInfoTooltip={handleShowInfoTooltip}
@@ -192,7 +246,8 @@ export const App = () => {
           setPopupType={setPopupType}
           handlePopupClose={handlePopupClose}
           handleRegistration={handleRegistration}
-          //handleLogout={handleLogout}
+          onLogout={handleLogout}
+          onUpdateUser={handleUpdateUser}
         />
         <Routes>
           <Route
@@ -212,6 +267,7 @@ export const App = () => {
               />
             }
           />
+
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/aboutMe" element={<AboutMe />} />
@@ -222,7 +278,6 @@ export const App = () => {
             onClose={handlePopupClose}
             customClassName={popupType.className}
           >
-            {/* If the popup is LoginForm, inject onLogin handler */}
             {popupType.children && popupType.children.type === LoginForm ? (
               <LoginForm {...popupType.children.props} onLogin={handleLogin} />
             ) : (

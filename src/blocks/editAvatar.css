@@ -1,0 +1,32 @@
+.form__avatar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px auto;
+
+  width: 80%;
+}
+
+.form__avatar-title {
+  padding: 5px;
+  color: azure;
+  margin: 10px auto;
+}
+
+.form__avatar-fieldset {
+  margin-bottom: 10px auto;
+  width: 358px;
+}
+
+.form__submit {
+  display: flex;
+  margin: 10px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}

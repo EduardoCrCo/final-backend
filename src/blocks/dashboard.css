@@ -1,17 +1,20 @@
 .dashboard {
-  position: relative;
+  /* position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; */
   padding: 40px;
   background: linear-gradient(
     90deg,
-    rgb(3, 9, 23) 0%,
-    rgb(48, 47, 47) 51%,
-    rgb(6, 13, 29) 100%
+    rgb(14, 62, 11) 0%,
+    #367102 51%,
+    rgb(43, 80, 48) 100%
   );
-  min-height: 100vh;
+  /* background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%); */
+
+  width: 100%;
+  height: 100vh;
 }
 
 .dashboard__title {

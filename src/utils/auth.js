@@ -1,13 +1,13 @@
-export const BASE_URL = "https://api.web-project-around.ignorelist.com";
+export const BASE_URL = "http://localhost:8080";
 
-export const register = ({ email, password }) => {
+export const register = ({ name, email, password }) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ name, email, password }),
   }).then(async (res) => {
     return res.ok ? res.json() : Promise.reject(`Error: ${res.status}`);
   });

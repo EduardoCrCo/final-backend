@@ -120,6 +120,30 @@
   color: #1976d2;
 }
 
+/* Estilos para el estado de carga en resultados de búsqueda */
+.search-result-item.loading {
+  background-color: #f0f8ff;
+  cursor: not-allowed;
+}
+
+.mini-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e3e3e3;
+  border-top: 2px solid #1976d2;
+  border-radius: 50%;
+  animation: miniSpin 1s linear infinite;
+}
+
+@keyframes miniSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes dropdownExpand {
   from {
     opacity: 0;

@@ -27,7 +27,7 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip }) => {
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
       // continuar con el registro
-      register({ email: form.email, password: form.password })
+      register({ name: form.name, email: form.email, password: form.password })
         .then(() => {
           showInfoTooltip("¡Registro exitoso!|n|Ahora puedes iniciar sesión.");
           setTimeout(() => {

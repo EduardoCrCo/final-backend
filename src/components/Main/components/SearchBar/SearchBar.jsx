@@ -1,10 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import SearchIcon from "../../../../images/Search.svg";
 
-export const SearchBar = ({ onSearch, searchResults = [], onResultClick }) => {
+export const SearchBar = ({
+  onSearch,
+  searchResults = [],
+  onResultClick,
+  loading,
+  loadingVideoId,
+}) => {
   const [term, setTerm] = useState("");
-  // El input solo se limpia al seleccionar un resultado o hacer click fuera
-  const wrapperRef = useRef(); // Marcador de posición para posible uso futuro
+  const wrapperRef = useRef();
 
   // Cierra el dropdown al hacer clic fuera
   useEffect(() => {
@@ -29,11 +34,23 @@ export const SearchBar = ({ onSearch, searchResults = [], onResultClick }) => {
     }
   };
 
-  const handleResultClick = (video) => {
-    onResultClick(video);
+  const handleResultClick = async (video) => {
+    await onResultClick(video);
     setTerm("");
     onSearch(""); // Limpia resultados
   };
+
+  // const handleResultClick = async (video) => {
+  //   setLoading(true);
+
+  //   // Si hay una API, aquí la llamas...
+  //   await new Promise((res) => setTimeout(res, 1200));
+
+  //   // Muestra el video seleccionado en Videos
+  //   setVideos([video]);
+
+  //   setLoading(false);
+  // };
 
   return (
     <div className="search-wrapper" ref={wrapperRef}>
@@ -45,6 +62,7 @@ export const SearchBar = ({ onSearch, searchResults = [], onResultClick }) => {
           placeholder="Buscar videos..."
           className="search-bar__input"
         />
+
         <img
           src={SearchIcon}
           alt="search"
@@ -56,11 +74,35 @@ export const SearchBar = ({ onSearch, searchResults = [], onResultClick }) => {
           }}
         />
       </form>
+
       {searchResults.length > 0 && term && (
         <ul className="search-results-dropdown">
           {searchResults.map((video) => (
-            <li key={video.id} onClick={() => handleResultClick(video)}>
+            <li
+              key={video.id}
+              onClick={() => handleResultClick(video)}
+              className={`search-result-item ${
+                loadingVideoId === video.video.videoId ? "loading" : ""
+              }`}
+              style={{
+                position: "relative",
+                opacity: loadingVideoId === video.video.videoId ? 0.6 : 1,
+                pointerEvents: loading ? "none" : "auto",
+              }}
+            >
               {video.title}
+              {loadingVideoId === video.video.videoId && (
+                <div
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                  }}
+                >
+                  <div className="mini-spinner"></div>
+                </div>
+              )}
             </li>
           ))}
         </ul>

@@ -15,6 +15,9 @@
 @import url("./blocks/aboutMe.css");
 @import url("./blocks/editProfile.css");
 @import url("./blocks/playlistModal.css");
+@import url("./blocks/editAvatar.css");
+@import url("./blocks/preloader.css");
+@import url("./blocks/videoPreloader.css");
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
