@@ -10,14 +10,16 @@ export const NavBar = () => {
       <nav className="navbar">
         <ul className="navbar__list">
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink className="navbar__link-home" to="/">
+              Home
+            </NavLink>
           </li>
           <li>
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
-                `navbar__link${isActive ? " navbar__link--active" : ""}${
-                  !currentUser ? " navbar__link--disabled" : ""
+                `navbar__link${isActive ? " navbar__link-active" : ""}${
+                  !currentUser ? " navbar__link-disabled" : ""
                 }`
               }
             >
@@ -28,8 +30,8 @@ export const NavBar = () => {
             <NavLink
               to="/reviews"
               className={({ isActive }) =>
-                `navbar__link${isActive ? " navbar__link--active" : ""}${
-                  !currentUser ? " navbar__link--disabled" : ""
+                `navbar__link${isActive ? " navbar__link-active" : ""}${
+                  !currentUser ? " navbar__link-disabled" : ""
                 }`
               }
             >
@@ -40,8 +42,8 @@ export const NavBar = () => {
             <NavLink
               to="/aboutMe"
               className={({ isActive }) =>
-                `navbar__link${isActive ? " navbar__link--active" : ""}${
-                  !currentUser ? " navbar__link--disabled" : ""
+                `navbar__link${isActive ? " navbar__link-active" : ""}${
+                  !currentUser ? " navbar__link-disabled" : ""
                 }`
               }
             >

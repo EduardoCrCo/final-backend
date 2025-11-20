@@ -1,6 +1,7 @@
 .videos__container {
   padding-top: 4em;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -14,19 +15,6 @@
   object-fit: cover;
 }
 
-.grid-video {
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 10px;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
 .videos__grid-wrapper {
   max-width: 100%;
   max-height: 100%;
@@ -35,46 +23,192 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 12px;
 }
 
-.videos__list {
-  list-style-type: none;
-  padding: 20px;
-  margin: 0;
-  gap: 2em;
+.buttons {
+  position: absolute;
+  top: 12px;
+  right: 10px;
   display: flex;
   flex-direction: column;
-  max-height: 70vh;
-  /* overflow-y: auto; */
-  width: 300px;
+  align-items: center;
+}
+.videos__save-button {
+  background-color: rgba(25, 118, 210, 0);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+.videos__save-button.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+.videos__save-button.enabled:hover {
+  opacity: 0.5;
+}
+.videos__save-button.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.videos__save-button {
+  background-color: transparent;
+  transition: 0.3s;
+}
+
+.videos__save-button.saved {
+  background-color: #22c55e !important; /* Verde Tailwind: bg-green-500 */
+  border: 2px solid #16a34a;
+}
+
+.videos__save-button.saved:hover {
+  background-color: #16a34a !important; /* Verde más oscuro al pasar el mouse */
+  border: 2px solid #15803d;
+}
+.videos__delete-btn {
+  margin-top: 4px;
+  background-color: rgba(25, 118, 210, 0);
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+.videos__delete-btn.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+.videos__delete-btn.enabled:hover {
+  opacity: 0.5;
+}
+.videos__delete-btn.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.videos__thumbnail {
+  width: 100%;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
 .videos__title {
   font-size: 1.2em;
   font-weight: bold;
-  color: #fff;
-  margin: 10px 0;
-  text-align: start;
+  color: #000;
+  margin: 8px 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.videos__channel-name {
+  font-size: 13px;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.videos__delete-btn {
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 8px;
-  color: #fff;
-  border: none;
+}
+
+.videos__channel-link {
+  font-size: 13px;
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.videos__save-like-trash-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.videos__like-button {
+  margin-top: 8px;
+  background-color: rgba(25, 118, 210, 0);
   border-radius: 6px;
   padding: 6px 12px;
+  cursor: pointer;
 }
-
-.videos__delete-btn.enabled {
-  background: #e74c3c;
+.videos__like-button.enabled {
   cursor: pointer;
   opacity: 1;
 }
 
-.videos__delete-btn.disabled {
-  background: #ccc;
+.videos__like-button.enabled:hover {
+  opacity: 0.5;
+}
+.videos__like-button.disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+/* Estilos para el estado de carga de videos */
+.videos__grid-wrapper.loading {
+  transition: opacity 0.3s ease;
+}
+
+.video-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: 12px;
+}
+
+.video-loading-overlay p {
+  margin-top: 10px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.video-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e3e3e3;
+  border-top: 3px solid #1976d2;
+  border-radius: 50%;
+  animation: videoSpin 1s linear infinite;
+}
+
+@keyframes videoSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.videos__channel-link.disabled {
+  color: #999;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* Estilos para el ícono de guardar */
+.videos__save-icon {
+  transition: all 0.3s ease;
+  width: 20px;
+  height: 20px;
+}
+
+.videos__save-button.saved .videos__save-icon {
+  filter: brightness(0) invert(1); /* Convierte el icono a blanco cuando está guardado */
 }
 
 /*

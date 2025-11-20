@@ -1,51 +1,78 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SearchBar } from "../Main/components/SearchBar/SearchBar";
 import { Videos } from "../Main/components/Videos/Videos";
-import { mockVideos } from "../../utils/utils";
+import { Preloader } from "../Main/components/Preloader/Preloader";
+import { toast } from "react-toastify";
 
-// import {VideosContext} from "../../context/VideosContext";
+export const Main = ({
+  youtubeQuery,
+  setYoutubeQuery,
+  youtubeResults,
+  selectedVideos,
+  setSelectedVideos,
+  onDeleteVideo,
+  onLikeVideo,
+  onCreateReview,
+  onAddToPlaylist,
+  youtubeInfo,
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [loadingVideoId, setLoadingVideoId] = useState(null);
 
-export const Main = () => {
-  const [videos, setVideos] = useState(() => {
-    const saved = localStorage.getItem("videos");
-    return saved ? JSON.parse(saved) : [];
-  });
+  // const handleResultClick = async (video) => {
+  //   setLoading(true);
+  //   setLoadingVideoId(video.video.videoId);
 
-  useEffect(() => {
-    localStorage.setItem("videos", JSON.stringify(videos));
-  }, [videos]);
+  //   try {
+  //     // Simular carga del video (aquí puedes agregar lógica adicional si es necesario)
+  //     await new Promise((resolve) => setTimeout(resolve, 800));
 
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearchResultActive, setIsSearchResultActive] = useState(false);
-  const handleSearch = (term) => {
-    if (!term.trim()) {
-      setSearchResults([]);
-      setIsSearchResultActive(false);
-      return;
+  //     // Agregar el video a selectedVideos
+  //     setSelectedVideos([video, ...selectedVideos]);
+  //   } catch (error) {
+  //     console.error("Error al cargar el video:", error);
+  //   } finally {
+  //     setLoading(false);
+  //     setLoadingVideoId(null);
+  //   }
+  // };
+
+  const handleResultClick = async (video) => {
+    setLoading(true);
+    setLoadingVideoId(video.video.videoId);
+
+    try {
+      // Simular carga
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      // ------------------------------------------
+      // 1️⃣ Detectar si el video YA existe
+      // ------------------------------------------
+      const exists = selectedVideos.some(
+        (v) => v.video.videoId === video.video.videoId
+      );
+
+      if (exists) {
+        toast.info("⚠️ Este video ya está en la lista.", {
+          position: "bottom-center",
+          autoClose: 2000,
+        });
+        return; // ⛔ no lo agregues de nuevo
+      }
+
+      // ------------------------------------------
+      // 2️⃣ Agregar correctamente
+      // ------------------------------------------
+      setSelectedVideos([video, ...selectedVideos]);
+    } catch (error) {
+      console.error("Error al cargar el video:", error);
+    } finally {
+      setLoading(false);
+      setLoadingVideoId(null);
     }
-    const results = mockVideos.filter((video) =>
-      video.title.toLowerCase().includes(term.toLowerCase())
-    );
-    setSearchResults(results);
-    setIsPopupOpen(results.length > 0);
-  };
-
-  const handleAddVideos = (video) => {
-    //evitamos duplicados
-    if (!videos.find((v) => v.id === video.id)) {
-      setVideos([video, ...videos]);
-    }
-    setSearchResults([]); //limpiamos resultados
-    setIsPopupOpen(false); //cerramos el popup
-  };
-
-  // Eliminar video por id
-  const handleDeleteVideo = (id) => {
-    setVideos((prev) => prev.filter((video) => video.id !== id));
   };
 
   return (
-    // <VideosContext.Provider value={{ videos, setVideos }}>
     <main className="main-content">
       <h1 className="main-content__title">Explora el mundo desde el aire</h1>
       <h3 className="main-content__subtitle">
@@ -53,16 +80,45 @@ export const Main = () => {
       </h3>
       <section className="search-bar__container">
         <SearchBar
-          onSearch={handleSearch}
-          searchResults={searchResults}
-          onResultClick={handleAddVideos}
+          onSearch={setYoutubeQuery}
+          searchResults={youtubeResults}
+          onResultClick={handleResultClick}
+          loading={loading}
+          loadingVideoId={loadingVideoId}
         />
       </section>
 
       <section className="videos__container">
-        <Videos videos={videos} onDelete={handleDeleteVideo} />
+        {/* <span
+          style={{
+            fontSize: 13,
+            color: "#666",
+            marginLeft: 8,
+            display: "block",
+            marginBottom: 8,
+          }}
+        >
+          Mostrando resultados para: <b>{youtubeQuery}</b>
+        </span> */}
+
+        {/* Mostrar preloader cuando se está cargando un video */}
+        {loading && (
+          <div style={{ textAlign: "center", margin: "20px 0" }}>
+            <Preloader message="Cargando video seleccionado..." />
+          </div>
+        )}
+
+        <Videos
+          videos={selectedVideos}
+          onDelete={onDeleteVideo}
+          onLiked={onLikeVideo}
+          onCreateReview={onCreateReview}
+          onAddToPlaylist={onAddToPlaylist}
+          youtubeInfo={youtubeInfo}
+          loading={loading}
+          loadingVideoId={loadingVideoId}
+        />
       </section>
     </main>
-    // </VideosContext.Provider>
   );
 };

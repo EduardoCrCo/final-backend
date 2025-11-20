@@ -1,5 +1,3 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, Metric, Text, Flex } from "@tremor/react";
@@ -49,37 +47,5 @@ export const CardDashboard = () => {
         <ProgressBar value={62} />
       </div>
     </Card>
-
-    // <>
-    //   <div
-    //     className="progress-bar-container"
-    //     style={{
-    //       width: "100%",
-    //       background: "#eee",
-    //       borderRadius: "8px",
-    //       height: "20px",
-    //     }}
-    //   >
-    //     <div
-    //       className="progress-bar"
-    //       style={{
-    //         width: "70%", // Cambia este valor según el progreso (por ejemplo, `${progress}%`)
-    //         background: "linear-gradient(90deg, #4f46e5, #06b6d4)",
-    //         height: "100%",
-    //         borderRadius: "8px",
-    //         transition: "width 0.3s",
-    //       }}
-    //     />
-    //   </div>
-    // </>
-    // <div className="card-dashboard">
-    //   <Card className="mx-auto mt-8 p-4">
-    //     <h1 className="text-2xl font-bold mb-2">¡Tremor funcionando!</h1>
-    //     <p className="text-white-700">Este es un Card de Tremor.</p>
-    //   </Card>
-    //   <Link to="/reviews" className="block mt-4 text-blue-500 underline">
-    //     Go to Reviews
-    //   </Link>
-    // </div>
   );
 };

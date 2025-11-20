@@ -30,6 +30,7 @@ import {
 import { useOnWindowResize } from "../ChartDataTime/useOnWindowsResize"
 import { cx } from "../../../lib/utils"
 
+
 //#region Legend
 
 interface LegendItemProps {
@@ -377,7 +378,7 @@ type PayloadItem = {
 interface ChartTooltipProps {
   active: boolean | undefined
   payload: PayloadItem[]
-  label: string
+  label?: string | number | undefined
   valueFormatter: (value: number) => string
 }
 
@@ -600,11 +601,12 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
     return (
       <div
         ref={ref}
-        className={cx("h-80 w-full", className)}
+        className={cx("w-full h-80", className)}
         tremor-id="tremor-raw"
+        style={{ minWidth: 320, minHeight: 200 }}
         {...other}
       >
-        <ResponsiveContainer>
+        <ResponsiveContainer width="100%" height={300} >
           <RechartsLineChart
             data={data}
             onClick={
@@ -645,9 +647,9 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
               stroke=""
               className={cx(
                 // base
-                "text-xs",
+                "text-sm",
                 // text fill
-                "fill-gray-500 dark:fill-gray-500",
+                "fill-gray-570 dark:fill-gray-300",
               )}
               tickLine={false}
               axisLine={false}
@@ -675,9 +677,9 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
               stroke=""
               className={cx(
                 // base
-                "text-xs",
+                "text-sm",
                 // text fill
-                "fill-gray-500 dark:fill-gray-500",
+                "fill-gray-700 dark:fill-gray-300",
               )}
               tickFormatter={valueFormatter}
               allowDecimals={allowDecimals}
@@ -720,9 +722,10 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
                   (active !== prevActiveRef.current ||
                     label !== prevLabelRef.current)
                 ) {
-                  tooltipCallback({ active, payload: cleanPayload, label })
+                  const labelString = String(label || '')
+                  tooltipCallback({ active, payload: cleanPayload, label: labelString })
                   prevActiveRef.current = active
-                  prevLabelRef.current = label
+                  prevLabelRef.current = labelString
                 }
 
                 return showTooltip && active ? (
@@ -736,7 +739,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
                     <ChartTooltip
                       active={active}
                       payload={cleanPayload}
-                      label={label}
+                      label={label} 
                       valueFormatter={valueFormatter}
                     />
                   )
