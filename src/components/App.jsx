@@ -97,23 +97,50 @@ export const App = () => {
   const [popupType, setPopupType] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipMessage, setTooltipMessage] = useState("");
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(() => {
     // Try to get user info from API (if token is valid)
-    if (!currentUser || !currentUser._id) {
-      api
-        .getUserInfo()
-        .then((user) => {
-          setCurrentUser(user);
-          localStorage.setItem("currentUser", JSON.stringify(user));
-        })
-        .catch((err) => {
-          // fallback to localStorage if API fails
-          const user = localStorage.getItem("currentUser");
-          setCurrentUser(user ? JSON.parse(user) : null);
-        });
-    }
+    const loadUser = async () => {
+      try {
+        const savedUser = localStorage.getItem("currentUser");
+        const token = localStorage.getItem("jwt");
+
+        if (token) {
+          // Si hay token, intentar obtener info del backend
+          try {
+            const user = await api.getUserInfo();
+            const mergedUser = { ...user, token };
+            setCurrentUser(mergedUser);
+            localStorage.setItem("currentUser", JSON.stringify(mergedUser));
+          } catch (apiError) {
+            console.error("API error:", apiError);
+            // Si falla API pero hay usuario guardado, usarlo
+            if (savedUser) {
+              setCurrentUser(JSON.parse(savedUser));
+            } else {
+              setCurrentUser(null);
+            }
+          }
+        } else if (savedUser) {
+          // Sin token pero con usuario guardado
+          try {
+            setCurrentUser(JSON.parse(savedUser));
+          } catch (parseErr) {
+            console.error("Error parsing saved user:", parseErr);
+            setCurrentUser(null);
+          }
+        } else {
+          // Sin token ni usuario
+          setCurrentUser(null);
+        }
+      } catch (err) {
+        console.error("Error loading user:", err);
+        setCurrentUser(null);
+      }
+    };
+
+    loadUser();
   }, []);
 
   const handleRegistration = (name, email, password) => {
@@ -138,11 +165,30 @@ export const App = () => {
   ) => {
     try {
       const data = await auth.authorize({ email, password });
+      // if (data && data.token) {
+      //   localStorage.setItem("jwt", data.token);
+      //   const user = await api.getUserInfo();
+      //   setCurrentUser(user);
+      //   localStorage.setItem("currentUser", JSON.stringify(user));
       if (data && data.token) {
         localStorage.setItem("jwt", data.token);
+
+        // Pedimos la información del usuario con el token
         const user = await api.getUserInfo();
-        setCurrentUser(user);
-        localStorage.setItem("currentUser", JSON.stringify(user));
+
+        const mergedUser = {
+          ...user,
+          token: data.token, // 🔥 GUARDA EL TOKEN DENTRO DEL USUARIO
+        };
+
+        setCurrentUser(mergedUser);
+        localStorage.setItem("currentUser", JSON.stringify(mergedUser));
+
+        // 🔧 Forzar actualización de playlists después del login
+        setTimeout(() => {
+          window.dispatchEvent(new Event("user-logged-in"));
+        }, 100);
+
         if (typeof setPopupType === "function") setPopupType(null);
         if (typeof showInfoTooltip === "function")
           showInfoTooltip("¡Inicio de sesión exitoso!");

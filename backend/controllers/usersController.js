@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/usersModel.js";
+import UserModel from "../models/usersModel.js";
 
 // Función para generar JWT token
 const generateToken = (userId) => {
@@ -16,7 +16,7 @@ export const signup = async (req, res, next) => {
     const { name, email, password /*about*/ } = req.body;
 
     // Verificar si el usuario ya existe
-    const existingUser = await User.findOne({ email });
+    const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(409).json({
         message: "El usuario con este email ya existe",
@@ -24,7 +24,7 @@ export const signup = async (req, res, next) => {
     }
 
     // Crear nuevo usuario
-    const user = new User({
+    const user = new UserModel({
       name: name || "Usuario",
       email,
       password,
@@ -71,7 +71,7 @@ export const signin = async (req, res, next) => {
     }
 
     // Buscar usuario por credenciales
-    const user = await User.findUserByCredentials(email, password);
+    const user = await UserModel.findUserByCredentials(email, password);
 
     // Generar token
     const token = generateToken(user._id);
@@ -99,7 +99,7 @@ export const signin = async (req, res, next) => {
 // Obtener información del usuario actual
 export const getCurrentUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await UserModel.findById(req.user.userId);
 
     if (!user || !user.isActive) {
       return res.status(404).json({
@@ -126,7 +126,7 @@ export const updateProfile = async (req, res, next) => {
   try {
     const { name, about } = req.body;
 
-    const user = await User.findByIdAndUpdate(
+    const user = await UserModel.findByIdAndUpdate(
       req.user.userId,
       {
         ...(name && { name }),
@@ -173,7 +173,7 @@ export const updateAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
 
-    const user = await User.findByIdAndUpdate(
+    const user = await UserModel.findByIdAndUpdate(
       req.user.userId,
       {
         avatar,
@@ -217,7 +217,7 @@ export const updateAvatar = async (req, res, next) => {
 // Obtener todos los usuarios (para admin o funciones especiales)
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find({ isActive: true })
+    const users = await UserModel.find({ isActive: true })
       .select("name about avatar email createdAt lastLogin")
       .sort({ createdAt: -1 });
 
@@ -234,7 +234,7 @@ export const getAllUsers = async (req, res, next) => {
 // Desactivar cuenta (soft delete)
 export const deactivateAccount = async (req, res, next) => {
   try {
-    const user = await User.findByIdAndUpdate(
+    const user = await UserModel.findByIdAndUpdate(
       req.user.userId,
       {
         isActive: false,

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SearchBar } from "../Main/components/SearchBar/SearchBar";
 import { Videos } from "../Main/components/Videos/Videos";
 import { Preloader } from "../Main/components/Preloader/Preloader";
+import { toast } from "react-toastify";
 
 export const Main = ({
   youtubeQuery,
@@ -18,15 +19,50 @@ export const Main = ({
   const [loading, setLoading] = useState(false);
   const [loadingVideoId, setLoadingVideoId] = useState(null);
 
+  // const handleResultClick = async (video) => {
+  //   setLoading(true);
+  //   setLoadingVideoId(video.video.videoId);
+
+  //   try {
+  //     // Simular carga del video (aquí puedes agregar lógica adicional si es necesario)
+  //     await new Promise((resolve) => setTimeout(resolve, 800));
+
+  //     // Agregar el video a selectedVideos
+  //     setSelectedVideos([video, ...selectedVideos]);
+  //   } catch (error) {
+  //     console.error("Error al cargar el video:", error);
+  //   } finally {
+  //     setLoading(false);
+  //     setLoadingVideoId(null);
+  //   }
+  // };
+
   const handleResultClick = async (video) => {
     setLoading(true);
     setLoadingVideoId(video.video.videoId);
 
     try {
-      // Simular carga del video (aquí puedes agregar lógica adicional si es necesario)
+      // Simular carga
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // Agregar el video a selectedVideos
+      // ------------------------------------------
+      // 1️⃣ Detectar si el video YA existe
+      // ------------------------------------------
+      const exists = selectedVideos.some(
+        (v) => v.video.videoId === video.video.videoId
+      );
+
+      if (exists) {
+        toast.info("⚠️ Este video ya está en la lista.", {
+          position: "bottom-center",
+          autoClose: 2000,
+        });
+        return; // ⛔ no lo agregues de nuevo
+      }
+
+      // ------------------------------------------
+      // 2️⃣ Agregar correctamente
+      // ------------------------------------------
       setSelectedVideos([video, ...selectedVideos]);
     } catch (error) {
       console.error("Error al cargar el video:", error);

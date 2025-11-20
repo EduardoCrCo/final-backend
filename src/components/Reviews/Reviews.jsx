@@ -3,16 +3,20 @@ import { CurrentUserContext } from "../../context/CurrentUserContext";
 import { ReviewForm } from "../Reviews/ReviewForm/ReviewForm";
 import { ReviewsList } from "./ReviewsList/ReviewsList";
 import { Link } from "react-router-dom";
+import { useReviews } from "../../hooks/useReviews";
 
 export const Reviews = () => {
   const { currentUser } = useContext(CurrentUserContext);
-  const [reviews, setReviews] = useState([]);
+  const {
+    reviews,
+    loading,
+    error,
+    createReview,
+    deleteReview: deleteReviewApi,
+  } = useReviews();
   const [selectedVideo, setSelectedVideo] = useState(null);
 
   useEffect(() => {
-    const savedReviews = JSON.parse(localStorage.getItem("videoReviews")) || [];
-    setReviews(savedReviews);
-
     // Verificar si hay un video seleccionado para review
     const videoForReview = localStorage.getItem("selectedVideoForReview");
     if (videoForReview) {
@@ -23,45 +27,69 @@ export const Reviews = () => {
     }
   }, []);
 
-  const handleAddReview = (review) => {
-    // Debug: ver la estructura del selectedVideo
-    console.log("selectedVideo:", selectedVideo);
-
-    // Obtener thumbnail de diferentes formas posibles
-    let thumbnail = null;
-    if (selectedVideo?.thumbnails) {
-      if (Array.isArray(selectedVideo.thumbnails)) {
-        thumbnail =
-          selectedVideo.thumbnails[0]?.url || selectedVideo.thumbnails[0];
-      } else if (selectedVideo.thumbnails.default) {
-        thumbnail = selectedVideo.thumbnails.default.url;
-      } else if (selectedVideo.thumbnails.medium) {
-        thumbnail = selectedVideo.thumbnails.medium.url;
+  const handleAddReview = async (reviewData) => {
+    try {
+      // Obtener thumbnail de diferentes formas posibles
+      let thumbnail = null;
+      if (selectedVideo?.thumbnails) {
+        if (Array.isArray(selectedVideo.thumbnails)) {
+          thumbnail =
+            selectedVideo.thumbnails[0]?.url || selectedVideo.thumbnails[0];
+        } else if (selectedVideo.thumbnails.default) {
+          thumbnail = selectedVideo.thumbnails.default.url;
+        } else if (selectedVideo.thumbnails.medium) {
+          thumbnail = selectedVideo.thumbnails.medium.url;
+        }
       }
+
+      const reviewPayload = {
+        videoId: selectedVideo?.videoId || "temp-video-id", // Temporal para prueba
+        videoTitle: selectedVideo?.title || "Video sin título",
+        videoThumbnail: thumbnail || "",
+        channelName:
+          selectedVideo?.channelName || selectedVideo?.channelTitle || "",
+        rating: reviewData.rating,
+        title: reviewData.title,
+        content: reviewData.content || reviewData.text, // Compatibilidad con formato anterior
+        tags: reviewData.tags || [],
+        isPublic:
+          reviewData.isPublic !== undefined ? reviewData.isPublic : true,
+      };
+
+      console.log("📤 Enviando review payload:", reviewPayload);
+      await createReview(reviewPayload);
+      setSelectedVideo(null); // Cerrar el formulario después de enviar
+    } catch (error) {
+      console.error("Error creating review:", error);
     }
-
-    const newReview = {
-      id: Date.now(),
-      text: review, // El review viene como string desde ReviewForm
-      videoId: selectedVideo?.videoId,
-      videoTitle: selectedVideo?.title,
-      videoThumbnail: thumbnail,
-      userId: currentUser?.id,
-      userName: currentUser?.name,
-      createdAt: new Date().toISOString(),
-    };
-
-    const updatedReviews = [...reviews, newReview];
-    localStorage.setItem("videoReviews", JSON.stringify(updatedReviews));
-    setReviews(updatedReviews);
-    setSelectedVideo(null); // Cerrar el formulario después de enviar
   };
 
-  const handleDeleteReview = (reviewId) => {
-    const updatedReviews = reviews.filter((review) => review.id !== reviewId);
-    localStorage.setItem("videoReviews", JSON.stringify(updatedReviews));
-    setReviews(updatedReviews);
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await deleteReviewApi(reviewId);
+    } catch (error) {
+      console.error("Error deleting review:", error);
+    }
   };
+
+  // Debug logs
+  console.log("🔍 Reviews component state:", {
+    reviewsCount: reviews.length,
+    loading,
+    error,
+    currentUser: currentUser ? "logged in" : "not logged in",
+  });
+  console.log("📋 Reviews data:", reviews);
+
+  if (loading) {
+    return (
+      <div className="reviews">
+        <div className="reviews__loading">
+          <p>Cargando reviews...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="reviews">
@@ -76,6 +104,12 @@ export const Reviews = () => {
           </button>
         )}
       </div>
+
+      {error && (
+        <div className="reviews__error">
+          <p>Error: {error}</p>
+        </div>
+      )}
 
       <ReviewsList
         reviews={reviews}

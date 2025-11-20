@@ -9,6 +9,10 @@ import { errors } from "celebrate";
 // Importar rutas
 import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
+import videoRoutes from "./routes/videosRoutes.js";
+import playlistRoutes from "./routes/playlistRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import publicReviewRoutes from "./routes/publicReviewRoutes.js";
 
 // Importar middleware
 import auth from "./middleware/auth.js";
@@ -67,12 +71,16 @@ mongoose
 // app.use("/signup", authRoutes);
 // app.use("/signin", authRoutes);
 app.use("/", authRoutes);
+app.use("/videos", videoRoutes);
+app.use("/reviews/public", publicReviewRoutes);
 
 // Middleware de autenticación para rutas protegidas
 app.use(auth);
 
 // Rutas protegidas
 app.use("/users", userRoutes);
+app.use("/playlists", playlistRoutes);
+app.use("/reviews", reviewRoutes);
 
 // Ruta de prueba
 app.get("/", (req, res) => {

@@ -52,6 +52,10 @@ export const SearchBar = ({
   //   setLoading(false);
   // };
 
+  const uniqueResults = Array.from(
+    new Map(searchResults.map((v) => [v.video.videoId, v])).values()
+  );
+
   return (
     <div className="search-wrapper" ref={wrapperRef}>
       <form onSubmit={handleSubmit} className="search-bar__form">
@@ -77,12 +81,12 @@ export const SearchBar = ({
 
       {searchResults.length > 0 && term && (
         <ul className="search-results-dropdown">
-          {searchResults.map((video) => (
+          {uniqueResults.map((video) => (
             <li
-              key={video.id}
+              key={video.video?.videoId}
               onClick={() => handleResultClick(video)}
               className={`search-result-item ${
-                loadingVideoId === video.video.videoId ? "loading" : ""
+                loadingVideoId === video.video?.videoId ? "loading" : ""
               }`}
               style={{
                 position: "relative",

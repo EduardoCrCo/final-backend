@@ -6,6 +6,7 @@ import activeLike from "../../../../images/activeLike.svg";
 import saveIcon from "../../../../images/saveIcon.png";
 import { PlaylistModal } from "../../../PlaylistModal/PlaylistModal";
 import { VideoPreloader } from "../VideoPreloader/VideoPreloader";
+//import { set } from "mongoose";
 
 export const Videos = ({
   videos = [],
@@ -17,6 +18,7 @@ export const Videos = ({
 }) => {
   const { currentUser } = useContext(CurrentUserContext);
   const [playlists, setPlaylists] = useState([]);
+  const [playlistsLoading, setPlaylistsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoLoadingStates, setVideoLoadingStates] = useState({});
@@ -24,21 +26,14 @@ export const Videos = ({
   const [currentLoadingVideo, setCurrentLoadingVideo] = useState(null);
 
   // Cargar playlists desde localStorage al montar
-  useEffect(() => {
-    const savedPlaylists =
-      JSON.parse(localStorage.getItem("userPlaylists")) || [];
-    setPlaylists(savedPlaylists);
-  }, []);
+  // useEffect(() => {
+  //   const savedPlaylists =
+  //     JSON.parse(localStorage.getItem("userPlaylists")) || [];
+  //   setPlaylists(savedPlaylists);
+  // }, []);
+  // ⚡ Carga de playlists centralizada - movida abajo
 
-  // Escuchar cambios de playlists (por si se actualizan desde otra parte)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const updated = JSON.parse(localStorage.getItem("userPlaylists")) || [];
-      setPlaylists(updated);
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  // ⚡ localStorage listener eliminado - ahora usamos solo backend
 
   const openModal = (video) => {
     setSelectedVideo(video);
@@ -50,10 +45,38 @@ export const Videos = ({
     setSelectedVideo(null);
   };
 
-  const isVideoInPlaylists = (videoId) => {
-    return playlists.some((playlist) =>
-      playlist.videos.some((video) => video.videoId === videoId)
-    );
+  // Helper function para extraer videoId de thumbnails (igual que en backend)
+  const extractVideoId = (video) => {
+    if (video.videoId) return video.videoId;
+    if (video.youtubeId) return video.youtubeId;
+
+    // Extraer de thumbnails si no tiene videoId directo
+    if (video.thumbnails && video.thumbnails.length > 0) {
+      const thumbnailUrl = video.thumbnails[0].url;
+      const match = thumbnailUrl.match(/\/vi\/([^/]+)\//);
+      return match ? match[1] : null;
+    }
+
+    return null;
+  };
+
+  const isVideoInPlaylists = (youtubeId) => {
+    if (!Array.isArray(playlists)) return false;
+
+    return playlists.some((playlist) => {
+      if (!Array.isArray(playlist.videos)) return false;
+
+      return playlist.videos.some((video) => {
+        const playlistVideoId = extractVideoId(video);
+        const matches = playlistVideoId === youtubeId;
+
+        if (matches) {
+          console.log(`✅ Video ${youtubeId} encontrado en playlist!`);
+        }
+
+        return matches;
+      });
+    });
   };
 
   const handleVideoClick = async (videoId, videoTitle) => {
@@ -87,18 +110,100 @@ export const Videos = ({
     setCurrentLoadingVideo(null);
   };
 
+  // const loadUserPlaylists = async () => {
+  //   try {
+  //     const res = await fetch("http://localhost:8080/playlists", {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
+  //     const data = await res.json();
+  //     setPlaylists(data);
+  //   } catch (err) {
+  //     console.error("Error cargando playlists:", err);
+  //   }
+  // };
+  // ⚡ Función centralizada para cargar playlists con loading state
+  const loadUserPlaylists = async () => {
+    try {
+      // Verificar si hay usuario y token
+      const token = currentUser?.token || localStorage.getItem("jwt");
+      if (!currentUser || !token) {
+        console.log("No user or token, clearing playlists");
+        setPlaylists([]);
+        setPlaylistsLoading(false);
+        return;
+      }
+
+      setPlaylistsLoading(true);
+      const response = await fetch("http://localhost:8080/playlists", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error(
+          "Error response:",
+          response.status,
+          await response.text()
+        );
+        setPlaylists([]);
+        return;
+      }
+
+      const data = await response.json();
+      setPlaylists(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error cargando playlists:", err);
+      setPlaylists([]);
+    } finally {
+      setPlaylistsLoading(false);
+    }
+  };
+
+  // ⚡ Cargar playlists cuando cambie el usuario y tenga token (consolidado)
+  useEffect(() => {
+    // Solo cargar si currentUser está completamente cargado y tiene token
+    if (currentUser !== undefined) {
+      loadUserPlaylists();
+    }
+  }, [currentUser?.token, currentUser?.name]); // Dependencia más específica
+
+  // ⚡ Escuchar eventos de login para recargar playlists
+  useEffect(() => {
+    const handleUserLoggedIn = () => {
+      console.log("User logged in event received, reloading playlists");
+      if (currentUser?.token) {
+        loadUserPlaylists();
+      }
+    };
+
+    window.addEventListener("user-logged-in", handleUserLoggedIn);
+    return () =>
+      window.removeEventListener("user-logged-in", handleUserLoggedIn);
+  }, [currentUser?.token]);
+
+  //Crear lista sin duplicados
+  const uniqueVideos = Array.from(
+    new Map(videos.map((v) => [v.video.videoId, v])).values()
+  );
+
   return (
     <div className="videos__grid">
-      {videos.length > 0 ? (
-        videos.map((item) => {
+      {uniqueVideos.length > 0 ? (
+        uniqueVideos.map((item, index) => {
           const alreadySaved = isVideoInPlaylists(item.video.videoId);
+
           const isVideoLoading =
             videoLoadingStates[item.video.videoId] ||
             loadingVideoId === item.video.videoId;
 
           return (
             <div
-              key={item.video.videoId}
+              // key={item.video.videoId}
+              key={`${item.video.videoId}-${index}`}
               className={`videos__grid-wrapper ${
                 isVideoLoading ? "loading" : ""
               }`}
@@ -121,7 +226,21 @@ export const Videos = ({
                   className={`videos__save-button ${
                     currentUser ? "enabled" : "disabled"
                   } ${alreadySaved ? "saved" : ""}`}
-                  onClick={() => openModal(item.video)}
+                  onClick={() =>
+                    currentUser &&
+                    openModal({
+                      ...item.video,
+                      videoId: item.video.videoId || item.id,
+                    })
+                  }
+                  disabled={!currentUser}
+                  title={
+                    currentUser
+                      ? alreadySaved
+                        ? "Video ya guardado"
+                        : "Agregar a playlist"
+                      : "Inicia sesión para guardar videos"
+                  }
                 >
                   <img
                     className="videos__save-icon"
@@ -227,7 +346,9 @@ export const Videos = ({
         video={selectedVideo}
         onClose={closeModal}
         playlists={playlists}
-        setPlaylists={setPlaylists}
+        playlistsLoading={playlistsLoading}
+        loadUserPlaylists={loadUserPlaylists}
+        currentUser={currentUser}
       />
 
       {/* VideoPreloader para mostrar progreso de carga */}
