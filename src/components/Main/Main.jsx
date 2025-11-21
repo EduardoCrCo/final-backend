@@ -5,7 +5,6 @@ import { Preloader } from "../Main/components/Preloader/Preloader";
 import { toast } from "react-toastify";
 
 export const Main = ({
-  youtubeQuery,
   setYoutubeQuery,
   youtubeResults,
   selectedVideos,
@@ -19,32 +18,11 @@ export const Main = ({
   const [loading, setLoading] = useState(false);
   const [loadingVideoId, setLoadingVideoId] = useState(null);
 
-  // const handleResultClick = async (video) => {
-  //   setLoading(true);
-  //   setLoadingVideoId(video.video.videoId);
-
-  //   try {
-  //     // Simular carga del video (aquí puedes agregar lógica adicional si es necesario)
-  //     await new Promise((resolve) => setTimeout(resolve, 800));
-
-  //     // Agregar el video a selectedVideos
-  //     setSelectedVideos([video, ...selectedVideos]);
-  //   } catch (error) {
-  //     console.error("Error al cargar el video:", error);
-  //   } finally {
-  //     setLoading(false);
-  //     setLoadingVideoId(null);
-  //   }
-  // };
-
   const handleResultClick = async (video) => {
     setLoading(true);
     setLoadingVideoId(video.video.videoId);
 
     try {
-      // Simular carga
-      await new Promise((resolve) => setTimeout(resolve, 800));
-
       // ------------------------------------------
       // 1️⃣ Detectar si el video YA existe
       // ------------------------------------------
@@ -61,11 +39,39 @@ export const Main = ({
       }
 
       // ------------------------------------------
-      // 2️⃣ Agregar correctamente
+      // 2️⃣ Guardar en backend si hay usuario autenticado
       // ------------------------------------------
-      setSelectedVideos([video, ...selectedVideos]);
+      const token = localStorage.getItem("jwt");
+      if (token) {
+        console.log("💾 Frontend: Saving selected video to backend");
+
+        const response = await fetch("http://localhost:8080/videos/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ videoData: video.video }),
+        });
+
+        if (response.ok) {
+          const savedVideo = await response.json();
+          console.log("✅ Frontend: Video saved to backend:", savedVideo);
+          setSelectedVideos([savedVideo, ...selectedVideos]);
+        } else {
+          throw new Error("Error al guardar video en backend");
+        }
+      } else {
+        // Si no hay usuario, solo agregar localmente
+        console.log("👤 Frontend: Adding video locally (no user)");
+        setSelectedVideos([video, ...selectedVideos]);
+      }
     } catch (error) {
-      console.error("Error al cargar el video:", error);
+      console.error("❌ Frontend: Error saving video:", error);
+      toast.error("Error al agregar el video", {
+        position: "bottom-center",
+        autoClose: 2000,
+      });
     } finally {
       setLoading(false);
       setLoadingVideoId(null);
@@ -89,18 +95,6 @@ export const Main = ({
       </section>
 
       <section className="videos__container">
-        {/* <span
-          style={{
-            fontSize: 13,
-            color: "#666",
-            marginLeft: 8,
-            display: "block",
-            marginBottom: 8,
-          }}
-        >
-          Mostrando resultados para: <b>{youtubeQuery}</b>
-        </span> */}
-
         {/* Mostrar preloader cuando se está cargando un video */}
         {loading && (
           <div style={{ textAlign: "center", margin: "20px 0" }}>

@@ -33,22 +33,20 @@ export const App = () => {
   useEffect(() => {
     setYoutubeResults([]);
     if (!youtubeQuery.trim() || youtubeQuery.length < 2) return;
+
+    console.log("🔍 App.jsx: Searching for:", youtubeQuery);
+
     searchYouTube(youtubeQuery, 12)
       .then((results) => {
-        const ytResults = (results || []).map((item) => ({
-          id: item.videoId,
-          title: item.title,
-          type: "youtube",
-          video: {
-            videoId: item.videoId,
-            title: item.title,
-            thumbnails: item.thumbnails,
-            channelName: item.channelName,
-          },
-        }));
-        setYoutubeResults(ytResults);
+        console.log("📡 App.jsx: Received results:", results);
+
+        // El backend ya devuelve el formato correcto, solo usamos directamente
+        setYoutubeResults(results || []);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error("❌ App.jsx: Search error:", error);
+        setYoutubeResults([]);
+      });
   }, [youtubeQuery]);
 
   useEffect(() => {
@@ -59,12 +57,90 @@ export const App = () => {
     setSelectedVideos(selectedVideos.filter((v) => v.video.videoId !== id));
   };
 
-  const handleLikeVideo = (id) => {
-    setSelectedVideos(
-      selectedVideos.map((v) =>
-        v.video.videoId === id ? { ...v, liked: !v.liked } : v
-      )
-    );
+  const handleLikeVideo = async (videoId) => {
+    console.log("💖 Frontend: Toggling like for video:", videoId);
+
+    // Buscar el video en selectedVideos
+    const video = selectedVideos.find((v) => v.video.videoId === videoId);
+    if (!video) {
+      console.error("❌ Video not found in selectedVideos");
+      return;
+    }
+
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      toast.error("Debes estar logueado para dar like", {
+        position: "bottom-center",
+        autoClose: 2000,
+      });
+      return;
+    }
+
+    try {
+      // Primero buscar el video en BD por youtubeId
+      console.log(
+        "🔍 Frontend: Finding video in database by youtubeId:",
+        videoId
+      );
+
+      const findResponse = await fetch(
+        `http://localhost:8080/videos/find/${videoId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!findResponse.ok) {
+        throw new Error(`Video not found in database: ${findResponse.status}`);
+      }
+
+      const dbVideo = await findResponse.json();
+      console.log("📁 Frontend: Video found in DB:", dbVideo._id);
+
+      // Ahora hacer like usando el _id de MongoDB
+      const likeResponse = await fetch(
+        `http://localhost:8080/videos/${dbVideo._id}/like`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (likeResponse.ok) {
+        const updatedVideo = await likeResponse.json();
+        console.log("✅ Frontend: Like saved to backend:", updatedVideo);
+
+        // Actualizar el estado local
+        setSelectedVideos(
+          selectedVideos.map((v) =>
+            v.video.videoId === videoId ? { ...v, liked: !v.liked } : v
+          )
+        );
+
+        toast.success(
+          video.liked ? "Like removido" : "¡Video marcado como favorito!",
+          {
+            position: "bottom-center",
+            autoClose: 1500,
+          }
+        );
+      } else {
+        throw new Error(`Error en like: ${likeResponse.status}`);
+      }
+    } catch (error) {
+      console.error("❌ Frontend: Error handling like:", error);
+      toast.error("Error al procesar el like", {
+        position: "bottom-center",
+        autoClose: 2000,
+      });
+    }
   };
 
   const handleCreateReview = (video) => {

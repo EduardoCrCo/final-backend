@@ -40,18 +40,6 @@ export const SearchBar = ({
     onSearch(""); // Limpia resultados
   };
 
-  // const handleResultClick = async (video) => {
-  //   setLoading(true);
-
-  //   // Si hay una API, aquí la llamas...
-  //   await new Promise((res) => setTimeout(res, 1200));
-
-  //   // Muestra el video seleccionado en Videos
-  //   setVideos([video]);
-
-  //   setLoading(false);
-  // };
-
   const uniqueResults = Array.from(
     new Map(searchResults.map((v) => [v.video.videoId, v])).values()
   );

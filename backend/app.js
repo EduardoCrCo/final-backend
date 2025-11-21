@@ -72,6 +72,7 @@ mongoose
 // app.use("/signin", authRoutes);
 app.use("/", authRoutes);
 app.use("/videos", videoRoutes);
+app.use("/api/youtube", videoRoutes); // Ruta alternativa para compatibilidad
 app.use("/reviews/public", publicReviewRoutes);
 
 // Middleware de autenticación para rutas protegidas

@@ -25,16 +25,6 @@ export const Videos = ({
   const [showVideoPreloader, setShowVideoPreloader] = useState(false);
   const [currentLoadingVideo, setCurrentLoadingVideo] = useState(null);
 
-  // Cargar playlists desde localStorage al montar
-  // useEffect(() => {
-  //   const savedPlaylists =
-  //     JSON.parse(localStorage.getItem("userPlaylists")) || [];
-  //   setPlaylists(savedPlaylists);
-  // }, []);
-  // ⚡ Carga de playlists centralizada - movida abajo
-
-  // ⚡ localStorage listener eliminado - ahora usamos solo backend
-
   const openModal = (video) => {
     setSelectedVideo(video);
     setIsModalOpen(true);
@@ -110,20 +100,6 @@ export const Videos = ({
     setCurrentLoadingVideo(null);
   };
 
-  // const loadUserPlaylists = async () => {
-  //   try {
-  //     const res = await fetch("http://localhost:8080/playlists", {
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //     });
-  //     const data = await res.json();
-  //     setPlaylists(data);
-  //   } catch (err) {
-  //     console.error("Error cargando playlists:", err);
-  //   }
-  // };
-  // ⚡ Función centralizada para cargar playlists con loading state
   const loadUserPlaylists = async () => {
     try {
       // Verificar si hay usuario y token
