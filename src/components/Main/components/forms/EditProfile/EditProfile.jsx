@@ -22,7 +22,9 @@ export const EditProfile = ({ onClose }) => {
 
     if (typeof handleUpdateUser === "function") {
       try {
-        await handleUpdateUser({ name, about: currentUser?.about });
+        // ✅ Manejar about undefined como string vacío
+        const aboutValue = currentUser?.about || "";
+        await handleUpdateUser({ name, about: aboutValue });
         // console.log("✅ Perfil actualizado exitosamente");
         if (typeof onClose === "function") {
           onClose();

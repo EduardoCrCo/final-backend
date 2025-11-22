@@ -99,6 +99,11 @@ class Api {
     return this._makeRequest(`reviews/${reviewId}`, "DELETE");
   }
 
+  // Métodos para Videos
+  deleteVideo(youtubeId) {
+    return this._makeRequest(`videos/${youtubeId}`, "DELETE");
+  }
+
   getReviewStats() {
     return this._makeRequest("reviews/stats");
   }

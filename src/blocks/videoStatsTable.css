@@ -1,0 +1,367 @@
+/* VideoStatsTable Component Styles - BEM Methodology */
+.video-stats {
+  width: 100%;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 24px 0;
+}
+
+.video-stats__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.video-stats__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.video-stats__title::before {
+  content: "🎬";
+  font-size: 28px;
+}
+
+.video-stats__refresh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.video-stats__refresh:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.video-stats__refresh:active {
+  transform: translateY(0);
+}
+
+.video-stats__refresh--loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.video-stats__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.video-stats__error {
+  padding: 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  text-align: center;
+  font-weight: 500;
+}
+
+.video-stats__global {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.video-stats__global-item {
+  text-align: center;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.video-stats__global-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.video-stats__global-label {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.video-stats__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.video-stats__count {
+  font-weight: 500;
+}
+
+.video-stats__last-update {
+  font-style: italic;
+}
+
+.video-stats__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.video-stats__thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.video-stats__th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-stats__th:last-child {
+  border-right: none;
+}
+
+.video-stats__tbody {
+  background: white;
+}
+
+.video-stats__tr {
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.video-stats__tr:hover {
+  background: #f8fafc;
+  transform: scale(1.01);
+}
+
+.video-stats__tr:last-child {
+  border-bottom: none;
+}
+
+.video-stats__td {
+  padding: 16px 12px;
+  border-right: 1px solid #f3f4f6;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #374151;
+}
+
+.video-stats__td:last-child {
+  border-right: none;
+}
+
+.video-stats__video-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.video-stats__thumbnail {
+  width: 60px;
+  height: 45px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.video-stats__thumbnail--placeholder {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.video-stats__video-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.video-stats__video-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.video-stats__video-id {
+  font-size: 11px;
+  color: #9ca3af;
+  font-family: monospace;
+  margin: 0;
+}
+
+.video-stats__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.video-stats__badge--reviews {
+  background: #ddd6fe;
+  color: #7c3aed;
+}
+
+.video-stats__badge--likes {
+  background: #fecaca;
+  color: #dc2626;
+}
+
+.video-stats__badge--playlists {
+  background: #bfdbfe;
+  color: #2563eb;
+}
+
+.video-stats__rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.video-stats__stars {
+  color: #fbbf24;
+  font-size: 16px;
+}
+
+.video-stats__rating-text {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.video-stats__no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .video-stats__global {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .video-stats__video-title {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-stats {
+    padding: 16px;
+    margin: 16px 0;
+  }
+
+  .video-stats__title {
+    font-size: 20px;
+  }
+
+  .video-stats__header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .video-stats__global {
+    grid-template-columns: 1fr;
+  }
+
+  .video-stats__th,
+  .video-stats__td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+
+  .video-stats__video-title {
+    max-width: 120px;
+  }
+
+  .video-stats__thumbnail {
+    width: 50px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-stats__table {
+    font-size: 12px;
+  }
+
+  .video-stats__th,
+  .video-stats__td {
+    padding: 8px 6px;
+  }
+
+  .video-stats__video-info {
+    gap: 8px;
+  }
+
+  .video-stats__thumbnail {
+    width: 40px;
+    height: 30px;
+  }
+
+  .video-stats__video-title {
+    max-width: 100px;
+    font-size: 13px;
+  }
+
+  .video-stats__badge {
+    padding: 2px 6px;
+    font-size: 11px;
+  }
+}

@@ -1,5 +1,7 @@
 import Video from "../models/videosModel.js";
-import { searchYouTube } from "../services/youtubeApi.js";
+import Review from "../models/reviewModel.js";
+import Playlist from "../models/playlistModel.js";
+import { searchYouTube, getVideoDetails } from "../services/youtubeApi.js";
 
 // GET /videos/search?q=drone
 export const searchVideos = async (req, res) => {
@@ -133,12 +135,28 @@ export const addVideoFromSearch = async (req, res) => {
   }
 
   try {
+    // Obtener detalles completos del video incluyendo duración
+    console.log("📹 Backend: Getting video details for duration...");
+    let videoDuration = "N/A";
+
+    try {
+      const videoDetails = await getVideoDetails(videoData.videoId);
+      videoDuration = videoDetails.duration;
+      console.log("⏱️ Backend: Video duration obtained:", videoDuration);
+    } catch (durationError) {
+      console.warn(
+        "⚠️ Backend: Could not get video duration:",
+        durationError.message
+      );
+    }
+
     const videoToSave = {
       youtubeId: videoData.videoId,
       title: videoData.title,
       description: videoData.description || "",
       channelTitle: videoData.channelName,
       publishedAt: videoData.publishedAt || new Date(),
+      duration: videoDuration, // Agregar duración
       thumbnails: {
         default: videoData.thumbnails[0]?.url || "",
         medium:
@@ -152,7 +170,10 @@ export const addVideoFromSearch = async (req, res) => {
       owner: req.user.userId,
     };
 
-    console.log("💾 Backend: Saving selected video to DB:", videoToSave);
+    console.log(
+      "💾 Backend: Saving selected video to DB with duration:",
+      videoDuration
+    );
 
     const savedVideo = await Video.findOneAndUpdate(
       { youtubeId: videoData.videoId },
@@ -161,6 +182,7 @@ export const addVideoFromSearch = async (req, res) => {
     );
 
     console.log("✅ Backend: Selected video saved with ID:", savedVideo._id);
+    console.log("⏱️ Backend: Saved video duration:", savedVideo.duration);
 
     // Devolver en formato que espera el frontend
     const formattedVideo = {
@@ -205,5 +227,74 @@ export const saveVideo = async (req, res) => {
     res.json(video);
   } catch (err) {
     res.status(500).json({ message: "Error al guardar el video" });
+  }
+};
+
+// DELETE /videos/:youtubeId - Eliminar video por youtubeId
+export const deleteVideoByYoutubeId = async (req, res) => {
+  const { youtubeId } = req.params;
+  const userId = req.user.userId;
+
+  console.log(`🗑️ Backend: Deleting video ${youtubeId} by user ${userId}`);
+
+  if (!req.user) {
+    return res.status(401).json({ message: "Usuario no autenticado" });
+  }
+
+  try {
+    // Buscar el video por youtubeId
+    const video = await Video.findOne({ youtubeId });
+
+    if (!video) {
+      console.log("❌ Backend: Video not found:", youtubeId);
+      return res.status(404).json({ message: "Video no encontrado" });
+    }
+
+    // Verificar si el usuario es el propietario del video
+    if (video.owner.toString() !== userId) {
+      console.log(
+        `❌ Backend: User ${userId} is not owner of video ${youtubeId}`
+      );
+      return res.status(403).json({
+        message: "No tienes permisos para eliminar este video",
+      });
+    }
+
+    // Eliminar el video y todas sus referencias
+    console.log(`🧹 Backend: Cleaning up related data for video ${youtubeId}`);
+
+    // 1. Eliminar reviews del video
+    const deletedReviews = await Review.deleteMany({ videoId: youtubeId });
+    console.log(`📝 Backend: Deleted ${deletedReviews.deletedCount} reviews`);
+
+    // 2. Eliminar video de playlists
+    const playlistsUpdate = await Playlist.updateMany(
+      { "videos.youtubeId": youtubeId },
+      { $pull: { videos: { youtubeId: youtubeId } } }
+    );
+    console.log(
+      `📋 Backend: Updated ${playlistsUpdate.modifiedCount} playlists`
+    );
+
+    // 3. Eliminar el video de la base de datos
+    await Video.findOneAndDelete({ youtubeId });
+
+    console.log(
+      `✅ Backend: Video ${youtubeId} and all related data deleted successfully`
+    );
+
+    res.json({
+      message: "Video eliminado correctamente",
+      deletedVideoId: youtubeId,
+      deletedReviews: deletedReviews.deletedCount,
+      updatedPlaylists: playlistsUpdate.modifiedCount,
+    });
+  } catch (err) {
+    console.error("❌ Backend: Error deleting video:", err);
+    res.status(500).json({
+      message: "Error al eliminar el video",
+      error:
+        process.env.NODE_ENV === "development" ? err.message : "Error interno",
+    });
   }
 };

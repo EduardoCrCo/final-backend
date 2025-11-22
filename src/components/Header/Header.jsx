@@ -92,12 +92,12 @@ export const Header = ({
                   src={currentUser?.avatar || Avatar}
                   alt="imagen del perfil"
                   className="header-profile__avatar-image"
-                  onLoad={() =>
-                    console.log(
-                      "🖼️ Avatar cargado:",
-                      currentUser?.avatar || "Avatar por defecto"
-                    )
-                  }
+                  // onLoad={() =>
+                  //   console.log(
+                  //     "🖼️ Avatar cargado:",
+                  //     currentUser?.avatar || "Avatar por defecto"
+                  //   )
+                  // }
                 />
                 <button
                   className="header__profile-avatar__edit_button"

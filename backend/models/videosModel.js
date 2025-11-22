@@ -15,6 +15,7 @@ const VideoSchema = new mongoose.Schema(
 
     channelTitle: String,
     publishedAt: Date,
+    duration: String, // Formato "4:13" o "1:23:45"
 
     owner: {
       type: mongoose.Schema.Types.ObjectId,

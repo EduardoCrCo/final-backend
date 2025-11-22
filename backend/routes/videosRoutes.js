@@ -6,6 +6,7 @@ import {
   findVideoByYoutubeId,
   likeVideo,
   saveVideo,
+  deleteVideoByYoutubeId,
 } from "../controllers/videosController.js";
 
 const router = Router();
@@ -42,5 +43,8 @@ router.get("/find/:youtubeId", auth, findVideoByYoutubeId);
 // Like y save videos (requiere autenticación)
 router.post("/:id/like", auth, likeVideo);
 router.post("/:id/save", auth, saveVideo);
+
+// Eliminar video por youtubeId (requiere autenticación)
+router.delete("/:youtubeId", auth, deleteVideoByYoutubeId);
 
 export default router;

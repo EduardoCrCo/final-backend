@@ -150,7 +150,7 @@ export const Videos = ({
   // ⚡ Escuchar eventos de login para recargar playlists
   useEffect(() => {
     const handleUserLoggedIn = () => {
-      console.log("User logged in event received, reloading playlists");
+      // console.log("User logged in event received, reloading playlists");
       if (currentUser?.token) {
         loadUserPlaylists();
       }
@@ -312,7 +312,7 @@ export const Videos = ({
         })
       ) : (
         <div style={{ color: "#888", fontSize: 15, margin: "16px 0" }}>
-          No se encontraron resultados de YouTube.
+          Aun no hay resultados cargados.
         </div>
       )}
 

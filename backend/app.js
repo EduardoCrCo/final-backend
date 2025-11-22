@@ -13,6 +13,7 @@ import videoRoutes from "./routes/videosRoutes.js";
 import playlistRoutes from "./routes/playlistRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import publicReviewRoutes from "./routes/publicReviewRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 // Importar middleware
 import auth from "./middleware/auth.js";
@@ -35,7 +36,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Configurar CORS
+// Configurar CORS ANTES que todo
 const corsOptions = {
   origin:
     NODE_ENV === "production"
@@ -44,12 +45,36 @@ const corsOptions = {
           "http://localhost:5173",
           "http://127.0.0.1:5173",
           "http://localhost:3000",
+          "http://127.0.0.1:3000",
         ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Access-Control-Allow-Origin",
+  ],
   credentials: true,
+  optionsSuccessStatus: 200,
+  preflightContinue: false, // Terminar preflight aquí
 };
+
+// CORS debe ir ANTES de cualquier middleware de autenticación
 app.use(cors(corsOptions));
+
+// Manejar preflight requests explícitamente
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, Access-Control-Allow-Origin"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.status(200).send();
+});
 
 // Middleware para parsear JSON
 app.use(express.json({ limit: "10mb" }));
@@ -68,20 +93,16 @@ mongoose
   });
 
 // Rutas públicas (sin autenticación)
-// app.use("/signup", authRoutes);
-// app.use("/signin", authRoutes);
 app.use("/", authRoutes);
 app.use("/videos", videoRoutes);
 app.use("/api/youtube", videoRoutes); // Ruta alternativa para compatibilidad
 app.use("/reviews/public", publicReviewRoutes);
 
-// Middleware de autenticación para rutas protegidas
-app.use(auth);
-
-// Rutas protegidas
-app.use("/users", userRoutes);
-app.use("/playlists", playlistRoutes);
-app.use("/reviews", reviewRoutes);
+// Rutas protegidas (con middleware de autenticación específico)
+app.use("/users", auth, userRoutes);
+app.use("/playlists", auth, playlistRoutes);
+app.use("/reviews", auth, reviewRoutes);
+app.use("/dashboard", auth, dashboardRoutes);
 
 // Ruta de prueba
 app.get("/", (req, res) => {

@@ -14,7 +14,9 @@ import { LoginForm } from "./Main/components/forms/LoginForm/LoginForm";
 import { PlaylistModal } from "./PlaylistModal/PlaylistModal";
 import * as auth from "../utils/auth";
 import api from "../utils/api";
-import { ToastContainer } from "react-toastify";
+import { useSecureAuth } from "../hooks/useSecureAuth";
+import { migrateAuthData, validateCleanUserData } from "../utils/authMigration";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //import { set } from "mongoose";
 
@@ -34,12 +36,8 @@ export const App = () => {
     setYoutubeResults([]);
     if (!youtubeQuery.trim() || youtubeQuery.length < 2) return;
 
-    console.log("🔍 App.jsx: Searching for:", youtubeQuery);
-
     searchYouTube(youtubeQuery, 12)
       .then((results) => {
-        console.log("📡 App.jsx: Received results:", results);
-
         // El backend ya devuelve el formato correcto, solo usamos directamente
         setYoutubeResults(results || []);
       })
@@ -53,8 +51,49 @@ export const App = () => {
     localStorage.setItem("selectedVideos", JSON.stringify(selectedVideos));
   }, [selectedVideos]);
 
-  const handleDeleteVideo = (id) => {
-    setSelectedVideos(selectedVideos.filter((v) => v.video.videoId !== id));
+  const handleDeleteVideo = async (id) => {
+    console.log("🗑️ Frontend: Deleting video:", id);
+
+    try {
+      // Intentar eliminar del backend primero
+      const result = await api.deleteVideo(id);
+      console.log("✅ Frontend: Video deleted from backend:", result);
+
+      // Eliminar del estado local
+      setSelectedVideos(selectedVideos.filter((v) => v.video.videoId !== id));
+
+      console.log(`✅ Frontend: Video ${id} eliminated from grid and database`);
+
+      // Mostrar información de limpieza adicional si aplica
+      if (result.deletedReviews > 0 || result.updatedPlaylists > 0) {
+        console.log(
+          `📊 Frontend: Also cleaned ${result.deletedReviews} reviews and ${result.updatedPlaylists} playlists`
+        );
+      }
+    } catch (error) {
+      console.error("❌ Frontend: Error deleting from backend:", error.message);
+
+      // Si el video no existe en el backend (video no guardado), eliminarlo solo del estado local
+      if (
+        error.message.includes("Video no encontrado") ||
+        error.message.includes("not found")
+      ) {
+        console.log(
+          "📝 Frontend: Video not in database, removing only from local state"
+        );
+
+        // Eliminar del estado local (video de búsqueda no guardado)
+        setSelectedVideos(selectedVideos.filter((v) => v.video.videoId !== id));
+
+        console.log(
+          `✅ Frontend: Video ${id} eliminated from grid (was not in database)`
+        );
+      } else {
+        // Solo mostrar error para errores reales (permisos, servidor, etc.)
+        console.error("❌ Frontend: Real error deleting video:", error.message);
+        alert(`Error al eliminar el video: ${error.message}`);
+      }
+    }
   };
 
   const handleLikeVideo = async (videoId) => {
@@ -176,6 +215,9 @@ export const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(() => {
+    // 🔄 Migrar datos existentes para seguridad
+    migrateAuthData();
+
     // Try to get user info from API (if token is valid)
     const loadUser = async () => {
       try {
@@ -186,14 +228,29 @@ export const App = () => {
           // Si hay token, intentar obtener info del backend
           try {
             const user = await api.getUserInfo();
-            const mergedUser = { ...user, token };
-            setCurrentUser(mergedUser);
-            localStorage.setItem("currentUser", JSON.stringify(mergedUser));
+            // ✅ Usuario limpio SIN token (más seguro)
+            const cleanUser = {
+              _id: user._id,
+              name: user.name,
+              email: user.email,
+              avatar: user.avatar,
+              about: user.about || "",
+            };
+            setCurrentUser(cleanUser);
+            localStorage.setItem("currentUser", JSON.stringify(cleanUser));
           } catch (apiError) {
             console.error("API error:", apiError);
             // Si falla API pero hay usuario guardado, usarlo
             if (savedUser) {
-              setCurrentUser(JSON.parse(savedUser));
+              try {
+                const parsedUser = JSON.parse(savedUser);
+                // Limpiar token si existe en usuario guardado
+                const { token: _, ...cleanSavedUser } = parsedUser;
+                setCurrentUser(cleanSavedUser);
+              } catch (parseErr) {
+                console.error("Error parsing saved user:", parseErr);
+                setCurrentUser(null);
+              }
             } else {
               setCurrentUser(null);
             }
@@ -201,7 +258,10 @@ export const App = () => {
         } else if (savedUser) {
           // Sin token pero con usuario guardado
           try {
-            setCurrentUser(JSON.parse(savedUser));
+            const parsedUser = JSON.parse(savedUser);
+            // Limpiar token si existe en usuario guardado
+            const { token: _, ...cleanSavedUser } = parsedUser;
+            setCurrentUser(cleanSavedUser);
           } catch (parseErr) {
             console.error("Error parsing saved user:", parseErr);
             setCurrentUser(null);
@@ -241,24 +301,24 @@ export const App = () => {
   ) => {
     try {
       const data = await auth.authorize({ email, password });
-      // if (data && data.token) {
-      //   localStorage.setItem("jwt", data.token);
-      //   const user = await api.getUserInfo();
-      //   setCurrentUser(user);
-      //   localStorage.setItem("currentUser", JSON.stringify(user));
       if (data && data.token) {
+        // ✅ Guardar token de forma segura y separada
         localStorage.setItem("jwt", data.token);
 
         // Pedimos la información del usuario con el token
         const user = await api.getUserInfo();
 
-        const mergedUser = {
-          ...user,
-          token: data.token, // 🔥 GUARDA EL TOKEN DENTRO DEL USUARIO
+        // ✅ Usuario limpio SIN token (más seguro)
+        const cleanUser = {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+          about: user.about || "",
         };
 
-        setCurrentUser(mergedUser);
-        localStorage.setItem("currentUser", JSON.stringify(mergedUser));
+        setCurrentUser(cleanUser);
+        localStorage.setItem("currentUser", JSON.stringify(cleanUser));
 
         // 🔧 Forzar actualización de playlists después del login
         setTimeout(() => {
@@ -292,47 +352,54 @@ export const App = () => {
   };
 
   const handleUpdateAvatar = async (avatarUrl) => {
-    // console.log("🔄 handleUpdateAvatar llamado con URL:", avatarUrl);
     try {
       const response = await api.updateAvatar(avatarUrl);
-      // console.log("📡 Respuesta del backend:", response);
 
       // El backend devuelve { message: "...", user: { ... } }
       const updatedUser = response.user || response;
-      // console.log("👤 Usuario actualizado:", updatedUser);
 
       setCurrentUser((prev) => {
-        const newUser = { ...prev, ...updatedUser };
-        // console.log("🔄 Estado anterior:", prev);
-        // console.log("🔄 Nuevo estado:", newUser);
-        localStorage.setItem("currentUser", JSON.stringify(newUser));
-        return newUser;
+        // ✅ Usuario limpio SIN token
+        const cleanUser = {
+          _id: prev._id,
+          name: prev.name,
+          email: prev.email,
+          avatar: updatedUser.avatar,
+          about: prev.about || "",
+        };
+        localStorage.setItem("currentUser", JSON.stringify(cleanUser));
+        return cleanUser;
       });
 
       // Mostrar mensaje de éxito
       handleShowInfoTooltip("Avatar actualizado exitosamente");
     } catch (error) {
-      console.error("❌ Failed to update avatar:", error.message);
+      console.error("Failed to update avatar:", error.message);
       handleShowInfoTooltip("Error al actualizar avatar");
     }
   };
 
   const handleUpdateUser = async ({ name, about }) => {
-    // console.log("🔄 handleUpdateUser llamado con:", { name, about });
     try {
-      const response = await api.updateUser(name, about);
-      // console.log("📡 Respuesta del backend:", response);
+      // ✅ Manejar about undefined/null como string vacío
+      const cleanAbout = about || "";
+
+      const response = await api.updateUser(name, cleanAbout);
 
       // El backend devuelve { message: "...", user: { ... } }
       const updatedUser = response.user || response;
-      // console.log("👤 Usuario actualizado:", updatedUser);
 
       setCurrentUser((prev) => {
-        const newUser = { ...prev, ...updatedUser };
-        // console.log("🔄 Estado anterior:", prev);
-        // console.log("🔄 Nuevo estado:", newUser);
-        localStorage.setItem("currentUser", JSON.stringify(newUser));
-        return newUser;
+        // ✅ Usuario limpio SIN token
+        const cleanUser = {
+          _id: prev._id,
+          name: updatedUser.name || name,
+          email: prev.email,
+          avatar: prev.avatar,
+          about: updatedUser.about || cleanAbout,
+        };
+        localStorage.setItem("currentUser", JSON.stringify(cleanUser));
+        return cleanUser;
       });
 
       handleShowInfoTooltip("Perfil actualizado exitosamente");
@@ -349,6 +416,9 @@ export const App = () => {
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
     localStorage.removeItem("jwt"); // <-- elimina el token
+
+    // 🏠 Redirigir a home después del logout
+    navigate("/");
   };
 
   return (

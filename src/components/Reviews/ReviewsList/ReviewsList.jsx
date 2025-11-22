@@ -3,6 +3,37 @@ export const ReviewsList = ({ reviews, onDeleteReview, currentUser }) => {
   console.log("Reviews en ReviewsList:", reviews);
   console.log("Current User:", currentUser);
 
+  // Función para verificar si el usuario puede eliminar un review
+  const canDeleteReview = (review, user) => {
+    if (!user || !review) return false;
+
+    // Obtener el ID del usuario actual de forma robusta
+    const currentUserId = user._id || user.id || user.userId;
+
+    // Obtener el ID del propietario del review de forma robusta
+    const reviewOwnerId =
+      review.userId?._id ||
+      review.userId?.id ||
+      review.userId ||
+      review.authorId;
+
+    // Verificar si es el propietario
+    const isOwner = currentUserId === reviewOwnerId;
+
+    // Verificar si es admin (opcional)
+    const isAdmin = user.isAdmin || user.role === "admin";
+
+    console.log("🔐 Permission check:", {
+      currentUserId,
+      reviewOwnerId,
+      isOwner,
+      isAdmin,
+      canDelete: isOwner || isAdmin,
+    });
+
+    return isOwner || isAdmin;
+  };
+
   // Agrupar reviews por videoId
   const groupedReviews = reviews.reduce((acc, review) => {
     const videoId = review.videoId || "no-video";
@@ -105,21 +136,15 @@ export const ReviewsList = ({ reviews, onDeleteReview, currentUser }) => {
                       )}
                     </div>
                     {/* Botón eliminar - solo visible para el autor del review */}
-                    {currentUser &&
-                      (currentUser._id === review.userId?._id ||
-                        currentUser._id === review.userId ||
-                        currentUser.id === review.userId ||
-                        currentUser.isAdmin) && (
-                        <button
-                          onClick={() =>
-                            onDeleteReview(review._id || review.id)
-                          }
-                          className="text-red-500 hover:text-red-700 text-sm font-medium"
-                          title="Eliminar review"
-                        >
-                          ✕
-                        </button>
-                      )}
+                    {currentUser && canDeleteReview(review, currentUser) && (
+                      <button
+                        onClick={() => onDeleteReview(review._id || review.id)}
+                        className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 rounded hover:bg-red-50"
+                        title="Eliminar review"
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

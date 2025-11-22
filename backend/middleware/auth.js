@@ -1,6 +1,11 @@
 import jwt from "jsonwebtoken";
 
 const auth = (req, res, next) => {
+  // Permitir peticiones OPTIONS (preflight) sin autenticación
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+
   const { authorization } = req.headers;
 
   // Verificar si existe el header Authorization

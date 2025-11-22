@@ -7,7 +7,25 @@ export const useReviews = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Cargar reviews del usuario
+  // Cargar todas las reviews públicas
+  const loadAllReviews = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Cargar reviews públicas (más reviews por página)
+      const data = await api.getPublicReviews(50, 0); // 50 reviews, desde el inicio
+      console.log("📚 Public reviews loaded:", data);
+      setReviews(data.reviews || data); // Adaptar según la estructura de respuesta
+    } catch (err) {
+      console.error("Error loading public reviews:", err);
+      setError(err.message);
+      toast.error("Error al cargar las reviews");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Cargar reviews del usuario (mantener para compatibilidad)
   const loadUserReviews = async () => {
     setLoading(true);
     setError(null);
@@ -15,9 +33,9 @@ export const useReviews = () => {
       const data = await api.getUserReviews();
       setReviews(data);
     } catch (err) {
-      console.error("Error loading reviews:", err);
+      console.error("Error loading user reviews:", err);
       setError(err.message);
-      toast.error("Error al cargar las reviews");
+      toast.error("Error al cargar las reviews del usuario");
     } finally {
       setLoading(false);
     }
@@ -68,15 +86,16 @@ export const useReviews = () => {
     }
   };
 
-  // Cargar reviews al montar el hook
+  // Cargar todas las reviews al montar el hook
   useEffect(() => {
-    loadUserReviews();
+    loadAllReviews();
   }, []);
 
   return {
     reviews,
     loading,
     error,
+    loadAllReviews,
     loadUserReviews,
     createReview,
     updateReview,

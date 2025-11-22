@@ -1,0 +1,326 @@
+/* UserStatsTable.css - BEM Methodology */
+
+/* Block: user-stats-table */
+.user-stats-table {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+/* Element: header */
+.user-stats-table__header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-stats-table__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.user-stats-table__refresh-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-stats-table__refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.user-stats-table__refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Element: stats-summary */
+.user-stats-table__stats-summary {
+  background-color: #f8fafc;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.user-stats-table__global-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.user-stats-table__stat-item {
+  text-align: center;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.user-stats-table__stat-number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #4f46e5;
+  margin-bottom: 4px;
+}
+
+.user-stats-table__stat-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Element: container */
+.user-stats-table__container {
+  overflow-x: auto;
+  max-height: 70vh;
+}
+
+/* Element: table */
+.user-stats-table__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+/* Element: table-header */
+.user-stats-table__table-header {
+  background-color: #f1f5f9;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.user-stats-table__header-cell {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #334155;
+  border-right: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  background-color: #f1f5f9;
+  z-index: 10;
+}
+
+.user-stats-table__header-cell:last-child {
+  border-right: none;
+}
+
+/* Element: table-row */
+.user-stats-table__table-row {
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.user-stats-table__table-row:hover {
+  background-color: #f8fafc;
+}
+
+/* Element: table-cell */
+.user-stats-table__table-cell {
+  padding: 16px 12px;
+  vertical-align: top;
+  border-right: 1px solid #f1f5f9;
+}
+
+.user-stats-table__table-cell:last-child {
+  border-right: none;
+}
+
+/* Element: user-info */
+.user-stats-table__user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.user-stats-table__user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.user-stats-table__user-details {
+  flex-grow: 1;
+}
+
+.user-stats-table__user-name {
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 2px 0;
+  font-size: 0.95rem;
+}
+
+.user-stats-table__user-email {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+/* Element: playlists-info */
+.user-stats-table__playlists-info {
+  min-width: 250px;
+}
+
+.user-stats-table__playlist-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-stats-table__playlist-item:last-child {
+  margin-bottom: 0;
+}
+
+.user-stats-table__playlist-name {
+  font-weight: 500;
+  color: #374151;
+  margin: 0;
+  font-size: 0.85rem;
+  flex-grow: 1;
+}
+
+.user-stats-table__playlist-count {
+  background: #4f46e5;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Element: reviews-info */
+.user-stats-table__reviews-info {
+  min-width: 200px;
+}
+
+.user-stats-table__review-item {
+  background: #fef7f0;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+}
+
+.user-stats-table__review-item:last-child {
+  margin-bottom: 0;
+}
+
+.user-stats-table__review-title {
+  font-weight: 500;
+  color: #9a3412;
+  margin: 0 0 2px 0;
+  font-size: 0.8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.user-stats-table__review-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.user-stats-table__star {
+  color: #fbbf24;
+  font-size: 0.8rem;
+}
+
+.user-stats-table__star--empty {
+  color: #d1d5db;
+}
+
+/* Modifiers */
+.user-stats-table--loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.user-stats-table__loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #4f46e5;
+}
+
+.user-stats-table__empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.user-stats-table__empty-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.user-stats-table__empty-message {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.user-stats-table__empty-submessage {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-stats-table__global-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .user-stats-table__table {
+    font-size: 0.8rem;
+  }
+
+  .user-stats-table__table-cell,
+  .user-stats-table__header-cell {
+    padding: 12px 8px;
+  }
+
+  .user-stats-table__user-info {
+    min-width: 150px;
+  }
+
+  .user-stats-table__playlists-info,
+  .user-stats-table__reviews-info {
+    min-width: 180px;
+  }
+}

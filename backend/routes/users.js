@@ -22,9 +22,8 @@ const updateProfileValidation = celebrate({
       "string.min": "El nombre debe tener al menos 2 caracteres",
       "string.max": "El nombre no puede tener más de 30 caracteres",
     }),
-    about: Joi.string().min(2).max(30).messages({
-      "string.min": "La descripción debe tener al menos 2 caracteres",
-      "string.max": "La descripción no puede tener más de 30 caracteres",
+    about: Joi.string().allow("").max(200).messages({
+      "string.max": "La descripción no puede tener más de 200 caracteres",
     }),
   }),
 });
