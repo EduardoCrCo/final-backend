@@ -23,27 +23,40 @@ export const PlaylistModal = ({
   // ➤ Crear playlist usando api.js con mejor sincronización
   const handleCreatePlaylist = async (e) => {
     if (e) e.preventDefault(); // Evitar refresh de página
-    if (!newPlaylistName.trim()) return;
+    if (!newPlaylistName.trim() || isLoading) return; // Prevenir múltiples clicks
 
     if (!currentUser) {
       toast.error("Debes iniciar sesión para crear playlists");
       return;
     }
 
+    const trimmedName = newPlaylistName.trim();
+
     setIsLoading(true);
+    console.log("🚀 Iniciando creación de playlist:", trimmedName);
+
     try {
-      const newPlaylist = await api.createPlaylist(newPlaylistName.trim());
+      const newPlaylist = await api.createPlaylist(trimmedName);
+      console.log("✅ Playlist creada:", newPlaylist);
+
       toast.success("Playlist creada correctamente");
       setNewPlaylistName("");
       setIsCreatingNew(false);
 
       // Recargar playlists desde el backend
       if (loadUserPlaylists) {
+        console.log("🔄 Recargando playlists...");
         await loadUserPlaylists();
+        console.log("✅ Playlists recargadas");
       }
     } catch (error) {
-      console.error("Error creando playlist:", error);
-      toast.error(error.message || "Error al crear playlist");
+      console.error("❌ Error creando playlist:", error);
+      // Mostrar mensaje específico del backend para duplicados
+      if (error.message === "Ya existe una playlist con ese nombre") {
+        toast.warning(error.message);
+      } else {
+        toast.error(error.message || "Error al crear playlist");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -52,6 +65,8 @@ export const PlaylistModal = ({
   // ➤ Agregar video a playlist usando api.js con loading state
   const handleAddToExistingPlaylist = async (playlistId, e) => {
     if (e) e.preventDefault(); // Evitar refresh
+    if (isLoading) return; // Prevenir múltiples clicks
+
     setIsLoading(true);
     try {
       await api.addVideoToPlaylist(playlistId, video);

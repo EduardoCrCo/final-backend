@@ -40,8 +40,11 @@ export const SearchBar = ({
     onSearch(""); // Limpia resultados
   };
 
+  // Asegurar que searchResults sea siempre un array
+  const safeSearchResults = Array.isArray(searchResults) ? searchResults : [];
+
   const uniqueResults = Array.from(
-    new Map(searchResults.map((v) => [v.video.videoId, v])).values()
+    new Map(safeSearchResults.map((v) => [v.video.videoId, v])).values()
   );
 
   return (
@@ -67,7 +70,7 @@ export const SearchBar = ({
         />
       </form>
 
-      {searchResults.length > 0 && term && (
+      {safeSearchResults.length > 0 && term && (
         <ul className="search-results-dropdown">
           {uniqueResults.map((video) => (
             <li

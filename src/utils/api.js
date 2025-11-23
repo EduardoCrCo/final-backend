@@ -49,27 +49,82 @@ class Api {
     return this._makeRequest("playlists");
   }
 
-  getUserPlaylists() {
-    return this._makeRequest("playlists");
+  async getUserPlaylists() {
+    const response = await this._makeRequest("playlists");
+    console.log("🔍 getUserPlaylists response:", response);
+
+    const playlists = response.playlists || response || [];
+    console.log("🔍 getUserPlaylists playlists:", playlists);
+
+    return playlists;
   }
 
-  createPlaylist(name) {
-    return this._makeRequest("playlists", "POST", { name });
+  async createPlaylist(name) {
+    console.log("🚀 createPlaylist:", name);
+    try {
+      const response = await this._makeRequest("playlists", "POST", { name });
+      console.log("✅ createPlaylist success:", response);
+
+      const playlist = response.playlist || response;
+      return playlist;
+    } catch (error) {
+      console.log("❌ createPlaylist error:", error);
+      throw error;
+    }
   }
 
   deletePlaylist(playlistId) {
     return this._makeRequest(`playlists/${playlistId}`, "DELETE");
   }
 
-  addVideoToPlaylist(playlistId, video) {
-    return this._makeRequest(`playlists/${playlistId}/add`, "POST", video);
+  async addVideoToPlaylist(playlistId, video) {
+    // Extraer thumbnail del array de thumbnails si existe
+    let thumbnailUrl = video.thumbnail;
+    if (
+      !thumbnailUrl &&
+      video.thumbnails &&
+      Array.isArray(video.thumbnails) &&
+      video.thumbnails.length > 0
+    ) {
+      // Buscar el thumbnail de mejor calidad (generalmente el último o 'high'/'medium')
+      const thumbnail =
+        video.thumbnails.find((t) => t.quality === "high") ||
+        video.thumbnails.find((t) => t.quality === "medium") ||
+        video.thumbnails[video.thumbnails.length - 1] ||
+        video.thumbnails[0];
+      thumbnailUrl = thumbnail?.url;
+    }
+
+    // Transformar el objeto video a la estructura esperada por el backend
+    const videoData = {
+      youtubeId: video.videoId || video.youtubeId || video.id,
+      title: video.title,
+      thumbnail: thumbnailUrl,
+      // Incluir campos adicionales si los hay
+      ...(video.description && { description: video.description }),
+      ...(video.channelTitle && { channelTitle: video.channelTitle }),
+      ...(video.channelName && { channelTitle: video.channelName }), // Mapear channelName a channelTitle
+      ...(video.duration && { duration: video.duration }),
+      ...(video.publishedAt && { publishedAt: video.publishedAt }),
+    };
+
+    console.log("🔍 addVideoToPlaylist original video:", video);
+    console.log("🔍 addVideoToPlaylist transformed data:", videoData);
+
+    const response = await this._makeRequest(
+      `playlists/${playlistId}/add`,
+      "POST",
+      videoData
+    );
+    return response.playlist || response;
   }
 
-  removeVideoFromPlaylist(playlistId, videoId) {
-    return this._makeRequest(
+  async removeVideoFromPlaylist(playlistId, videoId) {
+    const response = await this._makeRequest(
       `playlists/${playlistId}/remove/${videoId}`,
       "DELETE"
     );
+    return response.playlist || response;
   }
 
   // Métodos para Reviews

@@ -6,6 +6,7 @@ import activeLike from "../../../../images/activeLike.svg";
 import saveIcon from "../../../../images/saveIcon.png";
 import { PlaylistModal } from "../../../PlaylistModal/PlaylistModal";
 import { VideoPreloader } from "../VideoPreloader/VideoPreloader";
+import api from "../../../../utils/api.js";
 //import { set } from "mongoose";
 
 export const Videos = ({
@@ -102,35 +103,28 @@ export const Videos = ({
 
   const loadUserPlaylists = async () => {
     try {
-      // Verificar si hay usuario y token
-      const token = currentUser?.token || localStorage.getItem("jwt");
-      if (!currentUser || !token) {
-        console.log("No user or token, clearing playlists");
+      // Verificar si hay token (más importante que currentUser para esta función)
+      const token = localStorage.getItem("jwt");
+      const savedUser = localStorage.getItem("currentUser");
+
+      if (!token || !savedUser) {
+        console.log("🚫 No token or saved user, clearing playlists");
         setPlaylists([]);
         setPlaylistsLoading(false);
         return;
       }
 
       setPlaylistsLoading(true);
-      const response = await fetch("http://localhost:8080/playlists", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      console.log("🔄 loadUserPlaylists: Iniciando carga...");
 
-      if (!response.ok) {
-        console.error(
-          "Error response:",
-          response.status,
-          await response.text()
-        );
-        setPlaylists([]);
-        return;
-      }
+      // Usar la API centralizada que maneja la nueva estructura de respuesta
+      const playlists = await api.getUserPlaylists();
+      console.log("🔄 loadUserPlaylists: Respuesta recibida:", playlists);
 
-      const data = await response.json();
-      setPlaylists(Array.isArray(data) ? data : []);
+      const playlistsArray = Array.isArray(playlists) ? playlists : [];
+      console.log("🔄 loadUserPlaylists: Array final:", playlistsArray);
+
+      setPlaylists(playlistsArray);
     } catch (err) {
       console.error("Error cargando playlists:", err);
       setPlaylists([]);
@@ -141,17 +135,27 @@ export const Videos = ({
 
   // ⚡ Cargar playlists cuando cambie el usuario y tenga token (consolidado)
   useEffect(() => {
-    // Solo cargar si currentUser está completamente cargado y tiene token
-    if (currentUser !== undefined) {
-      loadUserPlaylists();
-    }
-  }, [currentUser?.token, currentUser?.name]); // Dependencia más específica
+    const token = localStorage.getItem("jwt");
 
-  // ⚡ Escuchar eventos de login para recargar playlists
-  useEffect(() => {
+    // Solo cargar si currentUser está completamente cargado y hay token en localStorage
+    if (currentUser !== undefined && currentUser && token) {
+      console.log("🔄 Condiciones cumplidas para cargar playlists:", {
+        currentUser: !!currentUser,
+        token: !!token,
+      });
+      loadUserPlaylists();
+    } else if (currentUser !== undefined && (!currentUser || !token)) {
+      // Limpiar playlists si no hay usuario o token
+      console.log("🧹 Limpiando playlists - no hay usuario o token");
+      setPlaylists([]);
+      setPlaylistsLoading(false);
+    }
+
+    // Escuchar eventos de login para recargar playlists
     const handleUserLoggedIn = () => {
-      // console.log("User logged in event received, reloading playlists");
-      if (currentUser?.token) {
+      const currentToken = localStorage.getItem("jwt");
+      if (currentUser && currentToken) {
+        console.log("🔄 Usuario logueado, recargando playlists");
         loadUserPlaylists();
       }
     };
@@ -159,7 +163,21 @@ export const Videos = ({
     window.addEventListener("user-logged-in", handleUserLoggedIn);
     return () =>
       window.removeEventListener("user-logged-in", handleUserLoggedIn);
-  }, [currentUser?.token]);
+  }, [currentUser]); // Dependencia en currentUser
+
+  // ⚡ Cargar playlists al montar el componente (para navegación entre rutas)
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    const savedUser = localStorage.getItem("currentUser");
+
+    // Si hay token y usuario guardado al montar, cargar playlists inmediatamente
+    if (token && savedUser && currentUser === undefined) {
+      console.log(
+        "🚀 Componente montado - iniciando carga temprana de playlists"
+      );
+      loadUserPlaylists();
+    }
+  }, []); // Solo al montar el componente
 
   //Crear lista sin duplicados
   const uniqueVideos = Array.from(

@@ -1,22 +1,35 @@
-import Router from 'express'
-import auth from '../middleware/auth.js'
+import Router from "express";
 import {
   getUserPlaylists,
   createPlaylist,
   deletePlaylist,
   addVideoToPlaylist,
   removeVideoFromPlaylist,
-} from '../controllers/playlistController.js'
+} from "../controllers/playlistController.js";
+import {
+  createPlaylistValidation,
+  addVideoToPlaylistValidation,
+  validateObjectId,
+} from "../middleware/validation.js";
 
-const router = Router()
+const router = Router();
 
 // Rutas básicas de playlists
-router.get('/', auth, getUserPlaylists)
-router.post('/', auth, createPlaylist)
-router.delete('/:id', auth, deletePlaylist)
+router.get("/", getUserPlaylists);
+router.post("/", createPlaylistValidation, createPlaylist);
+router.delete("/:id", validateObjectId, deletePlaylist);
 
 // Rutas para manejo de videos en playlists
-router.post('/:id/add', auth, addVideoToPlaylist)
-router.delete('/:id/remove/:videoId', auth, removeVideoFromPlaylist)
+router.post(
+  "/:id/add",
+  validateObjectId,
+  addVideoToPlaylistValidation,
+  addVideoToPlaylist
+);
+router.delete(
+  "/:id/remove/:videoId",
+  validateObjectId,
+  removeVideoFromPlaylist
+);
 
-export default router
+export default router;

@@ -37,8 +37,10 @@ export async function searchYouTube(query, maxResults = 12) {
   }
 
   const data = await response.json();
-  console.log("✅ Frontend: YouTube search results:", data.length);
 
-  // El backend ya devuelve los datos en el formato correcto
-  return data;
+  // Después del refactor, el backend devuelve { results: [...] }
+  const results = data.results || data || [];
+  console.log("✅ Frontend: YouTube search results:", results.length);
+
+  return results;
 }

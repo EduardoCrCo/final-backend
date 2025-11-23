@@ -99,11 +99,13 @@ export const signin = async (req, res, next) => {
 // Obtener información del usuario actual
 export const getCurrentUser = async (req, res, next) => {
   try {
-    const user = await UserModel.findById(req.user.userId);
+    const user = await UserModel.findById(req.user.userId).orFail(
+      handleFailError
+    );
 
-    if (!user || !user.isActive) {
+    if (!user.isActive) {
       return res.status(404).json({
-        message: "Usuario no encontrado",
+        message: "Usuario no encontrado o inactivo",
       });
     }
 
@@ -137,11 +139,11 @@ export const updateProfile = async (req, res, next) => {
         new: true, // Retorna el documento actualizado
         runValidators: true, // Ejecuta las validaciones del schema
       }
-    );
+    ).orFail(handleFailError);
 
-    if (!user || !user.isActive) {
+    if (!user.isActive) {
       return res.status(404).json({
-        message: "Usuario no encontrado",
+        message: "Usuario no encontrado o inactivo",
       });
     }
 
@@ -183,11 +185,11 @@ export const updateAvatar = async (req, res, next) => {
         new: true,
         runValidators: true,
       }
-    );
+    ).orFail(handleFailError);
 
-    if (!user || !user.isActive) {
+    if (!user.isActive) {
       return res.status(404).json({
-        message: "Usuario no encontrado",
+        message: "Usuario no encontrado o inactivo",
       });
     }
 
@@ -234,20 +236,14 @@ export const getAllUsers = async (req, res, next) => {
 // Desactivar cuenta (soft delete)
 export const deactivateAccount = async (req, res, next) => {
   try {
-    const user = await UserModel.findByIdAndUpdate(
+    await UserModel.findByIdAndUpdate(
       req.user.userId,
       {
         isActive: false,
         updatedAt: new Date(),
       },
       { new: true }
-    );
-
-    if (!user) {
-      return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
-    }
+    ).orFail(handleFailError);
 
     res.json({
       message: "Cuenta desactivada exitosamente",
