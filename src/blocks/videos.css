@@ -30,6 +30,18 @@
   padding: 12px;
 }
 
+.video__grid-empty {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  width: 100%;
+  font-size: 1em;
+  padding: 2em 0;
+  margin: 16px 0;
+  color: #888;
+}
+
 .buttons {
   position: absolute;
   top: 12px;
@@ -43,6 +55,7 @@
   cursor: pointer;
   padding: 6px 10px;
   border-radius: 6px;
+  border: none;
   margin-top: 8px;
 }
 .videos__save-button.enabled {
@@ -60,21 +73,26 @@
   background-color: transparent;
   transition: 0.3s;
 }
-
 .videos__save-button.saved {
-  background-color: #22c55e !important; /* Verde Tailwind: bg-green-500 */
+  background-color: #22c55e;
   border: 2px solid #16a34a;
 }
-
 .videos__save-button.saved:hover {
-  background-color: #16a34a !important; /* Verde más oscuro al pasar el mouse */
+  background-color: #16a34a;
   border: 2px solid #15803d;
 }
+/* Estilos para el ícono de guardar */
+.videos__save-icon {
+  transition: all 0.3s ease;
+  height: 20px;
+}
+
 .videos__delete-btn {
   margin-top: 4px;
   background-color: rgba(25, 118, 210, 0);
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 6px 10px;
+  border: none;
 }
 .videos__delete-btn.enabled {
   cursor: pointer;
@@ -86,6 +104,9 @@
 .videos__delete-btn.disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+.videos__trash-icon {
+  transition: all 0.3s ease;
 }
 
 .videos__thumbnail {
@@ -121,6 +142,7 @@
   font-size: 13px;
   color: #1976d2;
   text-decoration: none;
+  padding: 6px 12px;
 }
 
 .videos__save-like-trash-container {
@@ -129,12 +151,22 @@
   align-items: center;
 }
 
+.videos__review-btn {
+  background-color: rgba(25, 118, 210, 0);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border: none;
+  color: #1976d2;
+}
+
 .videos__like-button {
   margin-top: 8px;
   background-color: rgba(25, 118, 210, 0);
   border-radius: 6px;
   padding: 6px 12px;
   cursor: pointer;
+  border: none;
 }
 .videos__like-button.enabled {
   cursor: pointer;
@@ -200,20 +232,166 @@
   text-decoration: none;
 }
 
-/* Estilos para el ícono de guardar */
-.videos__save-icon {
-  transition: all 0.3s ease;
-  width: 20px;
-  height: 20px;
-}
-
 .videos__save-button.saved .videos__save-icon {
   filter: brightness(0) invert(1); /* Convierte el icono a blanco cuando está guardado */
 }
 
-/*
-@media (max-width: 1200px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
+/* ===================================================================
+   RESPONSIVE DESIGN - TABLET (641px - 920px)
+   =================================================================== */
+
+@media screen and (min-width: 641px) and (max-width: 920px) {
+  .videos__container {
+    padding-top: 5em;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
-} */
+
+  .videos__grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+    column-gap: 1.5em;
+    row-gap: 2em;
+    padding: 1rem;
+  }
+
+  .videos__grid-wrapper {
+    max-width: 100%;
+  }
+
+  .videos__thumbnail {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+  }
+
+  .videos__title {
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .videos__channel-name {
+    font-size: 0.8rem;
+  }
+
+  .buttons-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .videos__channel-link,
+  .videos__review-btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN - MOBILE (max-width: 640px)
+   =================================================================== */
+
+@media screen and (max-width: 640px) {
+  .videos__container {
+    padding-top: 5em;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .videos__grid {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    column-gap: 0;
+    row-gap: 1.5em;
+    padding: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .videos__grid-wrapper {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .videos__thumbnail {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+  }
+
+  .videos__title {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0.5rem 0;
+    word-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .videos__channel-name {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .buttons {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    gap: 0.25rem;
+  }
+
+  .videos__save-button,
+  .videos__delete-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .videos__save-icon,
+  .videos__trash-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .buttons-container {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .videos__channel-link,
+  .videos__review-btn {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .videos__save-like-trash-container {
+    justify-content: center;
+  }
+
+  .videos__like-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .videos__activeLike-icon,
+  .videos__inactiveLike-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .video__grid-empty {
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 2rem 1rem;
+  }
+
+  /* Prevenir scroll horizontal */
+  .video-loading-overlay {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

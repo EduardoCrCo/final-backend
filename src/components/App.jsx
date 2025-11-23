@@ -415,9 +415,7 @@ export const App = () => {
     console.log("Logging out user:", currentUser);
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
-    localStorage.removeItem("jwt"); // <-- elimina el token
-
-    // 🏠 Redirigir a home después del logout
+    localStorage.removeItem("jwt");
     navigate("/");
   };
 

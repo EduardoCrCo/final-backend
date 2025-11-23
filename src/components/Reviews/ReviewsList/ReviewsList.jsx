@@ -52,85 +52,82 @@ export const ReviewsList = ({ reviews, onDeleteReview, currentUser }) => {
   }, {});
 
   return (
-    <ul className="mt-6 space-y-4 w-full max-w-2xl mx-auto">
+    <ul className="reviews-list">
       {reviews.length === 0 ? (
-        <li className="text-gray-400 italic">No hay comentarios aún.</li>
+        <li className="reviews-list__empty">No hay comentarios aún.</li>
       ) : (
         Object.entries(groupedReviews).map(([videoId, group]) => (
-          <li key={videoId} className="bg-gray-100 p-4 rounded-lg">
+          <li key={videoId} className="reviews-list__video-group">
             {/* Header del video con thumbnail y título */}
-            <div className="flex items-center mb-3">
+            <div className="reviews-list__video-header">
               {group.videoInfo.thumbnail && (
                 <img
                   src={group.videoInfo.thumbnail}
                   alt={group.videoInfo.title}
-                  className="w-16 h-12 object-cover rounded mr-3"
+                  className="reviews-list__video-thumbnail"
                 />
               )}
-              <strong className="text-blue-600 text-lg">
+              <strong className="reviews-list__video-title">
                 {group.videoInfo.title || "Video sin título"}
               </strong>
             </div>
 
             {/* Lista de reviews para este video */}
-            <div className="space-y-3 ml-0">
+            <div className="reviews-list__reviews-container">
               {group.reviews.map((review) => (
                 <div
                   key={review._id || review.id}
-                  className="bg-white p-3 rounded border-l-4 border-blue-400 relative"
+                  className="reviews-list__review-card"
                 >
                   {/* Título de la review */}
                   {review.title && (
-                    <h4 className="font-semibold text-gray-900 mb-1">
+                    <h4 className="reviews-list__review-title">
                       {review.title}
                     </h4>
                   )}
 
                   {/* Rating con estrellas */}
                   {review.rating && (
-                    <div className="flex items-center mb-2">
-                      <span className="text-yellow-500 mr-1">
+                    <div className="reviews-list__rating">
+                      <span className="reviews-list__stars">
                         {"★".repeat(review.rating)}
                         {"☆".repeat(5 - review.rating)}
                       </span>
-                      <span className="text-sm text-gray-600">
+                      <span className="reviews-list__rating-text">
                         ({review.rating}/5)
                       </span>
                     </div>
                   )}
 
                   {/* Contenido de la review */}
-                  <p className="text-gray-800 mb-2 pr-8">
+                  <p className="reviews-list__content">
                     {review.content || review.text}
                   </p>
 
                   {/* Tags */}
                   {review.tags && review.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2">
+                    <div className="reviews-list__tags">
                       {review.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full"
-                        >
+                        <span key={index} className="reviews-list__tag">
                           {tag}
                         </span>
                       ))}
                     </div>
                   )}
 
-                  <div className="flex justify-between items-center">
-                    <div className="text-sm text-gray-500">
-                      <span>
+                  <div className="reviews-list__footer">
+                    <div className="reviews-list__meta">
+                      <span className="reviews-list__author">
                         Por:{" "}
                         {review.userId?.name || review.userName || "Anónimo"}
                       </span>
                       {review.createdAt && (
-                        <span className="ml-2">
+                        <span className="reviews-list__date">
                           - {new Date(review.createdAt).toLocaleDateString()}
                         </span>
                       )}
                       {review.isPublic === false && (
-                        <span className="ml-2 text-orange-600 font-medium">
+                        <span className="reviews-list__private-badge">
                           (Privada)
                         </span>
                       )}
@@ -139,7 +136,7 @@ export const ReviewsList = ({ reviews, onDeleteReview, currentUser }) => {
                     {currentUser && canDeleteReview(review, currentUser) && (
                       <button
                         onClick={() => onDeleteReview(review._id || review.id)}
-                        className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 rounded hover:bg-red-50"
+                        className="reviews-list__delete-button"
                         title="Eliminar review"
                       >
                         🗑️ Eliminar

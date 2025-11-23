@@ -311,9 +311,7 @@ export const Videos = ({
           );
         })
       ) : (
-        <div style={{ color: "#888", fontSize: 15, margin: "16px 0" }}>
-          Aun no hay resultados cargados.
-        </div>
+        <div className="video__grid-empty">Aun no hay resultados cargados.</div>
       )}
 
       {/* ✅ Modal sincronizado con el estado */}

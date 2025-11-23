@@ -85,7 +85,7 @@ export const Reviews = () => {
     return (
       <div className="reviews">
         <div className="reviews__loading">
-          <p>Cargando reviews...</p>
+          <p className="reviews__loading-text">Cargando reviews...</p>
         </div>
       </div>
     );
@@ -94,20 +94,20 @@ export const Reviews = () => {
   return (
     <div className="reviews">
       <div className="reviews__header">
-        <h2 className="reviews__title space-y-30 p-10">Video Reviews</h2>
+        <h2 className="reviews__title">Video Reviews</h2>
         {currentUser && (
           <button
-            className="reviews__add-review-button"
+            className="reviews__add-button"
             onClick={() => setSelectedVideo({})}
           >
-            Add Review
+            Crear Review
           </button>
         )}
       </div>
 
       {error && (
         <div className="reviews__error">
-          <p>Error: {error}</p>
+          <p className="reviews__error-text">Error: {error}</p>
         </div>
       )}
 
@@ -125,8 +125,8 @@ export const Reviews = () => {
         />
       )}
 
-      <Link to="/" className="block mt-4 text-blue-200 underline">
-        Go to Home
+      <Link to="/" className="reviews__home-link">
+        Volver al inicio
       </Link>
     </div>
   );

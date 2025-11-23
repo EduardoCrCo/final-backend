@@ -38,8 +38,8 @@
   border: 1px solid #f3f3f3;
   border-radius: 20px;
   font-size: 16px;
+  color: #222;
   outline: none;
-  /* border: 2px solid rgb(28, 244, 4); */
 }
 .search-bar__input:focus {
   border: none;
@@ -64,17 +64,7 @@
   /* border: 1px solid rgb(0, 0, 255); */
 }
 
-/* .search-bar__icon {
-  width: 24px;
-  height: 24px;
-  margin-left: 8px;
-  cursor: pointer;
-} */
-
 .search-results-dropdown {
-  /* position: absolute;
-  top: -22%;
-  left: -3; */
   width: 800px;
   background-color: #fff;
   border: 1px solid #d0d0d0;
@@ -106,14 +96,6 @@
 .search-results-dropdown li:last-child {
   border-bottom: none;
 }
-
-/* .search-results-dropdown li::before {
-  content: "▶";
-  font-size: 0.8em;
-  color: #888;
-  margin-right: 4px;
-  opacity: 0.6;
-} */
 
 .search-results-dropdown li:hover {
   background-color: #f5faff;
@@ -152,6 +134,72 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+
+/* Tablet styles: 641px - 920px */
+@media (min-width: 641px) and (max-width: 920px) {
+  .search-bar__form {
+    width: 700px;
+    max-width: 90vw;
+  }
+
+  .search-results-dropdown {
+    width: 700px;
+    max-width: 90vw;
+  }
+
+  .search-bar__input {
+    font-size: 15px;
+  }
+
+  .search-results-dropdown li {
+    padding: 12px 18px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile styles: max-width 640px */
+@media (max-width: 640px) {
+  .search-wrapper {
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+
+  .search-bar__form {
+    width: 100%;
+    max-width: 100%;
+    min-width: 280px;
+  }
+
+  .search-results-dropdown {
+    width: 100%;
+    max-width: 100%;
+    min-width: 280px;
+    max-height: 250px;
+    border-radius: 15px;
+    z-index: 100;
+  }
+
+  .search-bar__input {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .search-bar__icon {
+    width: 16px;
+    height: 16px;
+    margin: 0 8px;
+  }
+
+  .search-results-dropdown li {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    gap: 8px;
+    z-index: 999;
   }
 }
 

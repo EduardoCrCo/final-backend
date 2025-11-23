@@ -122,6 +122,104 @@ input:focus-visible {
   font-size: 16px;
 }
 
+/* Responsive Design */
+
+/* Tablet styles: 641px - 920px */
+@media (min-width: 641px) and (max-width: 920px) {
+  .login__form {
+    width: 70%;
+  }
+
+  .login__form-title {
+    font-size: 28px;
+    margin: 18px 0 40px;
+  }
+
+  .login__form-fieldset {
+    width: 320px;
+  }
+
+  .form__input {
+    width: 320px;
+    height: 38px;
+  }
+
+  .form__input-name,
+  .form__input-email,
+  .form__input-password {
+    width: 320px;
+  }
+
+  .login__footer {
+    width: 320px;
+  }
+
+  .login__form-submit_button {
+    width: 320px;
+    margin: 60px 0 18px;
+  }
+}
+
+/* Mobile styles: max-width 640px */
+@media (max-width: 640px) {
+  .login__form {
+    width: 90%;
+    margin-top: 10px;
+  }
+
+  .login__form-title {
+    font-size: 24px;
+    margin: 15px 0 30px;
+    text-align: center;
+  }
+
+  .login__form-subtitle {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .login__form-fieldset {
+    width: 100%;
+    max-width: 280px;
+    gap: 16px;
+  }
+
+  .form__input {
+    width: 100%;
+    max-width: 280px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .form__input-name,
+  .form__input-email,
+  .form__input-password {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .login__footer {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .login__form-submit_button {
+    width: 100%;
+    max-width: 280px;
+    margin: 50px 0 15px;
+    padding: 10px 0;
+    font-size: 0.9rem;
+  }
+
+  .login__form-footer {
+    padding: 0 10px;
+  }
+
+  .login__form-footer-link {
+    font-size: 14px;
+  }
+}
+
 /* @media screen and (max-width: 640px) {
   .login__form {
     width: 90%;

@@ -2,7 +2,7 @@ import Logo from "../../images/droneAction2.png";
 import Avatar from "../../images/avatar.png";
 import EditAvatarIcon from "../../images/editAvatar.svg";
 import { NavBar } from "../NavBar/NavBar";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
 import { RegisterForm } from "../../components/Main/components/forms/RegisterForm/RegisterForm";
 import { EditProfile } from "../Main/components/forms/EditProfile/EditProfile";
@@ -17,6 +17,15 @@ export const Header = ({
   onUpdateUser,
 }) => {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   const signupPopupType = {
     children: (
@@ -53,8 +62,34 @@ export const Header = ({
           <h1 className="header__title">De Drones</h1>
         </div>
 
+        {/* Botón hamburguesa para móvil */}
+        <button
+          className="header__hamburger-button"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle menu"
+        >
+          <span
+            className={`header__hamburger-line ${
+              isMobileMenuOpen ? "header__hamburger-line--rotated-1" : ""
+            }`}
+          ></span>
+          <span
+            className={`header__hamburger-line ${
+              isMobileMenuOpen ? "header__hamburger-line--hidden" : ""
+            }`}
+          ></span>
+          <span
+            className={`header__hamburger-line ${
+              isMobileMenuOpen ? "header__hamburger-line--rotated-2" : ""
+            }`}
+          ></span>
+        </button>
+
         <div className="header__spacer">
-          <NavBar />
+          <NavBar
+            isMobileMenuOpen={isMobileMenuOpen}
+            onCloseMobileMenu={closeMobileMenu}
+          />
           <div className="header__account">
             {(!currentUser || Object.keys(currentUser).length === 0) && (
               <button
@@ -92,12 +127,6 @@ export const Header = ({
                   src={currentUser?.avatar || Avatar}
                   alt="imagen del perfil"
                   className="header-profile__avatar-image"
-                  // onLoad={() =>
-                  //   console.log(
-                  //     "🖼️ Avatar cargado:",
-                  //     currentUser?.avatar || "Avatar por defecto"
-                  //   )
-                  // }
                 />
                 <button
                   className="header__profile-avatar__edit_button"

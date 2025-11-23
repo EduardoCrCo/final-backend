@@ -30,3 +30,53 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
+.form__submit:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+
+/* Tablet styles: 641px - 920px */
+@media (min-width: 641px) and (max-width: 920px) {
+  .form__profile {
+    width: 70%;
+  }
+
+  .form__profile-fieldset {
+    width: 320px;
+  }
+
+  .form__submit {
+    padding: 12px 24px;
+    font-size: 15px;
+  }
+}
+
+/* Mobile styles: max-width 640px */
+@media (max-width: 640px) {
+  .form__profile {
+    width: 90%;
+    margin: 8px auto;
+  }
+
+  .form__profile-title {
+    font-size: 18px;
+    text-align: center;
+    margin: 8px auto;
+  }
+
+  .form__profile-fieldset {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .form__submit {
+    padding: 10px 20px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 200px;
+    justify-content: center;
+  }
+}

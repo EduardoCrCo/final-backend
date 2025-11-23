@@ -1,6 +1,6 @@
 .page {
   font-family: "Inter-Regular", Arial, Helvetica, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.2;
   padding: 0;
   margin: auto;
@@ -12,4 +12,42 @@
   position: relative;
   /*z-index: 1;  Asegura que el contenido esté por encima del video de fondo */
   background-color: rgb(27, 24, 24);
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN - PREVENIR SCROLL HORIZONTAL
+   =================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+html {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN - TABLET (641px - 920px)
+   =================================================================== */
+
+@media screen and (min-width: 641px) and (max-width: 920px) {
+  .page {
+    font-size: 13px;
+  }
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN - MOBILE (max-width: 640px)
+   =================================================================== */
+
+@media screen and (max-width: 640px) {
+  .page {
+    font-size: 12px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
 }

@@ -23,10 +23,12 @@ const userSchema = new mongoose.Schema(
       default:
         "https://e7.pngegg.com/pngimages/487/879/png-clipart-computer-icons-question-mark-question-miscellaneous-blue.png",
       validate: {
-        validator: function (v) {
-          return validator.isURL(v);
+        validator(v) {
+          return /^(http|https):\/{2}[._~:\/?%#\]@!$&'()*+,;=A-Za-z0-9\-]+/.test(
+            v
+          );
         },
-        message: "Debe ser una URL válida",
+        message: (props) => `${props.value} debe ser una URL válida`,
       },
     },
     email: {
@@ -37,10 +39,15 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
       validate: {
-        validator: function (v) {
-          return validator.isEmail(v);
+        // validator: function (v) {
+        //   return validator.isEmail(v);
+        // },
+        validator(v) {
+          return /^((?!\.)[\w\-_.]*[^.])(@[\w-]+)(\.[\w-]+(\.[\w-]+)?[^.\W])$/.test(
+            v
+          );
         },
-        message: "Debe ser un email válido",
+        message: (props) => `${props.value} debe ser un email válido`,
       },
     },
     password: {

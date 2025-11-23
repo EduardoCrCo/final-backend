@@ -1,9 +1,11 @@
 .header__user-name-button {
   background: none;
   border-radius: 20px;
-  padding: 5px 10px;
-  font-weight: bold;
+  padding: 6px 12px;
+  font-weight: "inter-medium", Arial, Helvetica, sans-serif;
   cursor: pointer;
+  border: solid 1px #00000054;
+  transition: border-color 0.25s;
 }
 
 /* .header__user-name-button:hover {
@@ -24,13 +26,13 @@
 
 .header__logout-btn {
   margin-left: 0;
-  background: #353232;
-  border: solid 1px #ee0606;
-  border-radius: 8px;
+  background-color: rgba(171, 60, 60, 0.175);
+  border: solid 1px #00000054;
+  border-radius: 15px;
   padding: 4px 10px;
   cursor: pointer;
   opacity: 0;
-  transform: translateX(-60px);
+  transform: translateX(-50px);
   transition: opacity 0.3s, transform 0.3s;
   position: relative;
   z-index: 2;
@@ -115,13 +117,13 @@
 
 .header__signup-button {
   border-radius: 20px;
-  border: 1px solid transparent;
+  border: solid 1px #00000054;
   /* padding: 0.6em 1.2em; */
   padding: 3px 15px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: rgba(133, 133, 133, 0.5);
+  background-color: rgba(133, 133, 133, 0.175);
   cursor: pointer;
   transition: border-color 0.25s;
   color: white;
@@ -163,7 +165,7 @@
 .header__profile-avatar__edit_button {
   position: absolute;
   top: 0px;
-  right: 0px;
+  right: 2px;
   width: 40px;
   height: 40px;
   opacity: 0;
@@ -178,9 +180,116 @@
 }
 
 .header__profile-avatar__edit_button-icon {
-  width: 50%;
-  height: 50%;
+  width: 70%;
+  height: 70%;
   object-fit: contain;
   z-index: 3;
   margin: 25%;
+}
+
+/* ===================================================================
+   BOTÓN HAMBURGUESA
+   =================================================================== */
+
+.header__hamburger-button {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 200;
+}
+
+.header__hamburger-line {
+  width: 30px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.header__hamburger-line--rotated-1 {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.header__hamburger-line--hidden {
+  opacity: 0;
+}
+
+.header__hamburger-line--rotated-2 {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN - TABLET (641px - 920px)
+   =================================================================== */
+
+@media screen and (min-width: 641px) and (max-width: 920px) {
+  .header__container {
+    width: 100%;
+    max-width: 920px;
+    padding: 0 2rem;
+  }
+
+  .header__logo {
+    width: 120px;
+  }
+
+  .header__title {
+    font-size: 1.5rem;
+  }
+
+  .header__logo-name-container {
+    padding-left: 0;
+  }
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN - MOBILE (max-width: 640px)  
+   =================================================================== */
+
+@media screen and (max-width: 640px) {
+  .header {
+    padding: 0 1rem;
+  }
+
+  .header__container {
+    width: 100%;
+    padding: 0;
+    position: relative;
+  }
+
+  .header__logo {
+    width: 80px;
+  }
+
+  .header__title {
+    font-size: 1.2rem;
+  }
+
+  .header__logo-name-container {
+    padding-left: 0;
+  }
+
+  .header__hamburger-button {
+    display: flex;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .header__spacer {
+    width: 100%;
+  }
+
+  /* Ocultar el account section en móvil cuando el menú está cerrado */
+  .header__account {
+    display: none;
+  }
 }
