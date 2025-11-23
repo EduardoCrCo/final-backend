@@ -1,43 +1,41 @@
-import jwt from "jsonwebtoken";
-import User from "../models/usersModel.js";
+import jwt from 'jsonwebtoken'
+import User from '../models/usersModel.js'
 
 // Función para generar JWT token
-const generateToken = (userId) => {
-  return jwt.sign(
-    { userId },
-    process.env.JWT_SECRET || "tu-clave-secreta-muy-segura",
-    { expiresIn: "7d" }
-  );
-};
+const generateToken = (userId) => jwt.sign(
+  { userId },
+  process.env.JWT_SECRET || 'tu-clave-secreta-muy-segura',
+  { expiresIn: '7d' },
+)
 
 // Registrar nuevo usuario
 export const signup = async (req, res, next) => {
   try {
-    const { name, email, password /*about*/ } = req.body;
+    const { name, email, password /* about */ } = req.body
 
     // Verificar si el usuario ya existe
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email })
     if (existingUser) {
       return res.status(409).json({
-        message: "El usuario con este email ya existe",
-      });
+        message: 'El usuario con este email ya existe',
+      })
     }
 
     // Crear nuevo usuario
     const user = new User({
-      name: name || "Usuario",
+      name: name || 'Usuario',
       email,
       password,
       // about: about || "Explorador",
-    });
+    })
 
-    await user.save();
+    await user.save()
 
     // Generar token
-    const token = generateToken(user._id);
+    const token = generateToken(user._id)
 
     res.status(201).json({
-      message: "Usuario creado exitosamente",
+      message: 'Usuario creado exitosamente',
       token,
       user: {
         _id: user._id,
@@ -46,38 +44,38 @@ export const signup = async (req, res, next) => {
         about: user.about,
         avatar: user.avatar,
       },
-    });
+    })
   } catch (error) {
-    if (error.name === "ValidationError") {
-      const messages = Object.values(error.errors).map((err) => err.message);
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((err) => err.message)
       return res.status(400).json({
-        message: "Datos de entrada inválidos",
+        message: 'Datos de entrada inválidos',
         errors: messages,
-      });
+      })
     }
-    next(error);
+    next(error)
   }
-};
+}
 
 // Iniciar sesión
 export const signin = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     if (!email || !password) {
       return res.status(400).json({
-        message: "Email y contraseña son requeridos",
-      });
+        message: 'Email y contraseña son requeridos',
+      })
     }
 
     // Buscar usuario por credenciales
-    const user = await User.findUserByCredentials(email, password);
+    const user = await User.findUserByCredentials(email, password)
 
     // Generar token
-    const token = generateToken(user._id);
+    const token = generateToken(user._id)
 
     res.json({
-      message: "Inicio de sesión exitoso",
+      message: 'Inicio de sesión exitoso',
       token,
       user: {
         _id: user._id,
@@ -87,24 +85,24 @@ export const signin = async (req, res, next) => {
         avatar: user.avatar,
         lastLogin: user.lastLogin,
       },
-    });
+    })
   } catch (error) {
-    if (error.message === "Email o contraseña incorrectos") {
-      return res.status(401).json({ message: error.message });
+    if (error.message === 'Email o contraseña incorrectos') {
+      return res.status(401).json({ message: error.message })
     }
-    next(error);
+    next(error)
   }
-};
+}
 
 // Obtener información del usuario actual
 export const getCurrentUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user.userId)
 
     if (!user || !user.isActive) {
       return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
+        message: 'Usuario no encontrado',
+      })
     }
 
     res.json({
@@ -115,16 +113,16 @@ export const getCurrentUser = async (req, res, next) => {
       avatar: user.avatar,
       createdAt: user.createdAt,
       lastLogin: user.lastLogin,
-    });
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
 // Actualizar perfil del usuario
 export const updateProfile = async (req, res, next) => {
   try {
-    const { name, about } = req.body;
+    const { name, about } = req.body
 
     const user = await User.findByIdAndUpdate(
       req.user.userId,
@@ -136,17 +134,17 @@ export const updateProfile = async (req, res, next) => {
       {
         new: true, // Retorna el documento actualizado
         runValidators: true, // Ejecuta las validaciones del schema
-      }
-    );
+      },
+    )
 
     if (!user || !user.isActive) {
       return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
+        message: 'Usuario no encontrado',
+      })
     }
 
     res.json({
-      message: "Perfil actualizado exitosamente",
+      message: 'Perfil actualizado exitosamente',
       user: {
         _id: user._id,
         email: user.email,
@@ -155,23 +153,23 @@ export const updateProfile = async (req, res, next) => {
         avatar: user.avatar,
         updatedAt: user.updatedAt,
       },
-    });
+    })
   } catch (error) {
-    if (error.name === "ValidationError") {
-      const messages = Object.values(error.errors).map((err) => err.message);
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((err) => err.message)
       return res.status(400).json({
-        message: "Datos de entrada inválidos",
+        message: 'Datos de entrada inválidos',
         errors: messages,
-      });
+      })
     }
-    next(error);
+    next(error)
   }
-};
+}
 
 // Actualizar avatar del usuario
 export const updateAvatar = async (req, res, next) => {
   try {
-    const { avatar } = req.body;
+    const { avatar } = req.body
 
     const user = await User.findByIdAndUpdate(
       req.user.userId,
@@ -182,17 +180,17 @@ export const updateAvatar = async (req, res, next) => {
       {
         new: true,
         runValidators: true,
-      }
-    );
+      },
+    )
 
     if (!user || !user.isActive) {
       return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
+        message: 'Usuario no encontrado',
+      })
     }
 
     res.json({
-      message: "Avatar actualizado exitosamente",
+      message: 'Avatar actualizado exitosamente',
       user: {
         _id: user._id,
         email: user.email,
@@ -201,35 +199,35 @@ export const updateAvatar = async (req, res, next) => {
         avatar: user.avatar,
         updatedAt: user.updatedAt,
       },
-    });
+    })
   } catch (error) {
-    if (error.name === "ValidationError") {
-      const messages = Object.values(error.errors).map((err) => err.message);
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((err) => err.message)
       return res.status(400).json({
-        message: "URL del avatar inválida",
+        message: 'URL del avatar inválida',
         errors: messages,
-      });
+      })
     }
-    next(error);
+    next(error)
   }
-};
+}
 
 // Obtener todos los usuarios (para admin o funciones especiales)
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({ isActive: true })
-      .select("name about avatar email createdAt lastLogin")
-      .sort({ createdAt: -1 });
+      .select('name about avatar email createdAt lastLogin')
+      .sort({ createdAt: -1 })
 
     res.json({
-      message: "Usuarios obtenidos exitosamente",
+      message: 'Usuarios obtenidos exitosamente',
       count: users.length,
       users,
-    });
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
 // Desactivar cuenta (soft delete)
 export const deactivateAccount = async (req, res, next) => {
@@ -240,19 +238,19 @@ export const deactivateAccount = async (req, res, next) => {
         isActive: false,
         updatedAt: new Date(),
       },
-      { new: true }
-    );
+      { new: true },
+    )
 
     if (!user) {
       return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
+        message: 'Usuario no encontrado',
+      })
     }
 
     res.json({
-      message: "Cuenta desactivada exitosamente",
-    });
+      message: 'Cuenta desactivada exitosamente',
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}

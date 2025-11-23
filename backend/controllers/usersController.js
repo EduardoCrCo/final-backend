@@ -1,19 +1,19 @@
 import jwt from "jsonwebtoken";
 import UserModel from "../models/usersModel.js";
+import handleFailError from "../utils/handleErrors.js";
 
 // Función para generar JWT token
-const generateToken = (userId) => {
-  return jwt.sign(
+const generateToken = (userId) =>
+  jwt.sign(
     { userId },
     process.env.JWT_SECRET || "tu-clave-secreta-muy-segura",
     { expiresIn: "7d" }
   );
-};
 
 // Registrar nuevo usuario
 export const signup = async (req, res, next) => {
   try {
-    const { name, email, password /*about*/ } = req.body;
+    const { name, email, password /* about */ } = req.body;
 
     // Verificar si el usuario ya existe
     const existingUser = await UserModel.findOne({ email });

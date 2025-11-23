@@ -5,6 +5,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { config } from "dotenv";
 import { errors } from "celebrate";
+import { requestLogger, errorLogger } from "./middleware/logger.js";
 
 // Importar rutas
 import userRoutes from "./routes/users.js";
@@ -76,6 +77,7 @@ app.options("*", (req, res) => {
   res.status(200).send();
 });
 
+app.use(requestLogger);
 // Middleware para parsear JSON
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -98,6 +100,12 @@ app.use("/videos", videoRoutes);
 app.use("/api/youtube", videoRoutes); // Ruta alternativa para compatibilidad
 app.use("/reviews/public", publicReviewRoutes);
 
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("El servidor va a caer");
+  }, 0);
+});
+
 // Rutas protegidas (con middleware de autenticación específico)
 app.use("/users", auth, userRoutes);
 app.use("/playlists", auth, playlistRoutes);
@@ -114,15 +122,21 @@ app.get("/", (req, res) => {
 });
 
 // Middleware de manejo de errores de Celebrate
-app.use(errors());
+//app.use(errors());
 
 // Middleware de manejo de errores personalizado
-app.use(errorHandler);
+//app.use(errorHandler);
 
 // Manejo de rutas no encontradas
 app.all("*", (req, res) => {
   res.status(404).json({ message: "Ruta no encontrada" });
 });
+
+app.use(errorLogger);
+// Middleware de manejo de errores de Celebrate
+app.use(errors());
+// Middleware de manejo de errores personalizado
+app.use(errorHandler);
 
 // Iniciar servidor
 app.listen(PORT, () => {
