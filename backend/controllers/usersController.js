@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import UserModel from "../models/usersModel.js";
 import handleFailError from "../utils/handleErrors.js";
+import AuthService from "../services/authService.js";
 
 // Función para generar JWT token
 const generateToken = (userId) =>
@@ -70,8 +71,11 @@ export const signin = async (req, res, next) => {
       });
     }
 
-    // Buscar usuario por credenciales
-    const user = await UserModel.findUserByCredentials(email, password);
+    // Buscar usuario por credenciales usando el servicio
+    const user = await AuthService.findUserByCredentials(email, password);
+
+    // Actualizar último login
+    await AuthService.updateLastLogin(user._id);
 
     // Generar token
     const token = generateToken(user._id);

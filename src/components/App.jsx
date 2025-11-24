@@ -116,63 +116,45 @@ export const App = () => {
     }
 
     try {
-      // Primero buscar el video en BD por youtubeId
+      // Primero buscar el video en BD por youtubeId usando API centralizada
       console.log(
         "🔍 Frontend: Finding video in database by youtubeId:",
         videoId
       );
 
-      const findResponse = await fetch(
-        `http://localhost:8080/videos/find/${videoId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      let dbVideo;
 
-      if (!findResponse.ok) {
-        throw new Error(`Video not found in database: ${findResponse.status}`);
+      try {
+        const response = await api.findVideoByYoutubeId(videoId);
+        dbVideo = response.video;
+        console.log("📁 Frontend: Video found in DB:", dbVideo._id);
+      } catch (findError) {
+        // Si no existe, guardarlo primero usando API centralizada
+        console.log("💾 Frontend: Video not in DB, saving first...");
+
+        const saveResult = await api.addVideo(video.video);
+        dbVideo = saveResult.video;
+        console.log("✅ Frontend: Video saved to DB:", dbVideo._id);
       }
 
-      const dbVideo = await findResponse.json();
-      console.log("📁 Frontend: Video found in DB:", dbVideo._id);
+      // Ahora hacer like usando el _id de MongoDB con API centralizada
+      const updatedVideo = await api.likeVideo(dbVideo._id);
+      console.log("✅ Frontend: Like saved to backend:", updatedVideo);
 
-      // Ahora hacer like usando el _id de MongoDB
-      const likeResponse = await fetch(
-        `http://localhost:8080/videos/${dbVideo._id}/like`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
+      // Actualizar el estado local
+      setSelectedVideos(
+        selectedVideos.map((v) =>
+          v.video.videoId === videoId ? { ...v, liked: !v.liked } : v
+        )
       );
 
-      if (likeResponse.ok) {
-        const updatedVideo = await likeResponse.json();
-        console.log("✅ Frontend: Like saved to backend:", updatedVideo);
-
-        // Actualizar el estado local
-        setSelectedVideos(
-          selectedVideos.map((v) =>
-            v.video.videoId === videoId ? { ...v, liked: !v.liked } : v
-          )
-        );
-
-        toast.success(
-          video.liked ? "Like removido" : "¡Video marcado como favorito!",
-          {
-            position: "bottom-center",
-            autoClose: 1500,
-          }
-        );
-      } else {
-        throw new Error(`Error en like: ${likeResponse.status}`);
-      }
+      toast.success(
+        video.liked ? "Like removido" : "¡Video marcado como favorito!",
+        {
+          position: "bottom-center",
+          autoClose: 1500,
+        }
+      );
     } catch (error) {
       console.error("❌ Frontend: Error handling like:", error);
       toast.error("Error al procesar el like", {

@@ -1,14 +1,17 @@
-import mongoose from 'mongoose'
-import bcrypt from 'bcryptjs'
-import validator from 'validator'
+import mongoose from "mongoose";
+import {
+  hashPasswordMiddleware,
+  updateTimestampMiddleware,
+} from "../middleware/modelMiddleware.js";
+import { comparePassword } from "../services/hashService.js";
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'El nombre es requerido'],
-      minlength: [2, 'El nombre debe tener al menos 2 caracteres'],
-      maxlength: [30, 'El nombre no puede tener más de 30 caracteres'],
+      required: [true, "El nombre es requerido"],
+      minlength: [2, "El nombre debe tener al menos 2 caracteres"],
+      maxlength: [30, "El nombre no puede tener más de 30 caracteres"],
       trim: true,
     },
     // about: {
@@ -21,40 +24,37 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default:
-        'https://e7.pngegg.com/pngimages/487/879/png-clipart-computer-icons-question-mark-question-miscellaneous-blue.png',
+        "https://e7.pngegg.com/pngimages/487/879/png-clipart-computer-icons-question-mark-question-miscellaneous-blue.png",
       validate: {
         validator(v) {
           return /^(http|https):\/{2}[._~:\/?%#\]@!$&'()*+,;=A-Za-z0-9\-]+/.test(
-            v,
-          )
+            v
+          );
         },
         message: (props) => `${props.value} debe ser una URL válida`,
       },
     },
     email: {
       type: String,
-      required: [true, 'El email es requerido'],
+      required: [true, "El email es requerido"],
       unique: true,
       lowercase: true,
       trim: true,
       index: true,
       validate: {
-        // validator: function (v) {
-        //   return validator.isEmail(v);
-        // },
         validator(v) {
-          return /^((?!\.)[\w\-_.]*[^.])(@[\w-]+)(\.[\w-]+(\.[\w-]+)?[^.\W])$/.test(
-            v,
-          )
+          return /^((?!\.)\w\-_.]*[^.])(@[\w-]+)(\.[\w-]+(\.[\w-]+)?[^\.\W])$/.test(
+            v
+          );
         },
         message: (props) => `${props.value} debe ser un email válido`,
       },
     },
     password: {
       type: String,
-      required: [true, 'La contraseña es requerida'],
-      minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
-      select: false, // No incluir la contraseña por defecto en las consultas
+      required: [true, "La contraseña es requerida"],
+      minlength: [8, "La contraseña debe tener al menos 8 caracteres"],
+      select: false,
     },
     isActive: {
       type: Boolean,
@@ -77,64 +77,28 @@ const userSchema = new mongoose.Schema(
     timestamps: true, // Añade automáticamente createdAt y updatedAt
     toJSON: {
       transform(doc, ret) {
-        delete ret.password
-        delete ret.__v
-        return ret
+        delete ret.password;
+        delete ret.__v;
+        return ret;
       },
     },
-  },
-)
-
-// Middleware para hashear la contraseña antes de guardar
-userSchema.pre('save', async function (next) {
-  // Solo hashear la contraseña si ha sido modificada (o es nueva)
-  if (!this.isModified('password')) return next()
-
-  try {
-    // Hashear la contraseña con costo de 12
-    const salt = await bcrypt.genSalt(12)
-    this.password = await bcrypt.hash(this.password, salt)
-    next()
-  } catch (error) {
-    next(error)
   }
-})
+);
 
-// Método para verificar contraseña
+// Aplicar middleware de hashing (separado del modelo)
+userSchema.pre("save", hashPasswordMiddleware);
+
+// Método para verificar contraseña (delegando al servicio)
 userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password)
-}
+  return await comparePassword(candidatePassword, this.password);
+};
 
-// Método estático para encontrar usuario por credenciales
-userSchema.statics.findUserByCredentials = async function (email, password) {
-  const user = await this.findOne({ email, isActive: true }).select(
-    '+password',
-  )
-
-  if (!user) {
-    throw new Error('Email o contraseña incorrectos')
-  }
-
-  const isMatch = await user.comparePassword(password)
-  if (!isMatch) {
-    throw new Error('Email o contraseña incorrectos')
-  }
-
-  // Actualizar último login
-  user.lastLogin = new Date()
-  await user.save()
-
-  return user
-}
-
-// Middleware para actualizar updatedAt en cada modificación
-userSchema.pre(['updateOne', 'findOneAndUpdate'], function () {
-  this.set({ updatedAt: new Date() })
-})
+// Aplicar middleware de timestamp
+userSchema.pre(["updateOne", "findOneAndUpdate"], updateTimestampMiddleware);
 
 // Índices para optimizar consultas
-userSchema.index({ isActive: 1 })
+userSchema.index({ isActive: 1 });
 
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model("User", userSchema);
 
-export default User
+export default User;

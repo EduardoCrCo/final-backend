@@ -159,6 +159,18 @@ class Api {
     return this._makeRequest(`videos/${youtubeId}`, "DELETE");
   }
 
+  findVideoByYoutubeId(youtubeId) {
+    return this._makeRequest(`videos/find/${youtubeId}`);
+  }
+
+  addVideo(videoData) {
+    return this._makeRequest("videos/add", "POST", videoData);
+  }
+
+  likeVideo(videoId) {
+    return this._makeRequest(`videos/${videoId}/like`, "POST");
+  }
+
   getReviewStats() {
     return this._makeRequest("reviews/stats");
   }
