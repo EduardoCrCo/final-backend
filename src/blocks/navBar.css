@@ -14,9 +14,6 @@
   margin: 0;
   padding: 0 10px;
 }
-/* .navbar li {
-  list-style: none;
-} */
 
 .navbar__link-home {
   background: none;
@@ -29,6 +26,8 @@
   text-decoration: none;
 }
 .navbar__link-home:hover {
+  transition: ease-in-out 0.3s;
+  text-shadow: 0 0 5px #747bff, 0 0 10px #747bff, 0 0 20px #747bff;
   color: #747bff;
 }
 
@@ -41,6 +40,11 @@
   line-height: 24px;
   position: relative;
   text-decoration: none;
+}
+.navbar__link:hover {
+  transition: ease-in-out 0.3s;
+  text-shadow: 0 0 5px #747bff, 0 0 10px #747bff, 0 0 20px #747bff;
+  color: #747bff;
 }
 
 .navbar__link-active {
@@ -77,10 +81,7 @@
   padding: 8px;
 }
 
-/* ===================================================================
-   RESPONSIVE DESIGN - TABLET (641px - 920px)
-   =================================================================== */
-
+/* RESPONSIVE DESIGN - TABLET (641px - 920px)*/
 @media screen and (min-width: 641px) and (max-width: 920px) {
   .navbar__list {
     gap: 15px;
@@ -92,10 +93,7 @@
   }
 }
 
-/* ===================================================================
-   RESPONSIVE DESIGN - MOBILE (max-width: 640px)
-   =================================================================== */
-
+/* =RESPONSIVE DESIGN - MOBILE (max-width: 640px)*/
 @media screen and (max-width: 640px) {
   .navbar {
     position: fixed;
