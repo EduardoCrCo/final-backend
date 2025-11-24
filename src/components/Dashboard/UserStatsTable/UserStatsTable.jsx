@@ -17,6 +17,18 @@ export const UserStatsTable = () => {
     }).format(new Date(date));
   };
 
+  const formatRating = (rating) => {
+    if (
+      rating === null ||
+      rating === undefined ||
+      isNaN(rating) ||
+      rating === 0
+    ) {
+      return "0.0";
+    }
+    return typeof rating === "number" ? rating.toFixed(1) : "0.0";
+  };
+
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -220,50 +232,220 @@ export const UserStatsTable = () => {
             </div>
           </div>
         ) : (
-          <table className="user-stats-table__table">
-            <thead className="user-stats-table__table-header">
-              <tr>
-                <th className="user-stats-table__header-cell">Usuario</th>
-                <th className="user-stats-table__header-cell">Playlists</th>
-                <th className="user-stats-table__header-cell">Reseñas</th>
-                <th className="user-stats-table__header-cell">Estadísticas</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usersStats.map((userStat) => (
-                <tr
-                  key={userStat.user.id}
-                  className="user-stats-table__table-row"
-                >
-                  <td className="user-stats-table__table-cell">
-                    {renderUserInfo(userStat.user)}
-                  </td>
-                  <td className="user-stats-table__table-cell">
-                    {renderPlaylists(userStat.playlists)}
-                  </td>
-                  <td className="user-stats-table__table-cell">
-                    {renderReviews(userStat.reviews)}
-                  </td>
-                  <td className="user-stats-table__table-cell">
-                    <div style={{ fontSize: "0.85rem", color: "#374151" }}>
-                      <div>
-                        📝 {userStat.stats.totalReviews} reseña
-                        {userStat.stats.totalReviews !== 1 ? "s" : ""}
-                      </div>
-                      <div>
-                        📋 {userStat.stats.totalPlaylists} playlist
-                        {userStat.stats.totalPlaylists !== 1 ? "s" : ""}
-                      </div>
-                      <div>
-                        🎬 {userStat.stats.totalVideosInPlaylists} videos
-                      </div>
-                      <div>⭐ Promedio: {userStat.stats.averageRating}/5</div>
-                    </div>
-                  </td>
+          <>
+            {/* Desktop Table */}
+            <table className="user-stats-table__table">
+              <thead className="user-stats-table__table-header">
+                <tr>
+                  <th className="user-stats-table__header-cell">Usuario</th>
+                  <th className="user-stats-table__header-cell">Playlists</th>
+                  <th className="user-stats-table__header-cell">Reseñas</th>
+                  <th className="user-stats-table__header-cell">
+                    Estadísticas
+                  </th>
                 </tr>
+              </thead>
+              <tbody>
+                {usersStats.map((userStat) => (
+                  <tr
+                    key={userStat.user.id}
+                    className="user-stats-table__table-row"
+                  >
+                    <td className="user-stats-table__table-cell">
+                      {renderUserInfo(userStat.user)}
+                    </td>
+                    <td className="user-stats-table__table-cell">
+                      {renderPlaylists(userStat.playlists)}
+                    </td>
+                    <td className="user-stats-table__table-cell">
+                      {renderReviews(userStat.reviews)}
+                    </td>
+                    <td className="user-stats-table__table-cell">
+                      <div style={{ fontSize: "0.85rem", color: "#374151" }}>
+                        <div>
+                          📝 {userStat.stats.totalReviews} reseña
+                          {userStat.stats.totalReviews !== 1 ? "s" : ""}
+                        </div>
+                        <div>
+                          📋 {userStat.stats.totalPlaylists} playlist
+                          {userStat.stats.totalPlaylists !== 1 ? "s" : ""}
+                        </div>
+                        <div>
+                          🎬 {userStat.stats.totalVideosInPlaylists} videos
+                        </div>
+                        <div>
+                          ⭐ Promedio:{" "}
+                          {formatRating(userStat.stats.averageRating)}/5
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Mobile Card Layout */}
+            <div className="user-stats-table__mobile-cards">
+              {usersStats.map((userStat) => (
+                <div
+                  key={userStat.user.id}
+                  className="user-stats-table__mobile-card"
+                >
+                  {/* Card Header with User Info */}
+                  <div className="user-stats-table__card-header">
+                    <img
+                      src={userStat.user.avatar}
+                      alt={userStat.user.name}
+                      className="user-stats-table__card-avatar"
+                      onError={(e) => {
+                        e.target.src =
+                          "https://e7.pngegg.com/pngimages/487/879/png-clipart-computer-icons-question-mark-question-miscellaneous-blue.png";
+                      }}
+                    />
+                    <div className="user-stats-table__card-user-info">
+                      <h4 className="user-stats-table__card-name">
+                        {userStat.user.name}
+                      </h4>
+                      <p className="user-stats-table__card-email">
+                        {userStat.user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Playlists Section */}
+                  <div className="user-stats-table__card-section">
+                    <h5 className="user-stats-table__card-section-title">
+                      📋 Playlists ({userStat.playlists.length})
+                    </h5>
+                    {userStat.playlists.length === 0 ? (
+                      <div
+                        style={{
+                          color: "#94a3b8",
+                          fontStyle: "italic",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        Sin playlists
+                      </div>
+                    ) : (
+                      <div className="user-stats-table__card-playlists">
+                        {userStat.playlists.map((playlist) => (
+                          <div
+                            key={playlist.id}
+                            className="user-stats-table__card-playlist"
+                          >
+                            <span className="user-stats-table__card-playlist-name">
+                              {playlist.name}
+                            </span>
+                            <span className="user-stats-table__card-playlist-count">
+                              {playlist.videoCount} video
+                              {playlist.videoCount !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Reviews Section */}
+                  <div className="user-stats-table__card-section">
+                    <h5 className="user-stats-table__card-section-title">
+                      💬 Reseñas ({userStat.reviews.length})
+                    </h5>
+                    {userStat.reviews.length === 0 ? (
+                      <div
+                        style={{
+                          color: "#94a3b8",
+                          fontStyle: "italic",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        Sin reseñas
+                      </div>
+                    ) : (
+                      <div className="user-stats-table__card-reviews">
+                        {userStat.reviews.slice(0, 2).map((review) => (
+                          <div
+                            key={review.id}
+                            className="user-stats-table__card-review"
+                          >
+                            <div className="user-stats-table__card-review-title">
+                              {review.videoTitle}
+                            </div>
+                            <div className="user-stats-table__review-rating">
+                              {renderStars(review.rating)}
+                              <span
+                                style={{
+                                  marginLeft: "6px",
+                                  fontSize: "0.7rem",
+                                  color: "#6b7280",
+                                }}
+                              >
+                                {review.rating}/5
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                        {userStat.reviews.length > 2 && (
+                          <div
+                            style={{
+                              textAlign: "center",
+                              padding: "4px",
+                              color: "#6b7280",
+                              fontSize: "0.75rem",
+                            }}
+                          >
+                            +{userStat.reviews.length - 2} más
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Stats Section */}
+                  <div className="user-stats-table__card-section">
+                    <h5 className="user-stats-table__card-section-title">
+                      📊 Estadísticas
+                    </h5>
+                    <div className="user-stats-table__card-stats">
+                      <div className="user-stats-table__card-stat-item">
+                        <span className="user-stats-table__card-stat-number">
+                          {userStat.stats.totalReviews}
+                        </span>
+                        <span className="user-stats-table__card-stat-label">
+                          Reseñas
+                        </span>
+                      </div>
+                      <div className="user-stats-table__card-stat-item">
+                        <span className="user-stats-table__card-stat-number">
+                          {userStat.stats.totalPlaylists}
+                        </span>
+                        <span className="user-stats-table__card-stat-label">
+                          Playlists
+                        </span>
+                      </div>
+                      <div className="user-stats-table__card-stat-item">
+                        <span className="user-stats-table__card-stat-number">
+                          {userStat.stats.totalVideosInPlaylists}
+                        </span>
+                        <span className="user-stats-table__card-stat-label">
+                          Videos
+                        </span>
+                      </div>
+                      <div className="user-stats-table__card-stat-item">
+                        <span className="user-stats-table__card-stat-number">
+                          {formatRating(userStat.stats.averageRating)}
+                        </span>
+                        <span className="user-stats-table__card-stat-label">
+                          Rating
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
 

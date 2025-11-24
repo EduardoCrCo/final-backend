@@ -12,9 +12,10 @@ const validateURL = (value, helpers) => {
 // Validaciones para autenticación
 export const signupValidation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).messages({
+    name: Joi.string().min(2).max(30).required().messages({
       "string.min": "El nombre debe tener al menos 2 caracteres",
       "string.max": "El nombre no puede tener más de 30 caracteres",
+      "any.required": "El nombre es requerido",
     }),
     email: Joi.string().email().required().messages({
       "string.email": "Debe ser un email válido",
@@ -24,7 +25,7 @@ export const signupValidation = celebrate({
       "string.min": "La contraseña debe tener al menos 8 caracteres",
       "any.required": "La contraseña es requerida",
     }),
-    about: Joi.string().min(2).max(30).messages({
+    about: Joi.string().min(2).max(30).optional().allow("").messages({
       "string.min": "La descripción debe tener al menos 2 caracteres",
       "string.max": "La descripción no puede tener más de 30 caracteres",
     }),

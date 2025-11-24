@@ -133,6 +133,32 @@ app.all("*", (req, res) => {
 });
 
 app.use(errorLogger);
+
+// Middleware personalizado para errores de validación de Celebrate
+app.use((err, req, res, next) => {
+  if (err.joi) {
+    // Es un error de validación de Joi (Celebrate)
+    const validationErrors = {};
+    err.joi.details.forEach((detail) => {
+      const field = detail.path.join(".");
+      validationErrors[field] = detail.message;
+    });
+
+    console.log("❌ Validation error:", validationErrors);
+
+    return res.status(400).json({
+      message: "Error de validación",
+      errors: validationErrors,
+      details: err.joi.details.map((detail) => ({
+        field: detail.path.join("."),
+        message: detail.message,
+        value: detail.context.value,
+      })),
+    });
+  }
+  next(err);
+});
+
 // Middleware de manejo de errores de Celebrate
 app.use(errors());
 // Middleware de manejo de errores personalizado

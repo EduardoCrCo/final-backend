@@ -43,9 +43,8 @@ const userSchema = new mongoose.Schema(
       index: true,
       validate: {
         validator(v) {
-          return /^((?!\.)\w\-_.]*[^.])(@[\w-]+)(\.[\w-]+(\.[\w-]+)?[^\.\W])$/.test(
-            v
-          );
+          // Usar una regex más estándar y robusta para emails
+          return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
         },
         message: (props) => `${props.value} debe ser un email válido`,
       },

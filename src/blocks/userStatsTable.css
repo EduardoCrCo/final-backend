@@ -349,13 +349,13 @@
 /* Mobile styles: max-width 640px */
 @media (max-width: 640px) {
   .user-stats-table {
-    padding: 16px;
+    padding: 12px;
     margin: 12px 0;
     border-radius: 8px;
   }
 
   .user-stats-table__header {
-    padding: 16px;
+    padding: 16px 12px;
     flex-direction: column;
     gap: 12px;
     text-align: center;
@@ -373,82 +373,183 @@
   }
 
   .user-stats-table__global-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
 
   .user-stats-table__stat-item {
-    padding: 16px 8px;
+    padding: 12px 8px;
   }
 
   .user-stats-table__stat-number {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 
+  .user-stats-table__stat-label {
+    font-size: 0.8rem;
+  }
+
+  /* Hide table and show card layout on mobile */
   .user-stats-table__container {
-    max-height: 60vh;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
 
   .user-stats-table__table {
-    font-size: 0.75rem;
-    min-width: 600px; /* Ensure horizontal scroll on very small screens */
+    display: none;
   }
 
-  .user-stats-table__table-cell,
-  .user-stats-table__header-cell {
-    padding: 8px 6px;
-    white-space: nowrap;
+  /* Mobile card layout */
+  .user-stats-table__mobile-cards {
+    display: block;
   }
 
-  .user-stats-table__user-info {
-    min-width: 140px;
+  .user-stats-table__mobile-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .user-stats-table__mobile-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+  }
+
+  .user-stats-table__card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .user-stats-table__card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  .user-stats-table__card-user-info {
+    flex-grow: 1;
+  }
+
+  .user-stats-table__card-name {
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+  }
+
+  .user-stats-table__card-email {
+    color: #64748b;
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .user-stats-table__card-section {
+    margin-bottom: 16px;
+  }
+
+  .user-stats-table__card-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .user-stats-table__card-section-title {
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 8px 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .user-stats-table__card-playlists {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: 8px;
   }
 
-  .user-stats-table__user-avatar {
-    width: 32px;
-    height: 32px;
+  .user-stats-table__card-playlist {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .user-stats-table__user-name {
+  .user-stats-table__card-playlist-name {
+    font-weight: 500;
+    color: #374151;
+    margin: 0;
+    font-size: 0.85rem;
+    flex-grow: 1;
+  }
+
+  .user-stats-table__card-playlist-count {
+    background: #4f46e5;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .user-stats-table__card-reviews {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .user-stats-table__card-review {
+    background: #fef7f0;
+    border: 1px solid #fed7aa;
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+
+  .user-stats-table__card-review-title {
+    font-weight: 500;
+    color: #9a3412;
+    margin: 0 0 4px 0;
     font-size: 0.8rem;
-    line-height: 1.2;
+    line-height: 1.3;
   }
 
-  .user-stats-table__user-email {
-    font-size: 0.7rem;
+  .user-stats-table__card-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
-  .user-stats-table__playlists-info,
-  .user-stats-table__reviews-info {
-    min-width: 160px;
+  .user-stats-table__card-stat-item {
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 6px;
   }
 
-  .user-stats-table__playlist-item,
-  .user-stats-table__review-item {
-    padding: 6px 8px;
-    margin-bottom: 4px;
+  .user-stats-table__card-stat-number {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4f46e5;
+    margin-bottom: 2px;
   }
 
-  .user-stats-table__playlist-name {
+  .user-stats-table__card-stat-label {
     font-size: 0.75rem;
-  }
-
-  .user-stats-table__playlist-count {
-    font-size: 0.7rem;
-    padding: 1px 6px;
-  }
-
-  .user-stats-table__review-title {
-    font-size: 0.75rem;
-  }
-
-  .user-stats-table__star {
-    font-size: 0.7rem;
+    color: #64748b;
   }
 
   .user-stats-table__empty-state {
@@ -466,5 +567,85 @@
 
   .user-stats-table__empty-submessage {
     font-size: 0.85rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .user-stats-table {
+    padding: 8px;
+    margin: 8px 0;
+  }
+
+  .user-stats-table__header {
+    padding: 12px 8px;
+  }
+
+  .user-stats-table__global-stats {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .user-stats-table__mobile-card {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .user-stats-table__card-header {
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+
+  .user-stats-table__card-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .user-stats-table__card-name {
+    font-size: 0.9rem;
+  }
+
+  .user-stats-table__card-email {
+    font-size: 0.8rem;
+  }
+
+  .user-stats-table__card-section {
+    margin-bottom: 12px;
+  }
+
+  .user-stats-table__card-section-title {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+
+  .user-stats-table__card-playlist,
+  .user-stats-table__card-review {
+    padding: 8px 10px;
+    margin-bottom: 4px;
+  }
+
+  .user-stats-table__card-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .user-stats-table__card-stat-item {
+    padding: 6px 4px;
+  }
+
+  .user-stats-table__card-stat-number {
+    font-size: 1rem;
+  }
+
+  .user-stats-table__card-stat-label {
+    font-size: 0.7rem;
+  }
+}
+
+/* Hide mobile cards on larger screens */
+@media (min-width: 641px) {
+  .user-stats-table__mobile-cards {
+    display: none;
   }
 }

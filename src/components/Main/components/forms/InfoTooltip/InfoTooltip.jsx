@@ -1,4 +1,8 @@
 import { Popup } from "../../Popup/Popup";
+import Union from "../../../../../images/Union.png";
+import UnionFail from "../../../../../images/UnionFail.png";
+import "../../../../../blocks/InfoTooltip.css";
+import "../../../../../blocks/popup.css";
 
 export const InfoTooltip = ({ message, onClose }) => {
   // Separar el mensaje en dos renglones si contiene el separador especial
@@ -24,36 +28,14 @@ export const InfoTooltip = ({ message, onClose }) => {
             />
           </svg>
         </div>
-        <p
-          className="info-tooltip__message"
-          style={{
-            fontWeight: 600,
-            fontSize: "1.2rem",
-            color: "#222",
-            marginBottom: 18,
-          }}
-        >
+        <p className="info-tooltip__message">
           {lines.map((line, idx) => (
             <span key={idx} style={{ display: "block" }}>
               {line}
             </span>
           ))}
         </p>
-        <button
-          className="info-tooltip__close"
-          style={{
-            fontSize: "1.1rem",
-            padding: "10px 32px",
-            background: "#4caf50",
-            color: "#fff",
-            borderRadius: 8,
-            border: "none",
-            marginTop: 8,
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(76,175,80,0.12)",
-          }}
-          onClick={onClose}
-        >
+        <button className="info-tooltip__close-button" onClick={onClose}>
           OK
         </button>
       </div>

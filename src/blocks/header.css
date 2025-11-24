@@ -1,10 +1,10 @@
 .header__user-name-button {
-  background: none;
+  background-color: rgba(255, 255, 252, 0.175);
   border-radius: 20px;
   padding: 6px 12px;
   font-weight: "inter-medium", Arial, Helvetica, sans-serif;
   cursor: pointer;
-  border: solid 1px #00000054;
+  border: solid 1px #fff;
   transition: border-color 0.25s;
 }
 
@@ -26,8 +26,8 @@
 
 .header__logout-btn {
   margin-left: 0;
-  background-color: rgba(171, 60, 60, 0.175);
-  border: solid 1px #00000054;
+  background-color: rgba(255, 255, 252, 0.175);
+  border: solid 1px #fff;
   border-radius: 15px;
   padding: 4px 10px;
   cursor: pointer;

@@ -14,7 +14,22 @@ const generateToken = (userId) =>
 // Registrar nuevo usuario
 export const signup = async (req, res, next) => {
   try {
-    const { name, email, password /* about */ } = req.body;
+    // Log para debugging
+    console.log("📝 Signup request body:", JSON.stringify(req.body, null, 2));
+
+    const { name, email, password, about = "" } = req.body;
+
+    // Validar que los campos requeridos estén presentes
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "Faltan campos requeridos",
+        details: {
+          name: !name ? "El nombre es requerido" : null,
+          email: !email ? "El email es requerido" : null,
+          password: !password ? "La contraseña es requerida" : null,
+        },
+      });
+    }
 
     // Verificar si el usuario ya existe
     const existingUser = await UserModel.findOne({ email });
