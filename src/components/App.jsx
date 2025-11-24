@@ -14,11 +14,9 @@ import { LoginForm } from "./Main/components/forms/LoginForm/LoginForm";
 import { PlaylistModal } from "./PlaylistModal/PlaylistModal";
 import * as auth from "../utils/auth";
 import api from "../utils/api";
-import { useSecureAuth } from "../hooks/useSecureAuth";
 import { migrateAuthData, validateCleanUserData } from "../utils/authMigration";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-//import { set } from "mongoose";
 
 export const App = () => {
   const navigate = useNavigate();
@@ -52,57 +50,30 @@ export const App = () => {
   }, [selectedVideos]);
 
   const handleDeleteVideo = async (id) => {
-    console.log("🗑️ Frontend: Deleting video:", id);
-
     try {
-      // Intentar eliminar del backend primero
-      const result = await api.deleteVideo(id);
-      console.log("✅ Frontend: Video deleted from backend:", result);
+      await api.deleteVideo(id);
 
-      // Eliminar del estado local
       setSelectedVideos(selectedVideos.filter((v) => v.video.videoId !== id));
-
-      console.log(`✅ Frontend: Video ${id} eliminated from grid and database`);
-
-      // Mostrar información de limpieza adicional si aplica
-      if (result.deletedReviews > 0 || result.updatedPlaylists > 0) {
-        console.log(
-          `📊 Frontend: Also cleaned ${result.deletedReviews} reviews and ${result.updatedPlaylists} playlists`
-        );
-      }
     } catch (error) {
-      console.error("❌ Frontend: Error deleting from backend:", error.message);
+      console.error("Error deleting from backend:", error.message);
 
-      // Si el video no existe en el backend (video no guardado), eliminarlo solo del estado local
       if (
         error.message.includes("Video no encontrado") ||
         error.message.includes("not found")
       ) {
-        console.log(
-          "📝 Frontend: Video not in database, removing only from local state"
-        );
-
-        // Eliminar del estado local (video de búsqueda no guardado)
         setSelectedVideos(selectedVideos.filter((v) => v.video.videoId !== id));
-
-        console.log(
-          `✅ Frontend: Video ${id} eliminated from grid (was not in database)`
-        );
       } else {
-        // Solo mostrar error para errores reales (permisos, servidor, etc.)
-        console.error("❌ Frontend: Real error deleting video:", error.message);
+        console.error("Real error deleting video:", error.message);
         alert(`Error al eliminar el video: ${error.message}`);
       }
     }
   };
 
   const handleLikeVideo = async (videoId) => {
-    console.log("💖 Frontend: Toggling like for video:", videoId);
-
     // Buscar el video en selectedVideos
     const video = selectedVideos.find((v) => v.video.videoId === videoId);
     if (!video) {
-      console.error("❌ Video not found in selectedVideos");
+      console.error("Video not found in selectedVideos");
       return;
     }
 
@@ -116,30 +87,19 @@ export const App = () => {
     }
 
     try {
-      // Primero buscar el video en BD por youtubeId usando API centralizada
-      console.log(
-        "🔍 Frontend: Finding video in database by youtubeId:",
-        videoId
-      );
-
       let dbVideo;
-
+      // Primero buscar el video en BD por youtubeId usando API centralizada
       try {
         const response = await api.findVideoByYoutubeId(videoId);
         dbVideo = response.video;
-        console.log("📁 Frontend: Video found in DB:", dbVideo._id);
       } catch (findError) {
         // Si no existe, guardarlo primero usando API centralizada
-        console.log("💾 Frontend: Video not in DB, saving first...");
-
         const saveResult = await api.addVideo(video.video);
         dbVideo = saveResult.video;
-        console.log("✅ Frontend: Video saved to DB:", dbVideo._id);
       }
 
       // Ahora hacer like usando el _id de MongoDB con API centralizada
-      const updatedVideo = await api.likeVideo(dbVideo._id);
-      console.log("✅ Frontend: Like saved to backend:", updatedVideo);
+      await api.likeVideo(dbVideo._id);
 
       // Actualizar el estado local
       setSelectedVideos(
@@ -188,7 +148,10 @@ export const App = () => {
 
   const handleVideoAddedToPlaylist = (playlistId, video) => {
     console.log(`Video "${video.title}" agregado a playlist ${playlistId}`);
-    // Aquí podrías mostrar una notificación de éxito
+    toast.success(`Video "${video.title}" agregado a la playlist`, {
+      position: "bottom-center",
+      autoClose: 2000,
+    });
   };
 
   const [popupType, setPopupType] = useState(null);
@@ -197,7 +160,7 @@ export const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(() => {
-    // 🔄 Migrar datos existentes para seguridad
+    // Migrar datos existentes para seguridad
     migrateAuthData();
 
     // Try to get user info from API (if token is valid)
@@ -226,7 +189,7 @@ export const App = () => {
             if (savedUser) {
               try {
                 const parsedUser = JSON.parse(savedUser);
-                // Limpiar token si existe en usuario guardado
+
                 const { token: _, ...cleanSavedUser } = parsedUser;
                 setCurrentUser(cleanSavedUser);
               } catch (parseErr) {
@@ -241,7 +204,7 @@ export const App = () => {
           // Sin token pero con usuario guardado
           try {
             const parsedUser = JSON.parse(savedUser);
-            // Limpiar token si existe en usuario guardado
+
             const { token: _, ...cleanSavedUser } = parsedUser;
             setCurrentUser(cleanSavedUser);
           } catch (parseErr) {
@@ -249,7 +212,6 @@ export const App = () => {
             setCurrentUser(null);
           }
         } else {
-          // Sin token ni usuario
           setCurrentUser(null);
         }
       } catch (err) {
@@ -284,13 +246,10 @@ export const App = () => {
     try {
       const data = await auth.authorize({ email, password });
       if (data && data.token) {
-        // ✅ Guardar token de forma segura y separada
         localStorage.setItem("jwt", data.token);
 
-        // Pedimos la información del usuario con el token
         const user = await api.getUserInfo();
 
-        // ✅ Usuario limpio SIN token (más seguro)
         const cleanUser = {
           _id: user._id,
           name: user.name,
@@ -302,7 +261,7 @@ export const App = () => {
         setCurrentUser(cleanUser);
         localStorage.setItem("currentUser", JSON.stringify(cleanUser));
 
-        // 🔧 Forzar actualización de playlists después del login
+        //Forzar actualización de playlists después del login
         setTimeout(() => {
           window.dispatchEvent(new Event("user-logged-in"));
         }, 100);
@@ -336,12 +295,9 @@ export const App = () => {
   const handleUpdateAvatar = async (avatarUrl) => {
     try {
       const response = await api.updateAvatar(avatarUrl);
-
-      // El backend devuelve { message: "...", user: { ... } }
       const updatedUser = response.user || response;
 
       setCurrentUser((prev) => {
-        // ✅ Usuario limpio SIN token
         const cleanUser = {
           _id: prev._id,
           name: prev.name,
@@ -363,16 +319,14 @@ export const App = () => {
 
   const handleUpdateUser = async ({ name, about }) => {
     try {
-      // ✅ Manejar about undefined/null como string vacío
+      // Manejar about undefined/null como string vacío
       const cleanAbout = about || "";
 
       const response = await api.updateUser(name, cleanAbout);
 
-      // El backend devuelve { message: "...", user: { ... } }
       const updatedUser = response.user || response;
 
       setCurrentUser((prev) => {
-        // ✅ Usuario limpio SIN token
         const cleanUser = {
           _id: prev._id,
           name: updatedUser.name || name,

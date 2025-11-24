@@ -23,7 +23,7 @@
   font-size: 5rem;
   font-family: "Inter-SemiBold";
   text-shadow: 0 2px 8px rgba(236, 229, 229, 0.5);
-  margin: 150px auto 70px;
+  margin: 0 auto 70px;
   text-align: center;
 }
 
@@ -45,14 +45,14 @@
   min-height: 30vh;
   padding-bottom: 40px;
   /* position: relative; */
-  overflow: hidden;
+  overflow: visible;
   /* border: 1px solid blue; */
 }
 
 /* Hero Base */
 .hero {
   width: 100vw;
-  min-height: 30vh;
+  min-height: 40vh;
   position: relative;
   display: flex;
   align-items: center;
@@ -83,7 +83,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
   color: #fff;
@@ -97,6 +97,8 @@
   font-weight: "inter-semiBold";
   text-shadow: 0 2px 8px rgb(255, 242, 242);
   margin-bottom: 0.3rem;
+  padding-top: 0;
+  margin-top: 0;
 }
 
 /* Subtítulo */

@@ -194,14 +194,55 @@ export const PlaylistModal = ({
                                 <span>{v.title}</span>
                                 <button
                                   onClick={() => {
-                                    const videoId =
-                                      v.videoId ||
-                                      (v.thumbnails &&
-                                        v.thumbnails[0] &&
+                                    // Extraer videoId correctamente según la estructura real
+                                    let videoId = null;
+
+                                    // Prioridad 1: youtubeId (estructura más común)
+                                    if (v.youtubeId) {
+                                      videoId = v.youtubeId;
+                                    }
+                                    // Prioridad 2: videoId directo
+                                    else if (v.videoId) {
+                                      videoId = v.videoId;
+                                    }
+                                    // Prioridad 3: estructura anidada video.videoId
+                                    else if (v.video && v.video.videoId) {
+                                      videoId = v.video.videoId;
+                                    }
+                                    // Prioridad 4: estructura anidada video.youtubeId
+                                    else if (v.video && v.video.youtubeId) {
+                                      videoId = v.video.youtubeId;
+                                    }
+                                    // Fallback: extraer de thumbnail si es necesario
+                                    else if (
+                                      v.thumbnails &&
+                                      v.thumbnails[0] &&
+                                      v.thumbnails[0].url
+                                    ) {
+                                      const match =
                                         v.thumbnails[0].url.match(
                                           /\/vi\/([^/]+)\//
-                                        )?.[1]);
-                                    handleDeleteVideo(playlist._id, videoId);
+                                        );
+                                      videoId = match ? match[1] : null;
+                                    }
+
+                                    if (videoId) {
+                                      console.log(
+                                        "🗑️ Eliminando video:",
+                                        videoId,
+                                        "de playlist:",
+                                        playlist._id
+                                      );
+                                      handleDeleteVideo(playlist._id, videoId);
+                                    } else {
+                                      console.error(
+                                        "❌ No se pudo extraer videoId de:",
+                                        v
+                                      );
+                                      toast.error(
+                                        "No se pudo identificar el video"
+                                      );
+                                    }
                                   }}
                                   className="playlist-modal__btn playlist-modal__btn--small"
                                 >

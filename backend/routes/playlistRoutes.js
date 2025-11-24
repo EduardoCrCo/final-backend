@@ -10,6 +10,7 @@ import {
   createPlaylistValidation,
   addVideoToPlaylistValidation,
   validateObjectId,
+  removeVideoFromPlaylistValidation,
 } from "../middleware/validation.js";
 
 const router = Router();
@@ -28,7 +29,7 @@ router.post(
 );
 router.delete(
   "/:id/remove/:videoId",
-  validateObjectId,
+  removeVideoFromPlaylistValidation,
   removeVideoFromPlaylist
 );
 

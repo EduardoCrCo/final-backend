@@ -181,3 +181,19 @@ export const validateVideoId = celebrate({
     }),
   }),
 });
+
+// Validación específica para remover video de playlist (acepta YouTube ID)
+export const removeVideoFromPlaylistValidation = celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex().length(24).required().messages({
+      "string.hex": "ID de playlist inválido",
+      "string.length": "ID de playlist debe tener 24 caracteres",
+      "any.required": "ID de playlist es requerido",
+    }),
+    videoId: Joi.string().min(1).max(50).required().messages({
+      "string.min": "Video ID es requerido",
+      "string.max": "Video ID demasiado largo",
+      "any.required": "Video ID es requerido",
+    }),
+  }),
+});
