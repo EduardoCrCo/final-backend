@@ -1,6 +1,4 @@
 import { Popup } from "../../Popup/Popup";
-import Union from "../../../../../images/Union.png";
-import UnionFail from "../../../../../images/UnionFail.png";
 import "../../../../../blocks/InfoTooltip.css";
 import "../../../../../blocks/popup.css";
 
@@ -10,7 +8,7 @@ export const InfoTooltip = ({ message, onClose }) => {
   return (
     <Popup onClose={onClose} customClassName="info-tooltip__popup">
       <div className="info-tooltip__container">
-        <div style={{ fontSize: 48, color: "#4caf50", marginBottom: 12 }}>
+        <div className="info-tooltip__icon">
           <svg
             width="48"
             height="48"
@@ -30,7 +28,7 @@ export const InfoTooltip = ({ message, onClose }) => {
         </div>
         <p className="info-tooltip__message">
           {lines.map((line, idx) => (
-            <span key={idx} style={{ display: "block" }}>
+            <span key={idx} className="info-tooltip__line">
               {line}
             </span>
           ))}

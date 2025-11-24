@@ -1,4 +1,4 @@
-.info-tooltip {
+.info-tooltip__container {
   width: 430px;
   height: 330px;
   display: flex;
@@ -24,6 +24,31 @@
   word-wrap: break-word;
 }
 
+.info-tooltip__icon {
+  font-size: 48px;
+  color: #4caf50;
+  margin-bottom: 12px;
+}
+
+.info-tooltip__line {
+  display: block;
+}
+
+.info-tooltip__close-button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.info-tooltip__close-button:hover {
+  background: #45a049;
+}
+
 @media screen and (max-width: 640px) {
   .info-tooltip {
     width: 280px;
@@ -41,5 +66,15 @@
     font-size: 18px;
     margin-top: 40px 18px 26px;
     width: 70%;
+  }
+
+  .info-tooltip__icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+  }
+
+  .info-tooltip__close-button {
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }
