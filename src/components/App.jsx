@@ -31,7 +31,8 @@ export const App = () => {
   const [tooltipMessage, setTooltipMessage] = useState("");
   const [currentUser, setCurrentUser] = useState(undefined);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-  const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] = useState(null);
+  const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] =
+    useState(null);
 
   useEffect(() => {
     setYoutubeResults([]);
@@ -57,17 +58,24 @@ export const App = () => {
         const videos = response.videos || response;
         setSelectedVideos(videos);
         console.log("✅ Loaded", videos.length, "public videos");
-        
+
         // Limpiar localStorage ya que ahora usamos backend
         localStorage.removeItem("selectedVideos");
       } catch (error) {
-        console.warn("⚠️ Backend unavailable, using localStorage fallback:", error);
-        
+        console.warn(
+          "⚠️ Backend unavailable, using localStorage fallback:",
+          error
+        );
+
         // Fallback: usar localStorage si backend falla
         const saved = localStorage.getItem("selectedVideos");
         const fallbackVideos = saved ? JSON.parse(saved) : [];
         setSelectedVideos(fallbackVideos);
-        console.log("📦 Using", fallbackVideos.length, "videos from localStorage");
+        console.log(
+          "📦 Using",
+          fallbackVideos.length,
+          "videos from localStorage"
+        );
       }
     };
 
@@ -96,7 +104,7 @@ export const App = () => {
   const handleDeleteVideo = async (id) => {
     try {
       await api.deleteVideo(id);
-      
+
       // Recargar todos los videos desde el backend para mantener sincronización
       await reloadAllVideos();
     } catch (error) {

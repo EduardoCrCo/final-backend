@@ -26,6 +26,7 @@
   width: 358px;
   gap: 20px;
   border: none; /* Quita el borde del fieldset */
+  margin: 10px 20px;
 }
 
 .form__input {
@@ -67,7 +68,7 @@
 }
 
 .register__form-submit_button {
-  width: 358px; /* Ocupa todo el ancho del formulario */
+  width: 220px; /* Ocupa todo el ancho del formulario */
   padding: 12px 0; /* Ajusta el alto */
   font-size: 1rem; /* Tamaño de texto */
   background: #fff; /* Color de fondo */
@@ -80,8 +81,11 @@
 .register__form-submit_button:hover {
   /* background: #241e1e; */
   opacity: 0.8;
-  /* color: white;
-  transform: scale(1.02); */
+  color: rgb(62, 53, 190);
+  transform: scale(1.02);
+  box-shadow: 0 0 5px #646cff, 0 0 10px #646cff, 0 0 20px #646cff;
+  transition: ease-in-out 0.3s;
+  font-family: "inter-semiBold";
 }
 
 .register__form-footer {
@@ -98,6 +102,13 @@
   text-decoration: none; /* Opcional: quita el subrayado */
   font-weight: bold; /* Opcional: resalta el enlace */
   font-size: 16px;
+}
+
+.register__form-footer-link:hover {
+  text-shadow: 0 0 8px #646cff, 0 0 10px #646cff, 0 0 20px #646cff;
+  transition: ease-in-out 0.3s;
+  font-family: "inter-Black";
+  font-size: 18px;
 }
 
 /* Responsive Design */
@@ -197,23 +208,3 @@
     font-size: 14px;
   }
 }
-
-/* @media screen and (max-width: 640px) {
-  .register__form {
-    width: 90%;
-  }
-
-  .register__form-fieldset {
-    width: 100%;
-  }
-
-  .register__form-submit_button {
-    max-width: 260px;
-  }
-
-  .form__input.form__input-email,
-  .form__input.form__input-password {
-    align-self: center;
-    max-width: 260px;
-  }
-} */

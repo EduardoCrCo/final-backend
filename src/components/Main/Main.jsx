@@ -44,7 +44,7 @@ export const Main = ({
       if (token) {
         await api.addVideo({ videoData: video.video });
         await minLoadTime;
-        
+
         // Recargar todos los videos para mantener la lista actualizada y pública
         if (reloadAllVideos) {
           await reloadAllVideos();

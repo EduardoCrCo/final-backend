@@ -8,11 +8,11 @@ import handleFailError from "../utils/handleErrors.js";
 export const getAllVideos = async (req, res, next) => {
   try {
     console.log("📋 Backend: Getting all public videos");
-    
+
     // Obtener todos los videos ordenados por fecha de creación (más recientes primero)
     const videos = await Video.find({})
       .sort({ createdAt: -1 })
-      .populate('owner', 'name email')
+      .populate("owner", "name email")
       .lean();
 
     console.log(`✅ Backend: Found ${videos.length} public videos`);
@@ -31,7 +31,7 @@ export const getAllVideos = async (req, res, next) => {
           { url: video.thumbnails.default },
           { url: video.thumbnails.medium },
           { url: video.thumbnails.high },
-        ].filter(t => t.url), // Filtrar URLs vacías
+        ].filter((t) => t.url), // Filtrar URLs vacías
         channelName: video.channelTitle,
         description: video.description,
         duration: video.duration,
@@ -44,11 +44,10 @@ export const getAllVideos = async (req, res, next) => {
     }));
 
     res.json({
-      message: "Videos obtenidos exitosamente", 
+      message: "Videos obtenidos exitosamente",
       count: formattedVideos.length,
-      videos: formattedVideos
+      videos: formattedVideos,
     });
-    
   } catch (error) {
     console.error("❌ Backend: Error getting all videos:", error);
     next(error);
