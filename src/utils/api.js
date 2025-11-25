@@ -155,6 +155,10 @@ class Api {
   }
 
   // Métodos para Videos
+  getAllVideos() {
+    return this._makeRequest("videos");
+  }
+
   deleteVideo(youtubeId) {
     return this._makeRequest(`videos/${youtubeId}`, "DELETE");
   }

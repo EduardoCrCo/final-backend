@@ -25,10 +25,13 @@ export const App = () => {
   const [youtubeInfo, setYoutubeInfo] = useState(null);
   const [youtubeQuery, setYoutubeQuery] = useState("");
   const [youtubeResults, setYoutubeResults] = useState([]);
-  const [selectedVideos, setSelectedVideos] = useState(() => {
-    const saved = localStorage.getItem("selectedVideos");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [selectedVideos, setSelectedVideos] = useState([]);
+  const [popupType, setPopupType] = useState(null);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipMessage, setTooltipMessage] = useState("");
+  const [currentUser, setCurrentUser] = useState(undefined);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] = useState(null);
 
   useEffect(() => {
     setYoutubeResults([]);
@@ -45,15 +48,57 @@ export const App = () => {
       });
   }, [youtubeQuery]);
 
+  // Cargar todos los videos públicos al iniciar la aplicación
   useEffect(() => {
-    localStorage.setItem("selectedVideos", JSON.stringify(selectedVideos));
-  }, [selectedVideos]);
+    const loadAllVideos = async () => {
+      try {
+        console.log("🔄 Loading all public videos from backend...");
+        const response = await api.getAllVideos();
+        const videos = response.videos || response;
+        setSelectedVideos(videos);
+        console.log("✅ Loaded", videos.length, "public videos");
+        
+        // Limpiar localStorage ya que ahora usamos backend
+        localStorage.removeItem("selectedVideos");
+      } catch (error) {
+        console.warn("⚠️ Backend unavailable, using localStorage fallback:", error);
+        
+        // Fallback: usar localStorage si backend falla
+        const saved = localStorage.getItem("selectedVideos");
+        const fallbackVideos = saved ? JSON.parse(saved) : [];
+        setSelectedVideos(fallbackVideos);
+        console.log("📦 Using", fallbackVideos.length, "videos from localStorage");
+      }
+    };
+
+    loadAllVideos();
+  }, []); // Solo al montar la aplicación
+
+  // Mantener localStorage como respaldo (solo para usuarios no logueados)
+  useEffect(() => {
+    // Solo guardar en localStorage si no hay usuario logueado y como respaldo
+    if (!currentUser && selectedVideos.length > 0) {
+      localStorage.setItem("selectedVideos", JSON.stringify(selectedVideos));
+    }
+  }, [selectedVideos, currentUser]);
+
+  const reloadAllVideos = async () => {
+    try {
+      const response = await api.getAllVideos();
+      const videos = response.videos || response;
+      setSelectedVideos(videos);
+      console.log("🔄 Reloaded", videos.length, "public videos");
+    } catch (error) {
+      console.error("Error reloading videos:", error);
+    }
+  };
 
   const handleDeleteVideo = async (id) => {
     try {
       await api.deleteVideo(id);
-
-      setSelectedVideos(selectedVideos.filter((v) => v.video.videoId !== id));
+      
+      // Recargar todos los videos desde el backend para mantener sincronización
+      await reloadAllVideos();
     } catch (error) {
       console.error("Error deleting from backend:", error.message);
 
@@ -131,11 +176,6 @@ export const App = () => {
     navigate("/reviews");
   };
 
-  // Estado para el modal de playlists
-  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-  const [selectedVideoForPlaylist, setSelectedVideoForPlaylist] =
-    useState(null);
-
   const handleAddToPlaylist = (video) => {
     setSelectedVideoForPlaylist(video);
     setShowPlaylistModal(true);
@@ -153,11 +193,6 @@ export const App = () => {
       autoClose: 2000,
     });
   };
-
-  const [popupType, setPopupType] = useState(null);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [tooltipMessage, setTooltipMessage] = useState("");
-  const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(() => {
     // Migrar datos existentes para seguridad
@@ -385,6 +420,7 @@ export const App = () => {
                 youtubeResults={youtubeResults}
                 selectedVideos={selectedVideos}
                 setSelectedVideos={setSelectedVideos}
+                reloadAllVideos={reloadAllVideos}
                 onDeleteVideo={handleDeleteVideo}
                 onLikeVideo={handleLikeVideo}
                 onCreateReview={handleCreateReview}

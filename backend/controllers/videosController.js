@@ -4,6 +4,57 @@ import Playlist from "../models/playlistModel.js";
 import { searchYouTube, getVideoDetails } from "../services/youtubeApi.js";
 import handleFailError from "../utils/handleErrors.js";
 
+// GET /videos - Obtener todos los videos públicos
+export const getAllVideos = async (req, res, next) => {
+  try {
+    console.log("📋 Backend: Getting all public videos");
+    
+    // Obtener todos los videos ordenados por fecha de creación (más recientes primero)
+    const videos = await Video.find({})
+      .sort({ createdAt: -1 })
+      .populate('owner', 'name email')
+      .lean();
+
+    console.log(`✅ Backend: Found ${videos.length} public videos`);
+
+    // Formatear videos para el frontend (mantener compatibilidad)
+    const formattedVideos = videos.map((video) => ({
+      id: video.youtubeId,
+      title: video.title,
+      type: "youtube",
+      _id: video._id,
+      liked: false, // Se determinará por usuario individual
+      video: {
+        videoId: video.youtubeId,
+        title: video.title,
+        thumbnails: [
+          { url: video.thumbnails.default },
+          { url: video.thumbnails.medium },
+          { url: video.thumbnails.high },
+        ].filter(t => t.url), // Filtrar URLs vacías
+        channelName: video.channelTitle,
+        description: video.description,
+        duration: video.duration,
+        publishedAt: video.publishedAt,
+      },
+      owner: video.owner,
+      likesCount: video.likesCount || 0,
+      savesCount: video.savesCount || 0,
+      createdAt: video.createdAt,
+    }));
+
+    res.json({
+      message: "Videos obtenidos exitosamente", 
+      count: formattedVideos.length,
+      videos: formattedVideos
+    });
+    
+  } catch (error) {
+    console.error("❌ Backend: Error getting all videos:", error);
+    next(error);
+  }
+};
+
 // GET /videos/search?q=drone
 export const searchVideos = async (req, res, next) => {
   try {

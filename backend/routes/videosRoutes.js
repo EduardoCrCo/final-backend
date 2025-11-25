@@ -1,6 +1,7 @@
 import Router from 'express'
 import auth from '../middleware/auth.js'
 import {
+  getAllVideos,
   searchVideos,
   addVideoFromSearch,
   findVideoByYoutubeId,
@@ -10,6 +11,9 @@ import {
 } from '../controllers/videosController.js'
 
 const router = Router()
+
+// Obtener todos los videos públicos (sin autenticación requerida)
+router.get('/', getAllVideos)
 
 // Middleware de autenticación opcional
 const optionalAuth = (req, res, next) => {

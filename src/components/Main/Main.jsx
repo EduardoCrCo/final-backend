@@ -10,6 +10,7 @@ export const Main = ({
   youtubeResults,
   selectedVideos,
   setSelectedVideos,
+  reloadAllVideos,
   onDeleteVideo,
   onLikeVideo,
   onCreateReview,
@@ -41,12 +42,16 @@ export const Main = ({
       // Guardar en backend si hay usuario autenticado
       const token = localStorage.getItem("jwt");
       if (token) {
-        const savedVideo = await api.addVideo({ videoData: video.video });
+        await api.addVideo({ videoData: video.video });
         await minLoadTime;
-        setSelectedVideos([savedVideo, ...selectedVideos]);
+        
+        // Recargar todos los videos para mantener la lista actualizada y pública
+        if (reloadAllVideos) {
+          await reloadAllVideos();
+        }
       } else {
-        // Si no hay usuario, solo agregar localmente
-
+        // Si no hay usuario, solo agregar localmente (fallback temporal)
+        await minLoadTime;
         setSelectedVideos([video, ...selectedVideos]);
       }
     } catch (error) {
