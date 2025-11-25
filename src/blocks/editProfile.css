@@ -12,11 +12,13 @@
   padding: 5px;
   color: azure;
   margin: 10px auto;
+  font-size: medium;
 }
 
 .form__profile-fieldset {
   margin-bottom: 10px auto;
   width: 358px;
+  border: none;
 }
 
 .form__submit {

@@ -104,30 +104,31 @@ export const Reviews = () => {
           </button>
         )}
       </div>
+      <div className="reviews__container">
+        {error && (
+          <div className="reviews__error">
+            <p className="reviews__error-text">Error: {error}</p>
+          </div>
+        )}
 
-      {error && (
-        <div className="reviews__error">
-          <p className="reviews__error-text">Error: {error}</p>
-        </div>
-      )}
-
-      <ReviewsList
-        reviews={reviews}
-        onDeleteReview={handleDeleteReview}
-        currentUser={currentUser}
-      />
-
-      {selectedVideo && (
-        <ReviewForm
-          onAddReview={handleAddReview}
-          onClose={() => setSelectedVideo(null)}
-          video={selectedVideo}
+        <ReviewsList
+          reviews={reviews}
+          onDeleteReview={handleDeleteReview}
+          currentUser={currentUser}
         />
-      )}
 
-      <Link to="/" className="reviews__home-link">
-        Volver al inicio
-      </Link>
+        {selectedVideo && (
+          <ReviewForm
+            onAddReview={handleAddReview}
+            onClose={() => setSelectedVideo(null)}
+            video={selectedVideo}
+          />
+        )}
+
+        <Link to="/" className="reviews__home-link">
+          Volver al inicio
+        </Link>
+      </div>
     </div>
   );
 };

@@ -128,9 +128,15 @@ export const Header = ({
                   alt="imagen del perfil"
                   className="header-profile__avatar-image"
                 />
+
                 <button
-                  className="header__profile-avatar__edit_button"
-                  onClick={() => setPopupType(editAvatarPopupType)}
+                  className={`header__profile-avatar__edit_button ${
+                    currentUser ? "enabled" : "disabled"
+                  }`}
+                  onClick={() =>
+                    currentUser && setPopupType(editAvatarPopupType)
+                  }
+                  disabled={!currentUser}
                 >
                   <img
                     className="header__profile-avatar__edit_button-icon"

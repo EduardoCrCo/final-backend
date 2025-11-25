@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
 import api from "../../utils/api";
@@ -17,6 +17,23 @@ export const PlaylistModal = ({
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [expandedPlaylistId, setExpandedPlaylistId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // ➤ Manejar tecla Escape para cerrar modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -118,7 +135,7 @@ export const PlaylistModal = ({
       <div className="popup__overlay" onClick={handleOverlayClick}></div>
       <div className="popup__content">
         <div className="popup__body playlist-modal__body">
-          <button className="popup__close-button" onClick={onClose}>
+          <button className="popup__close-button-modal" onClick={onClose}>
             X
           </button>
 

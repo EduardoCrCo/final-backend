@@ -11,7 +11,7 @@
 .header__user-name-button:hover {
   border-color: #646cff;
   box-shadow: 0 0 5px #646cff, 0 0 10px #646cff, 0 0 20px #646cff;
-  transition: ease-in-out 0.3s;
+  transition: ease-in-out 0.1s;
 }
 .header__user-name-button:focus,
 .header__user-name-button:focus-visible {
@@ -49,6 +49,9 @@
 .header__user-name:focus + .header__logout-btn {
   opacity: 1;
   transform: translateX(0);
+  border-color: #646cff;
+  box-shadow: 0 0 5px #646cff, 0 0 10px #646cff, 0 0 20px #646cff;
+  transition: ease-in-out 0.3s;
 }
 
 .header {
@@ -94,7 +97,7 @@
   font-family: "Inter-Bold", Arial, Helvetica, sans-serif;
   font-size: 2em;
   margin: 10px 5px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.881);
 }
 
 .header__spacer {
@@ -115,7 +118,6 @@
 .header__signup-button {
   border-radius: 20px;
   border: solid 1px #00000054;
-
   padding: 3px 15px;
   font-size: 1em;
   font-weight: 500;
@@ -124,6 +126,12 @@
   cursor: pointer;
   transition: border-color 0.25s;
   color: white;
+}
+
+.header__signup-button:hover {
+  border-color: #646cff;
+  box-shadow: 0 0 5px #646cff, 0 0 10px #646cff, 0 0 20px #646cff;
+  transition: ease-in-out 0.3s;
 }
 
 .header-profile__avatar {
@@ -148,6 +156,13 @@
   position: relative;
   margin-left: 5px;
 }
+.header-profile__avatar-image-container:hover {
+  border-color: #646cff;
+  box-shadow: 0 0 5px #646cff, 0 0 10px #646cff, 0 0 20px #646cff;
+  transition: ease-in-out 0.3s;
+  border: solid 1px #fff;
+}
+
 .header-profile__avatar-image {
   display: flex;
   width: 55px;
@@ -172,8 +187,18 @@
   transition: ease-in-out 0.3s;
 }
 
-.header__profile-avatar__edit_button:hover {
-  opacity: 1;
+.header__profile-avatar__edit_button.enabled {
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.header__profile-avatar__edit_button.enabled:hover {
+  opacity: 0.8;
+}
+.header__profile-avatar__edit_button.disabled {
+  cursor: not-allowed;
+  opacity: 0;
 }
 
 .header__profile-avatar__edit_button-icon {

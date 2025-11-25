@@ -7,9 +7,21 @@
   width: 420px;
   max-width: 90vw;
   max-height: 80vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* overflow-y: auto;
+  overflow-x: hidden; */
   box-sizing: border-box;
+}
+
+.popup__close-button-modal {
+  font-size: 40px;
+  color: #fff;
+  background: none;
+  border: none;
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  cursor: pointer;
+  font-family: "Inter-semiBold", Arial, Helvetica, sans-serif;
 }
 
 .playlist-modal__playlist-header {
