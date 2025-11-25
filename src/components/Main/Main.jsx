@@ -3,6 +3,7 @@ import { SearchBar } from "../Main/components/SearchBar/SearchBar";
 import { Videos } from "../Main/components/Videos/Videos";
 import { Preloader } from "../Main/components/Preloader/Preloader";
 import { toast } from "react-toastify";
+import api from "../../utils/api";
 
 export const Main = ({
   setYoutubeQuery,
@@ -21,6 +22,7 @@ export const Main = ({
   const handleResultClick = async (video) => {
     setLoading(true);
     setLoadingVideoId(video.video.videoId);
+    const minLoadTime = new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
       // Detectar si el video YA existe
@@ -39,22 +41,9 @@ export const Main = ({
       // Guardar en backend si hay usuario autenticado
       const token = localStorage.getItem("jwt");
       if (token) {
-        const response = await fetch("http://localhost:8080/videos/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ videoData: video.video }),
-        });
-
-        if (response.ok) {
-          const savedVideo = await response.json();
-
-          setSelectedVideos([savedVideo, ...selectedVideos]);
-        } else {
-          throw new Error("Error al guardar video en backend");
-        }
+        const savedVideo = await api.addVideo({ videoData: video.video });
+        await minLoadTime;
+        setSelectedVideos([savedVideo, ...selectedVideos]);
       } else {
         // Si no hay usuario, solo agregar localmente
 
