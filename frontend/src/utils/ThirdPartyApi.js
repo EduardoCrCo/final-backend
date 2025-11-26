@@ -1,46 +1,14 @@
+import api from "./api.js";
+
 export async function searchYouTube(query, maxResults = 12) {
-  console.log("🔍 Frontend: Searching YouTube for:", query);
-
-  // Obtener token de autenticación si existe
-  const token = localStorage.getItem("jwt");
-  const headers = {
-    "Content-Type": "application/json",
-  };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-    console.log("🔐 Frontend: Adding auth token to request");
-  } else {
-    console.log("👤 Frontend: No auth token found, searching as guest");
-  }
-
-  const response = await fetch(
-    `http://localhost:8080/videos/search?q=${encodeURIComponent(query)}`,
-    {
-      method: "GET",
-      headers: headers,
-    }
-  );
-
-  console.log(
-    "📡 Frontend: Response status:",
-    response.status,
-    response.statusText
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("❌ Frontend: YouTube search error:", errorText);
+  try {
+    const data = await api.searchYouTube(query, maxResults);
+    const results = data.results || data || [];
+    return results;
+  } catch (error) {
+    console.error("Frontend: YouTube search error:", error);
     throw new Error(
-      "Error al buscar videos en YouTube desde backend: " + response.status
+      `Error al buscar videos en YouTube desde backend: ${error.message}`
     );
   }
-
-  const data = await response.json();
-
-  // Después del refactor, el backend devuelve { results: [...] }
-  const results = data.results || data || [];
-  console.log("✅ Frontend: YouTube search results:", results.length);
-
-  return results;
 }

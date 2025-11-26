@@ -19,7 +19,6 @@ export const LoginForm = ({ onLogin, setPopupType, showInfoTooltip }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prevenir múltiples submissions
     if (isLoading) return;
 
     setIsLoading(true);
@@ -82,10 +81,8 @@ export const LoginForm = ({ onLogin, setPopupType, showInfoTooltip }) => {
           disabled={isLoading}
           style={{
             opacity: isLoading ? 0.6 : 1,
-            // cursor: isLoading ? "not-allowed" : "pointer",
           }}
         >
-          {/* {isLoading ? "Signing in..." : "Sign in"} */}
           Sign in
         </button>
         <p className="login__form-footer">

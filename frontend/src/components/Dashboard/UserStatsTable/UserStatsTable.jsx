@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useUserStats } from "../../../hooks/useUserStats";
 import "../../../blocks/UserStatsTable.css";
 
@@ -163,7 +162,6 @@ export const UserStatsTable = () => {
         loading ? "user-stats-table--loading" : ""
       }`}
     >
-      {/* Header con título y botón de refresh */}
       <div className="user-stats-table__header">
         <h2 className="user-stats-table__title">📊 Estadísticas de Usuarios</h2>
         <button
@@ -175,7 +173,6 @@ export const UserStatsTable = () => {
         </button>
       </div>
 
-      {/* Estadísticas globales */}
       <div className="user-stats-table__stats-summary">
         <div className="user-stats-table__global-stats">
           <div className="user-stats-table__stat-item">
@@ -219,7 +216,6 @@ export const UserStatsTable = () => {
         )}
       </div>
 
-      {/* Tabla de usuarios */}
       <div className="user-stats-table__container">
         {usersStats.length === 0 && !loading ? (
           <div className="user-stats-table__empty-state">
@@ -233,7 +229,6 @@ export const UserStatsTable = () => {
           </div>
         ) : (
           <>
-            {/* Desktop Table */}
             <table className="user-stats-table__table">
               <thead className="user-stats-table__table-header">
                 <tr>
@@ -284,14 +279,12 @@ export const UserStatsTable = () => {
               </tbody>
             </table>
 
-            {/* Mobile Card Layout */}
             <div className="user-stats-table__mobile-cards">
               {usersStats.map((userStat) => (
                 <div
                   key={userStat.user.id}
                   className="user-stats-table__mobile-card"
                 >
-                  {/* Card Header with User Info */}
                   <div className="user-stats-table__card-header">
                     <img
                       src={userStat.user.avatar}
@@ -312,7 +305,6 @@ export const UserStatsTable = () => {
                     </div>
                   </div>
 
-                  {/* Playlists Section */}
                   <div className="user-stats-table__card-section">
                     <h5 className="user-stats-table__card-section-title">
                       📋 Playlists ({userStat.playlists.length})
@@ -347,7 +339,6 @@ export const UserStatsTable = () => {
                     )}
                   </div>
 
-                  {/* Reviews Section */}
                   <div className="user-stats-table__card-section">
                     <h5 className="user-stats-table__card-section-title">
                       💬 Reseñas ({userStat.reviews.length})
@@ -402,7 +393,6 @@ export const UserStatsTable = () => {
                     )}
                   </div>
 
-                  {/* Stats Section */}
                   <div className="user-stats-table__card-section">
                     <h5 className="user-stats-table__card-section-title">
                       📊 Estadísticas

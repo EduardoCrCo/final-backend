@@ -11,12 +11,11 @@ export const SearchBar = ({
   const [term, setTerm] = useState("");
   const wrapperRef = useRef();
 
-  // Cierra el dropdown al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setTerm("");
-        onSearch(""); // limpia resultados si hace clic fuera
+        onSearch("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -24,8 +23,6 @@ export const SearchBar = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onSearch]);
-
-  // Elimina el efecto que limpia el input automáticamente
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,10 +34,9 @@ export const SearchBar = ({
   const handleResultClick = async (video) => {
     await onResultClick(video);
     setTerm("");
-    onSearch(""); // Limpia resultados
+    onSearch("");
   };
 
-  // Asegurar que searchResults sea siempre un array
   const safeSearchResults = Array.isArray(searchResults) ? searchResults : [];
 
   const uniqueResults = Array.from(

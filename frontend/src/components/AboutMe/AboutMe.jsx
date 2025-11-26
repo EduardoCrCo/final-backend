@@ -5,7 +5,6 @@ export const AboutMe = () => {
   return (
     <section className="about">
       <div className="about__container">
-        {/* BLOQUE: QUIÉN SOY */}
         <div className="about__card">
           <h2 className="about__title">Quién soy</h2>
           <p className="about__text">
@@ -17,7 +16,6 @@ export const AboutMe = () => {
           </p>
         </div>
 
-        {/* BLOQUE: FOTO */}
         <div className="about__photo-wrapper">
           <img
             src="/images/author-photo.jpg"
@@ -26,7 +24,6 @@ export const AboutMe = () => {
           />
         </div>
 
-        {/* BLOQUE: HABILIDADES */}
         <div className="about__card">
           <h2 className="about__title">Habilidades principales</h2>
           <ul className="about__list">
@@ -51,7 +48,6 @@ export const AboutMe = () => {
           </ul>
         </div>
 
-        {/* BLOQUE: TECNOLOGÍAS */}
         <div className="about__card">
           <h2 className="about__title">Tecnologías utilizadas</h2>
           <ul className="about__list">
@@ -73,7 +69,6 @@ export const AboutMe = () => {
           </ul>
         </div>
 
-        {/* BLOQUE: DESCRIPCIÓN DE LA APLICACIÓN */}
         <div className="about__card">
           <h2 className="about__title">Sobre esta aplicación</h2>
           <p className="about__text">
@@ -87,7 +82,6 @@ export const AboutMe = () => {
           </p>
         </div>
 
-        {/* BLOQUE: LINKS */}
         <div className="about__links">
           <a href="https://github.com/tu-usuario" className="about__link">
             GitHub

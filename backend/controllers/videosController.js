@@ -4,26 +4,19 @@ import Playlist from "../models/playlistModel.js";
 import { searchYouTube, getVideoDetails } from "../services/youtubeApi.js";
 import handleFailError from "../utils/handleErrors.js";
 
-// GET /videos - Obtener todos los videos públicos
 export const getAllVideos = async (req, res, next) => {
   try {
-    console.log("📋 Backend: Getting all public videos");
-
-    // Obtener todos los videos ordenados por fecha de creación (más recientes primero)
     const videos = await Video.find({})
       .sort({ createdAt: -1 })
       .populate("owner", "name email")
       .lean();
 
-    console.log(`✅ Backend: Found ${videos.length} public videos`);
-
-    // Formatear videos para el frontend (mantener compatibilidad)
     const formattedVideos = videos.map((video) => ({
       id: video.youtubeId,
       title: video.title,
       type: "youtube",
       _id: video._id,
-      liked: false, // Se determinará por usuario individual
+      liked: false,
       video: {
         videoId: video.youtubeId,
         title: video.title,
@@ -31,7 +24,7 @@ export const getAllVideos = async (req, res, next) => {
           { url: video.thumbnails.default },
           { url: video.thumbnails.medium },
           { url: video.thumbnails.high },
-        ].filter((t) => t.url), // Filtrar URLs vacías
+        ].filter((t) => t.url),
         channelName: video.channelTitle,
         description: video.description,
         duration: video.duration,
@@ -49,22 +42,14 @@ export const getAllVideos = async (req, res, next) => {
       videos: formattedVideos,
     });
   } catch (error) {
-    console.error("❌ Backend: Error getting all videos:", error);
+    console.error("Backend: Error getting all videos:", error);
     next(error);
   }
 };
 
-// GET /videos/search?q=drone
 export const searchVideos = async (req, res, next) => {
   try {
     const { q } = req.query;
-
-    console.log("🔍 Backend: Search request received:", {
-      query: q,
-      hasUser: !!req.user,
-      userId: req.user?.userId,
-      authHeader: !!req.headers.authorization,
-    });
 
     if (!q || q.trim() === "") {
       return res.status(400).json({
@@ -72,10 +57,7 @@ export const searchVideos = async (req, res, next) => {
       });
     }
 
-    console.log("📡 Backend: Calling YouTube API for query:", q);
     const results = await searchYouTube(q, 10);
-
-    console.log("✅ Backend: YouTube API results:", results.length);
 
     const formattedResults = results.map((video) => ({
       id: video.videoId,
@@ -89,108 +71,82 @@ export const searchVideos = async (req, res, next) => {
       },
     }));
 
-    res.json({
+    return res.json({
       message: "Búsqueda completada exitosamente",
       count: formattedResults.length,
       results: formattedResults,
     });
   } catch (error) {
-    console.error(
-      "❌ Backend: Error in searchVideos controller:",
-      error.message
-    );
+    console.error("Backend: Error in searchVideos controller:", error.message);
 
     if (error.message.includes("YouTube API")) {
       return res.status(502).json({
         message: `Error al conectar con YouTube: ${error.message}`,
       });
     }
-    next(error);
+    return next(error);
   }
 };
 
-// GET /videos/find/:youtubeId - Buscar video por youtubeId
 export const findVideoByYoutubeId = async (req, res, next) => {
   try {
     const { youtubeId } = req.params;
 
-    console.log("🔍 Backend: Finding video by youtubeId:", youtubeId);
-
     const video = await Video.findOne({ youtubeId }).orFail(handleFailError);
 
-    console.log("✅ Backend: Video found:", video._id);
     res.json({
       message: "Video encontrado exitosamente",
       video,
     });
   } catch (error) {
-    console.error("❌ Backend: Error finding video:", error);
+    console.error("Backend: Error finding video:", error);
     next(error);
   }
 };
 
-// POST /videos/:id/like
 export const likeVideo = async (req, res, next) => {
   try {
     const { userId } = req.user;
     const { id } = req.params;
-
-    console.log(
-      "💖 Backend: Processing like for video:",
-      id,
-      "by user:",
-      userId
-    );
 
     const video = await Video.findById(id).orFail(handleFailError);
 
     const isAlreadyLiked = video.likes.includes(userId);
 
     if (isAlreadyLiked) {
-      // Remover like
       video.likes = video.likes.filter(
         (likeUserId) => !likeUserId.equals(userId)
       );
-      console.log("👎 Backend: Like removed");
     } else {
-      // Agregar like
       video.likes.push(userId);
-      console.log("👍 Backend: Like added");
     }
 
     video.likesCount = video.likes.length;
     await video.save();
 
-    console.log("✅ Backend: Video updated with", video.likesCount, "likes");
     res.json(video);
   } catch (err) {
-    console.error("❌ Backend: Error processing like:", err);
+    console.error("Backend: Error processing like:", err);
     res.status(500).json({ message: "Error al dar like" });
   }
 };
 
-// POST /videos/add - Guardar video seleccionado desde búsqueda
 export const addVideoFromSearch = async (req, res) => {
   const { videoData } = req.body;
-
-  console.log("🎯 Backend: Adding selected video:", videoData.videoId);
 
   if (!req.user) {
     return res.status(401).json({ message: "Usuario no autenticado" });
   }
 
   try {
-    // Obtener detalles completos del video incluyendo duración
-    console.log("📹 Backend: Getting video details for duration...");
     let videoDuration = "N/A";
 
     try {
       const videoDetails = await getVideoDetails(videoData.videoId);
       videoDuration = videoDetails.duration;
-      console.log("⏱️ Backend: Video duration obtained:", videoDuration);
     } catch (durationError) {
       console.warn(
-        "⚠️ Backend: Could not get video duration:",
+        "Backend: Could not get video duration:",
         durationError.message
       );
     }
@@ -215,21 +171,12 @@ export const addVideoFromSearch = async (req, res) => {
       owner: req.user.userId,
     };
 
-    console.log(
-      "💾 Backend: Saving selected video to DB with duration:",
-      videoDuration
-    );
-
     const savedVideo = await Video.findOneAndUpdate(
       { youtubeId: videoData.videoId },
       videoToSave,
       { upsert: true, new: true }
     );
 
-    console.log("✅ Backend: Selected video saved with ID:", savedVideo._id);
-    console.log("⏱️ Backend: Saved video duration:", savedVideo.duration);
-
-    // Devolver en formato que espera el frontend
     const formattedVideo = {
       id: savedVideo.youtubeId,
       title: savedVideo.title,
@@ -246,14 +193,15 @@ export const addVideoFromSearch = async (req, res) => {
       },
     };
 
-    res.json(formattedVideo);
+    return res.json(formattedVideo);
   } catch (err) {
-    console.error("❌ Backend: Error saving selected video:", err);
-    res.status(500).json({ message: "Error al guardar el video seleccionado" });
+    console.error("Backend: Error saving selected video:", err);
+    return res
+      .status(500)
+      .json({ message: "Error al guardar el video seleccionado" });
   }
 };
 
-// POST /youtube/:id/save
 export const saveVideo = async (req, res) => {
   const { userId } = req.user;
   const { id } = req.params;
@@ -269,74 +217,51 @@ export const saveVideo = async (req, res) => {
       await video.save();
     }
 
-    res.json(video);
+    return res.json(video);
   } catch (err) {
-    res.status(500).json({ message: "Error al guardar el video" });
+    return res.status(500).json({ message: "Error al guardar el video" });
   }
 };
 
-// DELETE /videos/:youtubeId - Eliminar video por youtubeId
 export const deleteVideoByYoutubeId = async (req, res) => {
   const { youtubeId } = req.params;
   const { userId } = req.user;
-
-  console.log(`🗑️ Backend: Deleting video ${youtubeId} by user ${userId}`);
 
   if (!req.user) {
     return res.status(401).json({ message: "Usuario no autenticado" });
   }
 
   try {
-    // Buscar el video por youtubeId
     const video = await Video.findOne({ youtubeId });
 
     if (!video) {
-      console.log("❌ Backend: Video not found:", youtubeId);
       return res.status(404).json({ message: "Video no encontrado" });
     }
 
-    // Verificar si el usuario es el propietario del video
     if (video.owner.toString() !== userId) {
-      console.log(
-        `❌ Backend: User ${userId} is not owner of video ${youtubeId}`
-      );
       return res.status(403).json({
         message: "No tienes permisos para eliminar este video",
       });
     }
 
-    // Eliminar el video y todas sus referencias
-    console.log(`🧹 Backend: Cleaning up related data for video ${youtubeId}`);
-
-    // 1. Eliminar reviews del video
     const deletedReviews = await Review.deleteMany({ videoId: youtubeId });
-    console.log(`📝 Backend: Deleted ${deletedReviews.deletedCount} reviews`);
 
-    // 2. Eliminar video de playlists
     const playlistsUpdate = await Playlist.updateMany(
       { "videos.youtubeId": youtubeId },
       { $pull: { videos: { youtubeId } } }
     );
-    console.log(
-      `📋 Backend: Updated ${playlistsUpdate.modifiedCount} playlists`
-    );
 
-    // 3. Eliminar el video de la base de datos
     await Video.findOneAndDelete({ youtubeId });
 
-    console.log(
-      `✅ Backend: Video ${youtubeId} and all related data deleted successfully`
-    );
-
-    res.json({
+    return res.json({
       message: "Video eliminado correctamente",
       deletedVideoId: youtubeId,
       deletedReviews: deletedReviews.deletedCount,
       updatedPlaylists: playlistsUpdate.modifiedCount,
     });
   } catch (err) {
-    console.error("❌ Backend: Error deleting video:", err);
-    res.status(500).json({
+    console.error("Backend: Error deleting video:", err);
+    return res.status(500).json({
       message: "Error al eliminar el video",
       error:
         process.env.NODE_ENV === "development" ? err.message : "Error interno",

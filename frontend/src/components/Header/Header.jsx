@@ -16,7 +16,7 @@ export const Header = ({
   handlePopupClose,
   onUpdateUser,
 }) => {
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -62,7 +62,6 @@ export const Header = ({
           <h1 className="header__title">De Drones</h1>
         </div>
 
-        {/* Botón hamburguesa para móvil */}
         <button
           className="header__hamburger-button"
           onClick={toggleMobileMenu}

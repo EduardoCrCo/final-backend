@@ -1,220 +1,362 @@
-# Backend - API del Proyecto Final
+# DroneVision - Aplicación Full Stack 🚁
 
-## Descripción
+## 📋 Descripción General
 
-Backend desarrollado con Node.js, Express y MongoDB para el proyecto final. Incluye autenticación con JWT y gestión completa de usuarios.
+**DroneVision** es una aplicación web completa para entusiastas de drones que permite gestionar videos, crear playlists, escribir reseñas y consultar estadísticas meteorológicas para planificar vuelos. La aplicación combina un frontend moderno en React con un backend robusto en Node.js.
 
-## Características
+### 🎯 Funcionalidades Principales
 
-- ✅ Autenticación con JWT
-- ✅ Registro e inicio de sesión de usuarios
-- ✅ Gestión de perfiles (actualizar nombre, descripción, avatar)
-- ✅ Validación de datos con Celebrate/Joi
-- ✅ Seguridad con Helmet y Rate Limiting
-- ✅ Hasheo de contraseñas con bcrypt
-- ✅ Conexión a MongoDB con Mongoose
-- ✅ Manejo de errores centralizado
-- ✅ CORS configurado
-- ✅ Variables de entorno
+- 🔐 **Autenticación completa** - Registro, login y gestión de perfiles
+- 🎬 **Gestión de videos** - Búsqueda, guardado y organización de videos de drones
+- 📝 **Sistema de reseñas** - Reseñas públicas y privadas con calificaciones
+- 📚 **Playlists personalizadas** - Organización de videos en colecciones
+- 📊 **Dashboard con estadísticas** - Métricas de usuarios y contenido
+- 🌤️ **Información meteorológica** - Condiciones climáticas para vuelos
+- 📱 **Diseño responsivo** - Compatible con dispositivos móviles
 
-## Tecnologías Utilizadas
+---
 
-- **Node.js** - Runtime de JavaScript
-- **Express.js** - Framework web
-- **MongoDB** - Base de datos NoSQL
-- **Mongoose** - ODM para MongoDB
-- **JWT** - Autenticación con tokens
-- **bcryptjs** - Hasheo de contraseñas
-- **Celebrate/Joi** - Validación de datos
-- **Helmet** - Seguridad HTTP
-- **CORS** - Cross-Origin Resource Sharing
+## 🏗️ Arquitectura del Sistema
 
-## Instalación
+### **Frontend (React + Vite)**
 
-### Prerrequisitos
+```
+frontend/
+├── src/
+│   ├── components/           # Componentes React organizados por funcionalidad
+│   │   ├── App.jsx          # Componente principal y enrutamiento
+│   │   ├── Header/          # Navegación y autenticación
+│   │   ├── Main/            # Página principal con videos
+│   │   ├── Dashboard/       # Estadísticas y métricas
+│   │   ├── Reviews/         # Sistema de reseñas
+│   │   └── PlaylistModal/   # Modal para gestión de playlists
+│   ├── hooks/               # Custom hooks reutilizables
+│   ├── utils/               # APIs y utilidades
+│   │   ├── api.js          # Cliente API centralizado
+│   │   ├── auth.js         # Funciones de autenticación
+│   │   └── ThirdPartyApi.js # Integración con APIs externas
+│   └── context/             # Context API para estado global
+└── package.json
+```
 
-- Node.js (v18 o superior)
-- MongoDB (local o Atlas)
-
-### Pasos de instalación
-
-1. **Instalar dependencias:**
-
-   ```bash
-   cd backend
-   npm install
-   ```
-
-2. **Configurar variables de entorno:**
-
-   - Copia el archivo `.env` y configura las variables según tu entorno
-   - Asegúrate de cambiar `JWT_SECRET` por una clave segura en producción
-
-3. **Iniciar MongoDB:**
-
-   - Si usas MongoDB local: `mongod`
-   - Si usas MongoDB Atlas: configura la URI en `.env`
-
-4. **Iniciar el servidor:**
-
-   ```bash
-   # Desarrollo (con nodemon)
-   npm run dev
-
-   # Producción
-   npm start
-   ```
-
-## Estructura del Proyecto
+### **Backend (Node.js + Express)**
 
 ```
 backend/
-├── controllers/        # Controladores de rutas
-│   └── users.js       # Lógica de usuarios
-├── middleware/         # Middlewares personalizados
-│   ├── auth.js        # Autenticación JWT
-│   └── errorHandler.js # Manejo de errores
-├── models/            # Modelos de MongoDB
-│   └── User.js        # Modelo de usuario
-├── routes/            # Definición de rutas
-│   ├── auth.js        # Rutas de autenticación
-│   └── users.js       # Rutas de usuarios
-├── utils/             # Utilidades
-├── .env               # Variables de entorno
-├── .gitignore         # Archivos ignorados por Git
-├── app.js             # Archivo principal del servidor
-└── package.json       # Dependencias y scripts
+├── controllers/              # Lógica de negocio
+│   ├── usersController.js   # Gestión de usuarios
+│   ├── videosController.js  # Gestión de videos
+│   ├── reviewController.js  # Sistema de reseñas
+│   ├── playlistController.js # Gestión de playlists
+│   └── dashboardController.js # Estadísticas
+├── models/                  # Esquemas de MongoDB
+│   ├── usersModel.js       # Modelo de usuario
+│   ├── videosModel.js      # Modelo de video
+│   ├── reviewModel.js      # Modelo de reseña
+│   └── playlistModel.js    # Modelo de playlist
+├── routes/                  # Definición de rutas API
+├── middleware/              # Middlewares personalizados
+│   ├── auth.js             # Autenticación JWT
+│   ├── errorHandler.js     # Manejo de errores
+│   └── validation.js       # Validación de datos
+├── services/                # Servicios externos
+├── utils/                   # Utilidades y helpers
+└── app.js                  # Configuración del servidor
 ```
 
-## API Reference
+---
 
-### Autenticación
+## 🔄 Flujo de Funcionamiento
 
-#### Registrar Usuario
+### **1. Autenticación y Autorización**
 
-```http
-POST /signup
-Content-Type: application/json
-
-{
-  "email": "usuario@email.com",
-  "password": "contraseña123",
-  "name": "Nombre Usuario",
-  "about": "Descripción del usuario"
-}
+```mermaid
+Usuario → LoginForm → Backend(/signin) → JWT Token → LocalStorage → Headers automáticos
 ```
 
-#### Iniciar Sesión
+- El usuario ingresa credenciales en el frontend
+- Se validan contra la base de datos MongoDB
+- Se genera un JWT token con expiración de 7 días
+- El token se almacena en localStorage y se incluye automáticamente en requests
 
-```http
-POST /signin
-Content-Type: application/json
+### **2. Gestión de Videos**
 
-{
-  "email": "usuario@email.com",
-  "password": "contraseña123"
-}
+```mermaid
+Búsqueda → YouTube API → Resultados → Selección → Backend(/videos) → MongoDB → Playlist
 ```
 
-### Usuarios (Rutas Protegidas)
+- Búsqueda integrada con YouTube Data API v3
+- Selección y guardado de videos en la base de datos
+- Organización en playlists personalizadas
+- Sistema de "me gusta" para videos favoritos
 
-_Requieren header: `Authorization: Bearer <token>`_
+### **3. Sistema de Reseñas**
 
-#### Obtener Usuario Actual
-
-```http
-GET /users/me
-Authorization: Bearer <token>
+```mermaid
+Usuario → Escribe Reseña → Validación → MongoDB → Vista Pública/Privada
 ```
 
-#### Actualizar Perfil
+- Reseñas con calificación de 1-5 estrellas
+- Modo público (visible para todos) y privado (solo usuario)
+- Validación de datos y prevención de duplicados
+- Agregación de estadísticas automática
 
-```http
-PATCH /users/me
-Authorization: Bearer <token>
-Content-Type: application/json
+### **4. Dashboard y Estadísticas**
 
-{
-  "name": "Nuevo nombre",
-  "about": "Nueva descripción"
-}
+```mermaid
+Request → Agregaciones MongoDB → Cálculos → Gráficos Tremor → Visualización
 ```
 
-#### Actualizar Avatar
+- Estadísticas en tiempo real usando agregaciones de MongoDB
+- Integración con la API meteorológica para condiciones de vuelo
+- Gráficos interactivos con Tremor (built on Recharts)
+- Métricas de usuarios, videos y reseñas
 
-```http
-PATCH /users/me/avatar
-Authorization: Bearer <token>
-Content-Type: application/json
+---
 
-{
-  "avatar": "https://ejemplo.com/avatar.jpg"
-}
+## 🛠️ Stack Tecnológico
+
+### **Frontend**
+
+- **React 18.3.1** - Biblioteca principal con Hooks
+- **Vite** - Build tool ultrarrápido
+- **React Router DOM** - Enrutamiento SPA
+- **Tremor** - Componentes de dashboard y gráficos
+- **Tailwind CSS** - Estilos utility-first
+- **React Toastify** - Notificaciones elegantes
+
+### **Backend**
+
+- **Node.js** - Runtime de JavaScript
+- **Express.js 4.18** - Framework web minimalista
+- **MongoDB + Mongoose** - Base de datos NoSQL con ODM
+- **JWT** - Autenticación stateless
+- **bcrypt** - Hashing seguro de contraseñas
+- **Celebrate + Joi** - Validación robusta de datos
+
+### **Seguridad y DevOps**
+
+- **Helmet** - Headers de seguridad HTTP
+- **CORS** - Configuración de dominios cruzados
+- **Rate Limiting** - Protección contra spam
+- **ESLint** - Linting de código
+- **Nodemon** - Desarrollo con hot reload
+
+---
+
+## 🚀 Instalación y Configuración
+
+### **Prerrequisitos**
+
+- Node.js v18+
+- MongoDB (local o Atlas)
+- Clave de YouTube Data API v3
+
+### **Instalación Rápida**
+
+**Windows:**
+
+```bash
+# Ejecutar script automático
+./start-full-stack.bat
 ```
 
-#### Obtener Todos los Usuarios
+**Linux/Mac:**
 
-```http
-GET /users
-Authorization: Bearer <token>
+```bash
+# Dar permisos y ejecutar
+chmod +x start-full-stack.sh && ./start-full-stack.sh
 ```
 
-#### Desactivar Cuenta
+### **Instalación Manual**
 
-```http
-DELETE /users/me
-Authorization: Bearer <token>
+**Backend:**
+
+```bash
+cd backend
+npm install
+cp .env.example .env  # Configurar variables
+npm run dev          # Puerto 8080
 ```
 
-## Variables de Entorno
+**Frontend:**
 
-| Variable      | Descripción            | Valor por defecto                             |
-| ------------- | ---------------------- | --------------------------------------------- |
-| `PORT`        | Puerto del servidor    | `3001`                                        |
-| `NODE_ENV`    | Entorno de ejecución   | `development`                                 |
-| `MONGODB_URI` | URI de MongoDB         | `mongodb://127.0.0.1:27017/proyecto_final_db` |
-| `JWT_SECRET`  | Clave secreta para JWT | `tu-clave-secreta-muy-segura`                 |
-
-## Configuración del Frontend
-
-Para conectar tu frontend React, actualiza las URLs en `src/utils/api.js` y `src/utils/auth.js`:
-
-```javascript
-// Cambiar de:
-const BASE_URL = "https://api.web-project-around.ignorelist.com";
-
-// A:
-const BASE_URL = "http://localhost:3001";
+```bash
+cd frontend
+npm install
+npm run dev         # Puerto 5173
 ```
 
-## Scripts Disponibles
+### **Variables de Entorno**
 
-- `npm start` - Inicia el servidor en producción
-- `npm run dev` - Inicia el servidor en desarrollo con nodemon
+```env
+# Backend (.env)
+PORT=8080
+NODE_ENV=development
+MONGODB_URI=mongodb://127.0.0.1:27017/proyecto_final_db
+JWT_SECRET=tu-clave-super-secreta
+YOUTUBE_API_KEY=tu-clave-youtube-api
+```
 
-## Seguridad Implementada
+---
 
-- **Helmet**: Headers de seguridad HTTP
-- **Rate Limiting**: Limita requests por IP
-- **CORS**: Configurado para dominios específicos
-- **JWT**: Tokens con expiración
-- **bcrypt**: Hasheo seguro de contraseñas
-- **Validación**: Validación de entrada con Joi
-- **Sanitización**: Limpieza de datos de entrada
+## 🔗 API Endpoints
 
-## Próximos Pasos
+### **Autenticación**
 
-1. **Agregar más entidades** (cards, playlists, etc.)
-2. **Implementar roles y permisos**
-3. **Agregar logs con Winston**
-4. **Implementar tests con Jest**
-5. **Configurar CI/CD**
-6. **Documentación con Swagger**
+- `POST /signup` - Registro de usuario
+- `POST /signin` - Inicio de sesión
 
-## Contribución
+### **Usuarios (Protegidas)**
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+- `GET /users/me` - Perfil actual
+- `PATCH /users/me` - Actualizar perfil
+- `PATCH /users/me/avatar` - Cambiar avatar
+
+### **Videos**
+
+- `GET /videos/search?q=drones` - Buscar en YouTube
+- `POST /videos/add` - Guardar video seleccionado
+- `DELETE /videos/:id` - Eliminar video
+
+### **Reseñas**
+
+- `GET /reviews` - Reseñas del usuario
+- `GET /reviews/public` - Reseñas públicas
+- `POST /reviews` - Crear reseña
+- `PUT /reviews/:id` - Actualizar reseña
+
+### **Playlists**
+
+- `GET /playlists` - Obtener playlists
+- `POST /playlists` - Crear playlist
+- `POST /playlists/:id/add` - Añadir video
+
+### **Dashboard**
+
+- `GET /dashboard/users/stats` - Estadísticas de usuarios
+- `GET /dashboard/videos/stats` - Estadísticas de videos
+
+---
+
+## 📊 Características Técnicas Avanzadas
+
+### **1. Autenticación Robusta**
+
+- JWT con expiración configurable
+- Middleware de autenticación reutilizable
+- Manejo de tokens expirados
+- Protección de rutas sensibles
+
+### **2. Validación Comprensiva**
+
+- Schemas Joi para validación de entrada
+- Sanitización automática de datos
+- Mensajes de error descriptivos
+- Validación tanto en frontend como backend
+
+### **3. Gestión de Estado**
+
+- Context API para estado global
+- Custom hooks para lógica reutilizable
+- Estado local optimizado con useState/useEffect
+- Sincronización automática con backend
+
+### **4. Performance**
+
+- Lazy loading de componentes
+- Debouncing en búsquedas
+- Paginación en listados
+- Compresión de respuestas HTTP
+
+### **5. Experiencia de Usuario**
+
+- Loading states en todas las operaciones
+- Error boundaries para fallos graceful
+- Toasts informativos
+- Responsive design mobile-first
+
+---
+
+## 🔒 Seguridad Implementada
+
+- **Autenticación**: JWT tokens con expiración
+- **Autorización**: Middleware de verificación de permisos
+- **Validación**: Sanitización de entrada en ambos extremos
+- **Headers**: Helmet para headers de seguridad HTTP
+- **Rate Limiting**: Protección contra ataques de fuerza bruta
+- **CORS**: Configuración restrictiva de dominios
+- **Hashing**: bcrypt para contraseñas con salt automático
+
+---
+
+## 📈 Métricas y Monitoreo
+
+- **Logs estructurados** con Winston
+- **Error tracking** centralizado
+- **Performance metrics** en dashboard
+- **Health checks** automáticos
+- **Monitoring de API** con tiempos de respuesta
+
+---
+
+## 🚀 Comandos de Desarrollo
+
+```bash
+# Backend
+npm run dev      # Desarrollo con nodemon
+npm run lint     # ESLint con corrección automática
+npm start        # Producción
+
+# Frontend
+npm run dev      # Vite dev server
+npm run build    # Build optimizado para producción
+npm run preview  # Preview del build
+npm run lint     # ESLint para React
+```
+
+---
+
+## 🎯 Roadmap Futuro
+
+### **Fase 1 - Funcionalidades Core** ✅
+
+- [x] Autenticación completa
+- [x] CRUD de videos y playlists
+- [x] Sistema de reseñas
+- [x] Dashboard básico
+
+### **Fase 2 - Mejoras UX**
+
+- [ ] Notificaciones push
+- [ ] Compartir playlists
+- [ ] Comentarios en videos
+- [ ] Sistema de seguimiento de usuarios
+
+### **Fase 3 - Analytics Avanzado**
+
+- [ ] Métricas avanzadas de engagement
+- [ ] Reportes exportables
+- [ ] Predicciones meteorológicas
+- [ ] Integración con mapas
+
+### **Fase 4 - Escalabilidad**
+
+- [ ] Microservicios
+- [ ] Cache con Redis
+- [ ] CDN para videos
+- [ ] Tests automatizados
+
+---
+
+## 👨‍💻 Desarrollado por
+
+**Eduardo Cruz** - Full Stack Developer
+
+- 📧 Email: [contacto@eduardocruz.dev](mailto:contacto@eduardocruz.dev)
+- 🌐 Portfolio: [eduardocruz.dev](https://eduardocruz.dev)
+- 💼 LinkedIn: [linkedin.com/in/eduardocruz-dev](https://linkedin.com/in/eduardocruz-dev)
+
+---
+
+_DroneVision - Conectando entusiastas de drones con el cielo 🌤️✈️_

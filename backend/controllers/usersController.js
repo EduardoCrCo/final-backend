@@ -3,7 +3,6 @@ import UserModel from "../models/usersModel.js";
 import handleFailError from "../utils/handleErrors.js";
 import AuthService from "../services/authService.js";
 
-// Función para generar JWT token
 const generateToken = (userId) =>
   jwt.sign(
     { userId },
@@ -11,15 +10,12 @@ const generateToken = (userId) =>
     { expiresIn: "7d" }
   );
 
-// Registrar nuevo usuario
 export const signup = async (req, res, next) => {
   try {
-    // Log para debugging
-    console.log("📝 Signup request body:", JSON.stringify(req.body, null, 2));
+    //console.log("📝 Signup request body:", JSON.stringify(req.body, null, 2));
 
-    const { name, email, password, about = "" } = req.body;
+    const { name, email, password } = req.body;
 
-    // Validar que los campos requeridos estén presentes
     if (!name || !email || !password) {
       return res.status(400).json({
         message: "Faltan campos requeridos",
@@ -31,7 +27,6 @@ export const signup = async (req, res, next) => {
       });
     }
 
-    // Verificar si el usuario ya existe
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(409).json({
@@ -39,20 +34,17 @@ export const signup = async (req, res, next) => {
       });
     }
 
-    // Crear nuevo usuario
     const user = new UserModel({
       name: name || "Usuario",
       email,
       password,
-      // about: about || "Explorador",
     });
 
     await user.save();
 
-    // Generar token
     const token = generateToken(user._id);
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Usuario creado exitosamente",
       token,
       user: {
@@ -71,11 +63,10 @@ export const signup = async (req, res, next) => {
         errors: messages,
       });
     }
-    next(error);
+    return next(error);
   }
 };
 
-// Iniciar sesión
 export const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -86,16 +77,13 @@ export const signin = async (req, res, next) => {
       });
     }
 
-    // Buscar usuario por credenciales usando el servicio
     const user = await AuthService.findUserByCredentials(email, password);
 
-    // Actualizar último login
     await AuthService.updateLastLogin(user._id);
 
-    // Generar token
     const token = generateToken(user._id);
 
-    res.json({
+    return res.json({
       message: "Inicio de sesión exitoso",
       token,
       user: {
@@ -111,11 +99,10 @@ export const signin = async (req, res, next) => {
     if (error.message === "Email o contraseña incorrectos") {
       return res.status(401).json({ message: error.message });
     }
-    next(error);
+    return next(error);
   }
 };
 
-// Obtener información del usuario actual
 export const getCurrentUser = async (req, res, next) => {
   try {
     const user = await UserModel.findById(req.user.userId).orFail(
@@ -128,7 +115,7 @@ export const getCurrentUser = async (req, res, next) => {
       });
     }
 
-    res.json({
+    return res.json({
       _id: user._id,
       email: user.email,
       name: user.name,
@@ -138,11 +125,10 @@ export const getCurrentUser = async (req, res, next) => {
       lastLogin: user.lastLogin,
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
-// Actualizar perfil del usuario
 export const updateProfile = async (req, res, next) => {
   try {
     const { name, about } = req.body;
@@ -155,8 +141,8 @@ export const updateProfile = async (req, res, next) => {
         updatedAt: new Date(),
       },
       {
-        new: true, // Retorna el documento actualizado
-        runValidators: true, // Ejecuta las validaciones del schema
+        new: true,
+        runValidators: true,
       }
     ).orFail(handleFailError);
 
@@ -166,7 +152,7 @@ export const updateProfile = async (req, res, next) => {
       });
     }
 
-    res.json({
+    return res.json({
       message: "Perfil actualizado exitosamente",
       user: {
         _id: user._id,
@@ -185,11 +171,10 @@ export const updateProfile = async (req, res, next) => {
         errors: messages,
       });
     }
-    next(error);
+    return next(error);
   }
 };
 
-// Actualizar avatar del usuario
 export const updateAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
@@ -212,7 +197,7 @@ export const updateAvatar = async (req, res, next) => {
       });
     }
 
-    res.json({
+    return res.json({
       message: "Avatar actualizado exitosamente",
       user: {
         _id: user._id,
@@ -231,11 +216,10 @@ export const updateAvatar = async (req, res, next) => {
         errors: messages,
       });
     }
-    next(error);
+    return next(error);
   }
 };
 
-// Obtener todos los usuarios (para admin o funciones especiales)
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await UserModel.find({ isActive: true })
@@ -252,7 +236,6 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
-// Desactivar cuenta (soft delete)
 export const deactivateAccount = async (req, res, next) => {
   try {
     await UserModel.findByIdAndUpdate(

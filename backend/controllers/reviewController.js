@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import Review from "../models/reviewModel.js";
-import handleFailError from "../utils/handleErrors.js";
 
-// Obtener todas las reviews del usuario autenticado
 export const getUserReviews = async (req, res, next) => {
   try {
     const { userId } = req.user;
@@ -11,18 +9,16 @@ export const getUserReviews = async (req, res, next) => {
       .populate("userId", "name avatar")
       .sort({ createdAt: -1 });
 
-    res.json({
+    return res.json({
       message: "Reviews obtenidas exitosamente",
       count: reviews.length,
       reviews,
     });
   } catch (error) {
-    console.error("Error obteniendo reviews:", error);
-    next(error);
+    return next(error);
   }
 };
 
-// Obtener reviews públicas (para exploración)
 export const getPublicReviews = async (req, res, next) => {
   try {
     const { limit = 20, skip = 0, videoId } = req.query;
@@ -35,24 +31,23 @@ export const getPublicReviews = async (req, res, next) => {
     const reviews = await Review.find(filter)
       .populate("userId", "name avatar")
       .sort({ createdAt: -1 })
-      .limit(parseInt(limit))
-      .skip(parseInt(skip));
+      .limit(parseInt(limit, 10))
+      .skip(parseInt(skip, 10));
 
     const total = await Review.countDocuments(filter);
 
-    res.json({
+    return res.json({
       message: "Reviews públicas obtenidas exitosamente",
       reviews,
       total,
-      hasMore: total > parseInt(skip) + parseInt(limit),
+      hasMore: total > parseInt(skip, 10) + parseInt(limit, 10),
     });
   } catch (error) {
     console.error("Error obteniendo reviews públicas:", error);
-    next(error);
+    return next(error);
   }
 };
 
-// Obtener una review específica por ID
 export const getReviewById = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.user;
@@ -67,20 +62,14 @@ export const getReviewById = async (req, res) => {
       return res.status(404).json({ message: "Review no encontrada" });
     }
 
-    res.json(review);
+    return res.json(review);
   } catch (error) {
-    console.error("Error obteniendo review:", error);
-    res.status(500).json({ message: "Error al obtener la review" });
+    return res.status(500).json({ message: "Error al obtener la review" });
   }
 };
 
-// Crear una nueva review
 export const createReview = async (req, res) => {
   const { userId } = req.user;
-
-  // Log para debugging
-  console.log("📝 Datos recibidos para crear review:", req.body);
-  console.log("👤 Usuario ID:", userId);
 
   const {
     videoId,
@@ -94,16 +83,7 @@ export const createReview = async (req, res) => {
     isPublic = true,
   } = req.body;
 
-  // Validaciones básicas
   if (!videoId || !videoTitle || !rating || !title || !content) {
-    console.log("❌ Validación fallida - campos faltantes:");
-    console.log({
-      videoId: !!videoId,
-      videoTitle: !!videoTitle,
-      rating: !!rating,
-      title: !!title,
-      content: !!content,
-    });
     return res.status(400).json({
       message: "videoId, videoTitle, rating, title y content son requeridos",
     });
@@ -134,7 +114,7 @@ export const createReview = async (req, res) => {
       videoTitle,
       videoThumbnail,
       channelName,
-      rating: parseInt(rating),
+      rating: parseInt(rating, 10),
       title: title.trim(),
       content: content.trim(),
       tags: Array.isArray(tags)
@@ -143,20 +123,16 @@ export const createReview = async (req, res) => {
       isPublic,
     };
 
-    console.log("📋 Datos preparados para guardar:", reviewData);
-
     const review = await Review.create(reviewData);
-    console.log("✅ Review creada exitosamente:", review._id);
 
-    // Poblar la información del usuario antes de enviar respuesta
     await review.populate("userId", "name avatar");
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Review creada correctamente",
       review,
     });
   } catch (error) {
-    console.error("❌ Error completo creando review:", error);
+    console.error(" Error completo creando review:", error);
 
     if (error.code === 11000) {
       return res.status(400).json({
@@ -168,7 +144,6 @@ export const createReview = async (req, res) => {
       const validationErrors = Object.values(error.errors).map(
         (err) => err.message
       );
-      console.log("💥 Errores de validación:", validationErrors);
       return res.status(400).json({
         message: `Error de validación: ${validationErrors.join(", ")}`,
         errors: validationErrors,
@@ -176,19 +151,17 @@ export const createReview = async (req, res) => {
     }
 
     console.error("Error creando review:", error.message);
-    res
+    return res
       .status(500)
       .json({ message: `Error al crear la review: ${error.message}` });
   }
 };
 
-// Actualizar una review existente
 export const updateReview = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.user;
   const { rating, title, content, tags, isPublic } = req.body;
 
-  // Validaciones
   if (rating && (rating < 1 || rating > 5)) {
     return res.status(400).json({
       message: "El rating debe estar entre 1 y 5",
@@ -209,7 +182,7 @@ export const updateReview = async (req, res) => {
 
   try {
     const updateData = {};
-    if (rating !== undefined) updateData.rating = parseInt(rating);
+    if (rating !== undefined) updateData.rating = parseInt(rating, 10);
     if (title !== undefined) updateData.title = title.trim();
     if (content !== undefined) updateData.content = content.trim();
     if (tags !== undefined) {
@@ -229,17 +202,16 @@ export const updateReview = async (req, res) => {
       return res.status(404).json({ message: "Review no encontrada" });
     }
 
-    res.json({
+    return res.json({
       message: "Review actualizada correctamente",
       review,
     });
   } catch (error) {
     console.error("Error actualizando review:", error);
-    res.status(500).json({ message: "Error al actualizar la review" });
+    return res.status(500).json({ message: "Error al actualizar la review" });
   }
 };
 
-// Eliminar una review
 export const deleteReview = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.user;
@@ -251,14 +223,13 @@ export const deleteReview = async (req, res) => {
       return res.status(404).json({ message: "Review no encontrada" });
     }
 
-    res.json({ message: "Review eliminada correctamente" });
+    return res.json({ message: "Review eliminada correctamente" });
   } catch (error) {
     console.error("Error eliminando review:", error);
-    res.status(500).json({ message: "Error al eliminar la review" });
+    return res.status(500).json({ message: "Error al eliminar la review" });
   }
 };
 
-// Obtener estadísticas de reviews del usuario
 export const getReviewStats = async (req, res) => {
   const { userId } = req.user;
 
@@ -287,12 +258,11 @@ export const getReviewStats = async (req, res) => {
       privateReviews: 0,
     };
 
-    // Redondear el promedio a 2 decimales
     result.averageRating = Math.round(result.averageRating * 100) / 100;
 
-    res.json(result);
+    return res.json(result);
   } catch (error) {
     console.error("Error obteniendo estadísticas:", error);
-    res.status(500).json({ message: "Error al obtener estadísticas" });
+    return res.status(500).json({ message: "Error al obtener estadísticas" });
   }
 };

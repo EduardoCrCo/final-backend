@@ -18,7 +18,9 @@ class Api {
   }
 
   updateUser(name, about) {
-    return this._makeRequest("users/me", "PATCH", { name, about });
+    const validAbout =
+      about && about.trim() ? about.trim() : "Usuario sin descripción";
+    return this._makeRequest("users/me", "PATCH", { name, about: validAbout });
   }
 
   addCard(name, link) {
@@ -51,26 +53,21 @@ class Api {
 
   async getUserPlaylists() {
     const response = await this._makeRequest("playlists");
-    console.log("🔍 getUserPlaylists response:", response);
 
     const playlists = response.playlists || response || [];
-    console.log("🔍 getUserPlaylists playlists:", playlists);
 
     return playlists;
   }
 
   async createPlaylist(name) {
-    console.log("🚀 createPlaylist:", name);
-    try {
-      const response = await this._makeRequest("playlists", "POST", { name });
-      console.log("✅ createPlaylist success:", response);
+    // try {
+    const response = await this._makeRequest("playlists", "POST", { name });
 
-      const playlist = response.playlist || response;
-      return playlist;
-    } catch (error) {
-      console.log("❌ createPlaylist error:", error);
-      throw error;
-    }
+    const playlist = response.playlist || response;
+    return playlist;
+    // } catch (error) {
+    //   throw error;
+    // }
   }
 
   deletePlaylist(playlistId) {
@@ -78,7 +75,6 @@ class Api {
   }
 
   async addVideoToPlaylist(playlistId, video) {
-    // Extraer thumbnail del array de thumbnails si existe
     let thumbnailUrl = video.thumbnail;
     if (
       !thumbnailUrl &&
@@ -86,7 +82,6 @@ class Api {
       Array.isArray(video.thumbnails) &&
       video.thumbnails.length > 0
     ) {
-      // Buscar el thumbnail de mejor calidad (generalmente el último o 'high'/'medium')
       const thumbnail =
         video.thumbnails.find((t) => t.quality === "high") ||
         video.thumbnails.find((t) => t.quality === "medium") ||
@@ -95,21 +90,17 @@ class Api {
       thumbnailUrl = thumbnail?.url;
     }
 
-    // Transformar el objeto video a la estructura esperada por el backend
     const videoData = {
       youtubeId: video.videoId || video.youtubeId || video.id,
       title: video.title,
       thumbnail: thumbnailUrl,
-      // Incluir campos adicionales si los hay
+
       ...(video.description && { description: video.description }),
       ...(video.channelTitle && { channelTitle: video.channelTitle }),
-      ...(video.channelName && { channelTitle: video.channelName }), // Mapear channelName a channelTitle
+      ...(video.channelName && { channelTitle: video.channelName }),
       ...(video.duration && { duration: video.duration }),
       ...(video.publishedAt && { publishedAt: video.publishedAt }),
     };
-
-    console.log("🔍 addVideoToPlaylist original video:", video);
-    console.log("🔍 addVideoToPlaylist transformed data:", videoData);
 
     const response = await this._makeRequest(
       `playlists/${playlistId}/add`,
@@ -127,7 +118,6 @@ class Api {
     return response.playlist || response;
   }
 
-  // Métodos para Reviews
   getUserReviews() {
     return this._makeRequest("reviews");
   }
@@ -154,7 +144,6 @@ class Api {
     return this._makeRequest(`reviews/${reviewId}`, "DELETE");
   }
 
-  // Métodos para Videos
   getAllVideos() {
     return this._makeRequest("videos");
   }
@@ -179,6 +168,21 @@ class Api {
     return this._makeRequest("reviews/stats");
   }
 
+  getUsersStats() {
+    return this._makeRequest("dashboard/users-stats");
+  }
+
+  getVideosStats() {
+    return this._makeRequest("dashboard/videos-stats");
+  }
+
+  searchYouTube(query, maxResults = 12) {
+    const encodedQuery = encodeURIComponent(query);
+    return this._makeRequest(
+      `videos/search?q=${encodedQuery}&maxResults=${maxResults}`
+    );
+  }
+
   _makeRequest(path, method = "GET", body = {}) {
     const config = {
       method,
@@ -187,10 +191,6 @@ class Api {
       },
     };
 
-    //const token = this._getToken();
-    // if (token) {
-    //   config.headers.Authorization = token;
-    // }
     const token = this._getToken();
     config.headers = {
       "Content-Type": "application/json",
@@ -204,8 +204,30 @@ class Api {
       if (res.ok) {
         return res.json();
       }
-      const json = await res.json();
-      throw new Error(json.message);
+
+      try {
+        const json = await res.json();
+
+        console.error(`API Error ${res.status}:`, json);
+
+        // Si hay detalles de validación, incluirlos en el mensaje
+        if (json.validation && json.validation.body) {
+          const validationErrors = json.validation.body.details || [];
+          "Validation details:", json.validation;
+          const errorMessages = validationErrors
+            .map((err) => `${err.path?.join(".")}: ${err.message}`)
+            .join(", ");
+          throw new Error(`Validation failed: ${errorMessages}`);
+        }
+
+        throw new Error(json.message || `HTTP Error ${res.status}`);
+      } catch (parseError) {
+        if (parseError.name === "SyntaxError") {
+          console.error(`API Error ${res.status} (Invalid JSON):`, parseError);
+          throw new Error(`HTTP Error ${res.status}: ${res.statusText}`);
+        }
+        throw parseError;
+      }
     });
   }
 }

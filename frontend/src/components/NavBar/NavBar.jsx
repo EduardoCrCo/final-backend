@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
 
 export const NavBar = ({ isMobileMenuOpen, onCloseMobileMenu }) => {

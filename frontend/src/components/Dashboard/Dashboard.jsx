@@ -14,10 +14,8 @@ export const Dashboard = () => {
         </header>
 
         <main className="dashboard__content">
-          {/* Tabla de estadísticas de usuarios */}
           <UserStatsTable />
 
-          {/* Tabla de estadísticas de videos */}
           <VideoStatsTable />
         </main>
       </div>

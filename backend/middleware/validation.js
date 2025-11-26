@@ -1,7 +1,6 @@
 import { celebrate, Joi } from "celebrate";
 import validator from "validator";
 
-// validacion personalizada de URLs
 const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
     return value;
@@ -9,7 +8,6 @@ const validateURL = (value, helpers) => {
   return helpers.error("string.uri");
 };
 
-// Validaciones para autenticación
 export const signupValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required().messages({
@@ -44,7 +42,6 @@ export const signinValidation = celebrate({
   }),
 });
 
-// Validaciones para usuarios
 export const updateProfileValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).messages({
@@ -67,7 +64,6 @@ export const updateAvatarValidation = celebrate({
   }),
 });
 
-// Validaciones para playlists
 export const createPlaylistValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(1).max(100).required().messages({
@@ -93,7 +89,6 @@ export const updatePlaylistValidation = celebrate({
   }),
 });
 
-// Validaciones para videos
 export const addVideoToPlaylistValidation = celebrate({
   body: Joi.object().keys({
     youtubeId: Joi.string().required().messages({
@@ -106,7 +101,6 @@ export const addVideoToPlaylistValidation = celebrate({
       "any.required": "La URL del thumbnail es requerida",
       "string.uri": "Debe ser una URL válida",
     }),
-    // Campos opcionales adicionales
     description: Joi.string().allow("").optional(),
     channelTitle: Joi.string().allow("").optional(),
     duration: Joi.string().allow("").optional(),
@@ -114,7 +108,6 @@ export const addVideoToPlaylistValidation = celebrate({
   }),
 });
 
-// Validaciones para reviews
 export const createReviewValidation = celebrate({
   body: Joi.object().keys({
     title: Joi.string().min(5).max(200).required().messages({
@@ -152,7 +145,6 @@ export const updateReviewValidation = celebrate({
   }),
 });
 
-// Validaciones para parámetros comunes
 export const validateObjectId = celebrate({
   params: Joi.object().keys({
     id: Joi.string().hex().length(24).required().messages({
@@ -183,7 +175,6 @@ export const validateVideoId = celebrate({
   }),
 });
 
-// Validación específica para remover video de playlist (acepta YouTube ID)
 export const removeVideoFromPlaylistValidation = celebrate({
   params: Joi.object().keys({
     id: Joi.string().hex().length(24).required().messages({

@@ -1,26 +1,19 @@
-import Router from 'express'
-import auth from '../middleware/auth.js'
+import Router from "express";
 import {
   getUsersStats,
   getUserStatsById,
   getVideosStats,
   getVideoStatsById,
-} from '../controllers/dashboardController.js'
+} from "../controllers/dashboardController.js";
 
-const router = Router()
+const router = Router();
 
-// Las rutas ya tienen autenticación aplicada en app.js, no necesitamos duplicarla
+router.get("/users-stats", getUsersStats);
 
-// GET /dashboard/users-stats - Obtener estadísticas de todos los usuarios
-router.get('/users-stats', getUsersStats)
+router.get("/users-stats/:userId", getUserStatsById);
 
-// GET /dashboard/users-stats/:userId - Obtener estadísticas de un usuario específico
-router.get('/users-stats/:userId', getUserStatsById)
+router.get("/videos-stats", getVideosStats);
 
-// GET /dashboard/videos-stats - Obtener estadísticas de todos los videos
-router.get('/videos-stats', getVideosStats)
+router.get("/videos-stats/:videoId", getVideoStatsById);
 
-// GET /dashboard/videos-stats/:videoId - Obtener estadísticas de un video específico
-router.get('/videos-stats/:videoId', getVideoStatsById)
-
-export default router
+export default router;

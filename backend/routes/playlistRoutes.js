@@ -15,12 +15,10 @@ import {
 
 const router = Router();
 
-// Rutas básicas de playlists
 router.get("/", getUserPlaylists);
 router.post("/", createPlaylistValidation, createPlaylist);
 router.delete("/:id", validateObjectId, deletePlaylist);
 
-// Rutas para manejo de videos en playlists
 router.post(
   "/:id/add",
   validateObjectId,

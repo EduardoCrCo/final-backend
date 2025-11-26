@@ -7,14 +7,12 @@ import saveIcon from "../../../../images/saveIcon.png";
 import { PlaylistModal } from "../../../PlaylistModal/PlaylistModal.jsx";
 import { VideoPreloader } from "../VideoPreloader/VideoPreloader.jsx";
 import api from "../../../../utils/api.js";
-//import { set } from "mongoose";
 
 export const Videos = ({
   videos = [],
   onDelete,
   onLiked,
   onCreateReview,
-  loading,
   loadingVideoId,
 }) => {
   const { currentUser } = useContext(CurrentUserContext);
@@ -36,12 +34,10 @@ export const Videos = ({
     setSelectedVideo(null);
   };
 
-  // Helper function para extraer videoId de thumbnails (igual que en backend)
   const extractVideoId = (video) => {
     if (video.videoId) return video.videoId;
     if (video.youtubeId) return video.youtubeId;
 
-    // Extraer de thumbnails si no tiene videoId directo
     if (video.thumbnails && video.thumbnails.length > 0) {
       const thumbnailUrl = video.thumbnails[0].url;
       const match = thumbnailUrl.match(/\/vi\/([^/]+)\//);
@@ -61,37 +57,29 @@ export const Videos = ({
         const playlistVideoId = extractVideoId(video);
         const matches = playlistVideoId === youtubeId;
 
-        if (matches) {
-          console.log(`✅ Video ${youtubeId} encontrado en playlist!`);
-        }
-
         return matches;
       });
     });
   };
 
-  const handleVideoClick = async (videoId, videoTitle) => {
+  const handleVideoClick = async (videoId) => {
     const videoData = videos.find((v) => v.video.videoId === videoId);
 
     setVideoLoadingStates((prev) => ({ ...prev, [videoId]: true }));
     setShowVideoPreloader(true);
     setCurrentLoadingVideo(videoData);
-
-    // El VideoPreloader manejará el timing y completará automáticamente
   };
 
   const handlePreloaderComplete = () => {
     setShowVideoPreloader(false);
 
     if (currentLoadingVideo) {
-      // Abrir YouTube en nueva pestaña
       window.open(
         `https://www.youtube.com/watch?v=${currentLoadingVideo.video.videoId}`,
         "_blank",
         "noopener,noreferrer"
       );
 
-      // Limpiar estado de carga
       setVideoLoadingStates((prev) => ({
         ...prev,
         [currentLoadingVideo.video.videoId]: false,
@@ -103,26 +91,22 @@ export const Videos = ({
 
   const loadUserPlaylists = async () => {
     try {
-      // Verificar si hay token (más importante que currentUser para esta función)
       const token = localStorage.getItem("jwt");
       const savedUser = localStorage.getItem("currentUser");
 
       if (!token || !savedUser) {
-        console.log("🚫 No token or saved user, clearing playlists");
         setPlaylists([]);
         setPlaylistsLoading(false);
         return;
       }
 
       setPlaylistsLoading(true);
-      console.log("🔄 loadUserPlaylists: Iniciando carga...");
 
-      // Usar la API centralizada que maneja la nueva estructura de respuesta
       const playlists = await api.getUserPlaylists();
-      console.log("🔄 loadUserPlaylists: Respuesta recibida:", playlists);
+      "loadUserPlaylists: Respuesta recibida:", playlists;
 
       const playlistsArray = Array.isArray(playlists) ? playlists : [];
-      console.log("🔄 loadUserPlaylists: Array final:", playlistsArray);
+      "loadUserPlaylists: Array final:", playlistsArray;
 
       setPlaylists(playlistsArray);
     } catch (err) {
@@ -133,29 +117,24 @@ export const Videos = ({
     }
   };
 
-  // ⚡ Cargar playlists cuando cambie el usuario y tenga token (consolidado)
   useEffect(() => {
     const token = localStorage.getItem("jwt");
 
-    // Solo cargar si currentUser está completamente cargado y hay token en localStorage
     if (currentUser !== undefined && currentUser && token) {
-      console.log("🔄 Condiciones cumplidas para cargar playlists:", {
-        currentUser: !!currentUser,
-        token: !!token,
-      });
+      "Condiciones cumplidas para cargar playlists:",
+        {
+          currentUser: !!currentUser,
+          token: !!token,
+        };
       loadUserPlaylists();
     } else if (currentUser !== undefined && (!currentUser || !token)) {
-      // Limpiar playlists si no hay usuario o token
-      console.log("🧹 Limpiando playlists - no hay usuario o token");
       setPlaylists([]);
       setPlaylistsLoading(false);
     }
 
-    // Escuchar eventos de login para recargar playlists
     const handleUserLoggedIn = () => {
       const currentToken = localStorage.getItem("jwt");
       if (currentUser && currentToken) {
-        console.log("🔄 Usuario logueado, recargando playlists");
         loadUserPlaylists();
       }
     };
@@ -163,23 +142,17 @@ export const Videos = ({
     window.addEventListener("user-logged-in", handleUserLoggedIn);
     return () =>
       window.removeEventListener("user-logged-in", handleUserLoggedIn);
-  }, [currentUser]); // Dependencia en currentUser
+  }, [currentUser]);
 
-  // ⚡ Cargar playlists al montar el componente (para navegación entre rutas)
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     const savedUser = localStorage.getItem("currentUser");
 
-    // Si hay token y usuario guardado al montar, cargar playlists inmediatamente
     if (token && savedUser && currentUser === undefined) {
-      console.log(
-        "🚀 Componente montado - iniciando carga temprana de playlists"
-      );
       loadUserPlaylists();
     }
-  }, []); // Solo al montar el componente
+  }, [currentUser]);
 
-  //Crear lista sin duplicados
   const uniqueVideos = Array.from(
     new Map(videos.map((v) => [v.video.videoId, v])).values()
   );
@@ -196,7 +169,6 @@ export const Videos = ({
 
           return (
             <div
-              // key={item.video.videoId}
               key={`${item.video.videoId}-${index}`}
               className={`videos__grid-wrapper ${
                 isVideoLoading ? "loading" : ""
@@ -206,7 +178,6 @@ export const Videos = ({
                 position: "relative",
               }}
             >
-              {/* Overlay de carga */}
               {isVideoLoading && (
                 <div className="video-loading-overlay">
                   <div className="video-spinner"></div>
@@ -215,7 +186,6 @@ export const Videos = ({
               )}
 
               <div className="buttons">
-                {/* ✅ Este botón abre el modal */}
                 <button
                   className={`videos__save-button ${
                     currentUser ? "enabled" : "disabled"
@@ -332,7 +302,6 @@ export const Videos = ({
         <div className="video__grid-empty">Aun no hay resultados cargados.</div>
       )}
 
-      {/* ✅ Modal sincronizado con el estado */}
       <PlaylistModal
         isOpen={isModalOpen}
         video={selectedVideo}
@@ -343,7 +312,6 @@ export const Videos = ({
         currentUser={currentUser}
       />
 
-      {/* VideoPreloader para mostrar progreso de carga */}
       <VideoPreloader
         isVisible={showVideoPreloader}
         videoTitle={currentLoadingVideo?.video?.title || ""}

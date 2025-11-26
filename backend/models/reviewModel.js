@@ -1,9 +1,9 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   videoId: {
@@ -56,14 +56,12 @@ const reviewSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-})
+});
 
-// Índice compuesto para evitar reviews duplicadas del mismo usuario para el mismo video
-reviewSchema.index({ userId: 1, videoId: 1 }, { unique: true })
+reviewSchema.index({ userId: 1, videoId: 1 }, { unique: true });
 
-// Middleware para actualizar updatedAt en cada modificación
-reviewSchema.pre('findOneAndUpdate', function () {
-  this.set({ updatedAt: new Date() })
-})
+reviewSchema.pre("findOneAndUpdate", function updateTimestamp() {
+  this.set({ updatedAt: new Date() });
+});
 
-export default mongoose.model('Review', reviewSchema)
+export default mongoose.model("Review", reviewSchema);

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useVideoStats } from "../../../hooks/useVideoStats";
 import "../../../blocks/videoStatsTable.css";
 
-// Componente para manejar thumbnails con fallback
 const VideoThumbnail = ({ video, isMobile = false }) => {
   const [imageError, setImageError] = useState(false);
 
@@ -117,7 +116,6 @@ function VideoStatsTable() {
         </button>
       </div>
 
-      {/* Estadísticas Globales */}
       {globalStats && Object.keys(globalStats).length > 0 && (
         <div className="video-stats__global">
           <div className="video-stats__global-item">
@@ -163,7 +161,6 @@ function VideoStatsTable() {
         </div>
       ) : (
         <>
-          {/* Desktop Table */}
           <table className="video-stats__table">
             <thead className="video-stats__thead">
               <tr>
@@ -226,7 +223,6 @@ function VideoStatsTable() {
             </tbody>
           </table>
 
-          {/* Mobile Card Layout */}
           <div className="video-stats__mobile-cards">
             {videosStats.map((video, index) => {
               const uniqueKey =
@@ -234,7 +230,6 @@ function VideoStatsTable() {
 
               return (
                 <div key={uniqueKey} className="video-stats__mobile-card">
-                  {/* Card Header with Video Info */}
                   <div className="video-stats__card-header">
                     <VideoThumbnail video={video} isMobile={true} />
                     <div className="video-stats__card-info">
@@ -248,7 +243,6 @@ function VideoStatsTable() {
                     </div>
                   </div>
 
-                  {/* Stats Grid */}
                   <div className="video-stats__card-stats">
                     <div className="video-stats__card-stat">
                       <span className="video-stats__card-stat-label">
@@ -299,7 +293,6 @@ function VideoStatsTable() {
                     </div>
                   </div>
 
-                  {/* Duration */}
                   {video.duration && video.duration !== "N/A" && (
                     <div className="video-stats__card-duration">
                       ⏱️ {video.duration}

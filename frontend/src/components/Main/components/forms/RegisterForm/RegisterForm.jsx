@@ -26,13 +26,12 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip, onLogin }) => {
     const newErrors = validateForm(form);
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      // continuar con el registro
       register({ name: form.name, email: form.email, password: form.password })
         .then(() => {
           showInfoTooltip("¡Registro exitoso!|n|Ahora puedes iniciar sesión.");
           setTimeout(() => {
             setPopupType(signinPopupType);
-          }, 1200);
+          }, 500);
         })
         .catch((err) => {
           console.error("Error al registrar:", err);
@@ -57,7 +56,6 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip, onLogin }) => {
         <LoginForm
           setPopupType={setPopupType}
           showInfoTooltip={showInfoTooltip}
-          onLogin={onLogin}
         />
       ),
       className: "form-popup",
@@ -67,7 +65,6 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip, onLogin }) => {
   return (
     <>
       <form
-        // ref={formRef}
         className="form register__form"
         noValidate
         onSubmit={handleRegister}
@@ -92,7 +89,7 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip, onLogin }) => {
           {errors.name && (
             <span className="form__input-error_active">{errors.name}</span>
           )}
-          {/* <span className="name-error" id="input-error-id"></span> */}
+
           <input
             id="email"
             name="email"
@@ -123,7 +120,7 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip, onLogin }) => {
           {errors.password && (
             <span className="form__input-error_active">{errors.password}</span>
           )}
-          {/* <span className="password-error" id="password-error"></span> */}
+
           <input
             id="confirmPassword"
             name="confirmPassword"
@@ -159,7 +156,6 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip, onLogin }) => {
           </p>
         </div>
       </form>
-      {/* InfoToolTip ahora se muestra desde App.jsx */}
     </>
   );
 };

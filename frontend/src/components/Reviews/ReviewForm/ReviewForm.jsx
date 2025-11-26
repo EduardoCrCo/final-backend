@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ReviewsList } from "../ReviewsList/ReviewsList";
 
 export const ReviewForm = ({ onAddReview, onClose, video }) => {
   const [formData, setFormData] = useState({

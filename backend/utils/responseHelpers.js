@@ -1,8 +1,5 @@
 import { HTTP_STATUS, SUCCESS_MESSAGES } from "./constants.js";
 
-// Utilidades para respuestas HTTP consistentes
-
-// Respuesta de éxito genérica
 export const sendSuccess = (
   res,
   data = null,
@@ -21,7 +18,6 @@ export const sendSuccess = (
   return res.status(statusCode).json(response);
 };
 
-// Respuesta de éxito para datos obtenidos
 export const sendDataSuccess = (
   res,
   data,
@@ -41,20 +37,17 @@ export const sendDataSuccess = (
   return res.status(HTTP_STATUS.OK).json(response);
 };
 
-// Respuesta de éxito para creación
 export const sendCreatedSuccess = (
   res,
   data,
   message = SUCCESS_MESSAGES.OPERATION_SUCCESSFUL
-) => {
-  return res.status(HTTP_STATUS.CREATED).json({
+) =>
+  res.status(HTTP_STATUS.CREATED).json({
     success: true,
     message,
     data,
   });
-};
 
-// Respuesta de error genérica
 export const sendError = (
   res,
   message,
@@ -73,44 +66,35 @@ export const sendError = (
   return res.status(statusCode).json(response);
 };
 
-// Respuesta de error de validación
 export const sendValidationError = (
   res,
   errors,
   message = "Datos de entrada inválidos"
-) => {
-  return res.status(HTTP_STATUS.BAD_REQUEST).json({
+) =>
+  res.status(HTTP_STATUS.BAD_REQUEST).json({
     success: false,
     message,
     errors,
   });
-};
 
-// Respuesta de error de autenticación
-export const sendAuthError = (res, message = "No autorizado") => {
-  return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+export const sendAuthError = (res, message = "No autorizado") =>
+  res.status(HTTP_STATUS.UNAUTHORIZED).json({
     success: false,
     message,
   });
-};
 
-// Respuesta de error de recurso no encontrado
-export const sendNotFoundError = (res, message = "Recurso no encontrado") => {
-  return res.status(HTTP_STATUS.NOT_FOUND).json({
+export const sendNotFoundError = (res, message = "Recurso no encontrado") =>
+  res.status(HTTP_STATUS.NOT_FOUND).json({
     success: false,
     message,
   });
-};
 
-// Respuesta de error de conflicto
-export const sendConflictError = (res, message = "Conflicto de recursos") => {
-  return res.status(HTTP_STATUS.CONFLICT).json({
+export const sendConflictError = (res, message = "Conflicto de recursos") =>
+  res.status(HTTP_STATUS.CONFLICT).json({
     success: false,
     message,
   });
-};
 
-// Wrapper para paginación
 export const sendPaginatedSuccess = (
   res,
   data,
@@ -129,8 +113,8 @@ export const sendPaginatedSuccess = (
     data,
     pagination: {
       total,
-      page: parseInt(page),
-      limit: parseInt(limit),
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
       totalPages,
       hasNext,
       hasPrev,
@@ -138,7 +122,6 @@ export const sendPaginatedSuccess = (
   });
 };
 
-// Wrapper para búsquedas
 export const sendSearchSuccess = (
   res,
   results,

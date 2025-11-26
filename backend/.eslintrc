@@ -5,6 +5,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "max-len": ["error", { "code": 125 }],
     "no-underscore-dangle": [
       "error",
       {

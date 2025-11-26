@@ -3,34 +3,43 @@ import { CurrentUserContext } from "../../../../../context/CurrentUserContext";
 
 export const EditProfile = ({ onClose }) => {
   const userContext = useContext(CurrentUserContext);
-  const { currentUser, setCurrentUser, handleUpdateUser } = userContext;
+  const { currentUser, handleUpdateUser } = userContext;
 
   const [name, setName] = useState(currentUser?.name || "");
-  // const [about, setAbout] = useState(currentUser?.about || "");
 
   const handleNameChange = (e) => {
-    console.log(currentUser);
     setName(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("🔄 Enviando actualización de perfil:", {
-    //   name,
-    //   about: currentUser?.about,
-    // });
+
+    if (!name || name.trim().length < 2) {
+      alert("El nombre debe tener al menos 2 caracteres");
+      return;
+    }
+
+    if (name.trim().length > 40) {
+      alert("El nombre no puede tener más de 40 caracteres");
+      return;
+    }
+
+    const trimmedName = name.trim();
+
+    const aboutValue = currentUser?.about || "Usuario sin descripción";
 
     if (typeof handleUpdateUser === "function") {
       try {
-        // ✅ Manejar about undefined como string vacío
-        const aboutValue = currentUser?.about || "";
-        await handleUpdateUser({ name, about: aboutValue });
-        // console.log("✅ Perfil actualizado exitosamente");
+        await handleUpdateUser({ name: trimmedName, about: aboutValue });
+
         if (typeof onClose === "function") {
           onClose();
         }
       } catch (error) {
         console.error("❌ Error al actualizar perfil:", error);
+
+        const errorMessage = error.message || "Error desconocido";
+        alert(`Error al actualizar perfil: ${errorMessage}`);
       }
     } else {
       console.warn("handleUpdateUser no es una función válida");
@@ -49,25 +58,11 @@ export const EditProfile = ({ onClose }) => {
           placeholder="Nombre"
           required
           onChange={handleNameChange}
-          // onChange={(e) => setName(e.target.value)}
           minLength="2"
           maxLength="40"
           value={name}
         />
         <span className="input-name-error"></span>
-        {/* <input
-          id="input-About"
-          type="text"
-          name="about"
-          className="form__input form__input-about"
-          placeholder="Acerca de mi"
-          required
-          onChange={handleAboutChange}
-          minLength="2"
-          maxLength="200"
-          value={about}
-        />
-        <span className="input-About-error"></span> */}
       </fieldset>
       <button type="submit" className="form__submit">
         Guardar

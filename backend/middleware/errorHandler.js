@@ -13,7 +13,6 @@ const errorHandler = (err, req, res, next) => {
     stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 
-  // Errores personalizados con statusCode
   if (err.statusCode) {
     return res.status(err.statusCode).json({
       success: false,
@@ -22,7 +21,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error de cast de MongoDB (ID inválido)
   if (err.name === "CastError") {
     const castError = handleCastError(err);
     return res.status(castError.statusCode).json({
@@ -31,7 +29,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error de validación de MongoDB
   if (err.name === "ValidationError") {
     const validationError = handleValidationError(err);
     return res.status(validationError.statusCode).json({
@@ -41,7 +38,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error de duplicado de MongoDB (email único)
   if (err.code === 11000) {
     const duplicateError = handleDuplicateError(err);
     return res.status(duplicateError.statusCode).json({
@@ -50,7 +46,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Errores de JWT
   if (err.name === "JsonWebTokenError") {
     return res.status(HTTP_STATUS.UNAUTHORIZED).json({
       success: false,
@@ -65,7 +60,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error de conexión a MongoDB
   if (err.name === "MongoNetworkError") {
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -73,7 +67,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error de rate limiting
   if (err.status === 429) {
     return res.status(429).json({
       success: false,
@@ -81,8 +74,7 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error interno del servidor
-  res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+  return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
     success: false,
     message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
     ...(process.env.NODE_ENV === "development" && {

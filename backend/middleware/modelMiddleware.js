@@ -1,26 +1,20 @@
 import { hashPassword, isPasswordModified } from "../services/hashService.js";
 
-/**
- * Middleware para hashear contraseñas automáticamente
- * Separado del modelo para mejor separación de responsabilidades
- */
-export const hashPasswordMiddleware = async function (next) {
-  // Solo hashear si la contraseña fue modificada
+export const hashPasswordMiddleware = async function hashPasswordMiddleware(
+  next
+) {
   if (!isPasswordModified(this, "password")) {
     return next();
   }
 
   try {
     this.password = await hashPassword(this.password);
-    next();
+    return next();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
-/**
- * Middleware para actualizar updatedAt
- */
-export const updateTimestampMiddleware = function () {
+export const updateTimestampMiddleware = function updateTimestampMiddleware() {
   this.set({ updatedAt: new Date() });
 };

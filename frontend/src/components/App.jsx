@@ -14,15 +14,14 @@ import { LoginForm } from "./Main/components/forms/LoginForm/LoginForm";
 import { PlaylistModal } from "./PlaylistModal/PlaylistModal";
 import * as auth from "../utils/auth";
 import api from "../utils/api";
-import { migrateAuthData, validateCleanUserData } from "../utils/authMigration";
+import { migrateAuthData } from "../utils/authMigration";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const App = () => {
   const navigate = useNavigate();
 
-  // Estado y lógica de negocio para videos y búsqueda YouTube
-  const [youtubeInfo, setYoutubeInfo] = useState(null);
+  const [youtubeInfo] = useState(null);
   const [youtubeQuery, setYoutubeQuery] = useState("");
   const [youtubeResults, setYoutubeResults] = useState([]);
   const [selectedVideos, setSelectedVideos] = useState([]);
@@ -40,34 +39,28 @@ export const App = () => {
 
     searchYouTube(youtubeQuery, 12)
       .then((results) => {
-        // El backend ya devuelve el formato correcto, solo usamos directamente
         setYoutubeResults(results || []);
       })
       .catch((error) => {
-        console.error("❌ App.jsx: Search error:", error);
+        console.error("App.jsx: Search error:", error);
         setYoutubeResults([]);
       });
   }, [youtubeQuery]);
 
-  // Cargar todos los videos públicos al iniciar la aplicación
   useEffect(() => {
     const loadAllVideos = async () => {
       try {
-        console.log("🔄 Loading all public videos from backend...");
         const response = await api.getAllVideos();
         const videos = response.videos || response;
         setSelectedVideos(videos);
-        console.log("✅ Loaded", videos.length, "public videos");
 
-        // Limpiar localStorage ya que ahora usamos backend
         localStorage.removeItem("selectedVideos");
       } catch (error) {
         console.warn(
-          "⚠️ Backend unavailable, using localStorage fallback:",
+          "Backend unavailable, using localStorage fallback:",
           error
         );
 
-        // Fallback: usar localStorage si backend falla
         const saved = localStorage.getItem("selectedVideos");
         const fallbackVideos = saved ? JSON.parse(saved) : [];
         setSelectedVideos(fallbackVideos);
@@ -82,9 +75,7 @@ export const App = () => {
     loadAllVideos();
   }, []); // Solo al montar la aplicación
 
-  // Mantener localStorage como respaldo (solo para usuarios no logueados)
   useEffect(() => {
-    // Solo guardar en localStorage si no hay usuario logueado y como respaldo
     if (!currentUser && selectedVideos.length > 0) {
       localStorage.setItem("selectedVideos", JSON.stringify(selectedVideos));
     }
@@ -95,7 +86,6 @@ export const App = () => {
       const response = await api.getAllVideos();
       const videos = response.videos || response;
       setSelectedVideos(videos);
-      console.log("🔄 Reloaded", videos.length, "public videos");
     } catch (error) {
       console.error("Error reloading videos:", error);
     }
@@ -123,7 +113,6 @@ export const App = () => {
   };
 
   const handleLikeVideo = async (videoId) => {
-    // Buscar el video en selectedVideos
     const video = selectedVideos.find((v) => v.video.videoId === videoId);
     if (!video) {
       console.error("Video not found in selectedVideos");
@@ -141,20 +130,17 @@ export const App = () => {
 
     try {
       let dbVideo;
-      // Primero buscar el video en BD por youtubeId usando API centralizada
+
       try {
         const response = await api.findVideoByYoutubeId(videoId);
         dbVideo = response.video;
-      } catch (findError) {
-        // Si no existe, guardarlo primero usando API centralizada
+      } catch {
         const saveResult = await api.addVideo(video.video);
         dbVideo = saveResult.video;
       }
 
-      // Ahora hacer like usando el _id de MongoDB con API centralizada
       await api.likeVideo(dbVideo._id);
 
-      // Actualizar el estado local
       setSelectedVideos(
         selectedVideos.map((v) =>
           v.video.videoId === videoId ? { ...v, liked: !v.liked } : v
@@ -169,7 +155,7 @@ export const App = () => {
         }
       );
     } catch (error) {
-      console.error("❌ Frontend: Error handling like:", error);
+      console.error(" Frontend: Error handling like:", error);
       toast.error("Error al procesar el like", {
         position: "bottom-center",
         autoClose: 2000,
@@ -178,9 +164,8 @@ export const App = () => {
   };
 
   const handleCreateReview = (video) => {
-    // Guardar el video seleccionado en localStorage para usarlo en Reviews
     localStorage.setItem("selectedVideoForReview", JSON.stringify(video));
-    // Navegar a la página de Reviews
+
     navigate("/reviews");
   };
 
@@ -195,7 +180,6 @@ export const App = () => {
   };
 
   const handleVideoAddedToPlaylist = (playlistId, video) => {
-    console.log(`Video "${video.title}" agregado a playlist ${playlistId}`);
     toast.success(`Video "${video.title}" agregado a la playlist`, {
       position: "bottom-center",
       autoClose: 2000,
@@ -203,20 +187,17 @@ export const App = () => {
   };
 
   useEffect(() => {
-    // Migrar datos existentes para seguridad
     migrateAuthData();
 
-    // Try to get user info from API (if token is valid)
     const loadUser = async () => {
       try {
         const savedUser = localStorage.getItem("currentUser");
         const token = localStorage.getItem("jwt");
 
         if (token) {
-          // Si hay token, intentar obtener info del backend
           try {
             const user = await api.getUserInfo();
-            // ✅ Usuario limpio SIN token (más seguro)
+
             const cleanUser = {
               _id: user._id,
               name: user.name,
@@ -228,7 +209,7 @@ export const App = () => {
             localStorage.setItem("currentUser", JSON.stringify(cleanUser));
           } catch (apiError) {
             console.error("API error:", apiError);
-            // Si falla API pero hay usuario guardado, usarlo
+
             if (savedUser) {
               try {
                 const parsedUser = JSON.parse(savedUser);
@@ -244,7 +225,6 @@ export const App = () => {
             }
           }
         } else if (savedUser) {
-          // Sin token pero con usuario guardado
           try {
             const parsedUser = JSON.parse(savedUser);
 
@@ -304,7 +284,6 @@ export const App = () => {
         setCurrentUser(cleanUser);
         localStorage.setItem("currentUser", JSON.stringify(cleanUser));
 
-        //Forzar actualización de playlists después del login
         setTimeout(() => {
           window.dispatchEvent(new Event("user-logged-in"));
         }, 100);
@@ -352,7 +331,6 @@ export const App = () => {
         return cleanUser;
       });
 
-      // Mostrar mensaje de éxito
       handleShowInfoTooltip("Avatar actualizado exitosamente");
     } catch (error) {
       console.error("Failed to update avatar:", error.message);
@@ -362,8 +340,8 @@ export const App = () => {
 
   const handleUpdateUser = async ({ name, about }) => {
     try {
-      // Manejar about undefined/null como string vacío
-      const cleanAbout = about || "";
+      const cleanAbout =
+        about && about.trim() ? about.trim() : "Usuario sin descripción";
 
       const response = await api.updateUser(name, cleanAbout);
 
@@ -384,14 +362,14 @@ export const App = () => {
       handleShowInfoTooltip("Perfil actualizado exitosamente");
       return updatedUser;
     } catch (err) {
-      console.error("❌ Error actualizando usuario:", err);
+      console.error("Error actualizando usuario:", err);
       handleShowInfoTooltip("Error al actualizar perfil");
       throw err;
     }
   };
 
   const handleLogout = () => {
-    console.log("Logging out user:", currentUser);
+    // console.log("Logging out user:", currentUser);
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
     localStorage.removeItem("jwt");

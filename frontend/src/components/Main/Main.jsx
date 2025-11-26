@@ -26,7 +26,6 @@ export const Main = ({
     const minLoadTime = new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
-      // Detectar si el video YA existe
       const exists = selectedVideos.some(
         (v) => v.video.videoId === video.video.videoId
       );
@@ -36,21 +35,18 @@ export const Main = ({
           position: "bottom-center",
           autoClose: 2000,
         });
-        return; //no lo agregues de nuevo
+        return;
       }
 
-      // Guardar en backend si hay usuario autenticado
       const token = localStorage.getItem("jwt");
       if (token) {
         await api.addVideo({ videoData: video.video });
         await minLoadTime;
 
-        // Recargar todos los videos para mantener la lista actualizada y pública
         if (reloadAllVideos) {
           await reloadAllVideos();
         }
       } else {
-        // Si no hay usuario, solo agregar localmente (fallback temporal)
         await minLoadTime;
         setSelectedVideos([video, ...selectedVideos]);
       }
@@ -68,20 +64,6 @@ export const Main = ({
 
   return (
     <main className="main-content">
-      {/* <section className="search-bar__container hero-section">
-        <h1 className="main-content__title">Explora el mundo desde el aire</h1>
-        <h3 className="main-content__subtitle">
-          Los mejores videos para aficionados
-        </h3>
-
-        <SearchBar
-          onSearch={setYoutubeQuery}
-          searchResults={youtubeResults}
-          onResultClick={handleResultClick}
-          loading={loading}
-          loadingVideoId={loadingVideoId}
-        />
-      </section> */}
       <section className="search-bar__container hero">
         <div className="hero__overlay"></div>
 
@@ -102,7 +84,6 @@ export const Main = ({
       </section>
 
       <section className="videos__container">
-        {/* Mostrar preloader cuando se está cargando un video */}
         {loading && (
           <div style={{ textAlign: "center", margin: "20px 0" }}>
             <Preloader message="Cargando video seleccionado..." />

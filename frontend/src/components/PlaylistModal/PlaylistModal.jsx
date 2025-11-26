@@ -18,7 +18,6 @@ export const PlaylistModal = ({
   const [expandedPlaylistId, setExpandedPlaylistId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // ➤ Manejar tecla Escape para cerrar modal
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape" && isOpen) {
@@ -37,10 +36,9 @@ export const PlaylistModal = ({
 
   if (!isOpen) return null;
 
-  // ➤ Crear playlist usando api.js con mejor sincronización
   const handleCreatePlaylist = async (e) => {
-    if (e) e.preventDefault(); // Evitar refresh de página
-    if (!newPlaylistName.trim() || isLoading) return; // Prevenir múltiples clicks
+    if (e) e.preventDefault();
+    if (!newPlaylistName.trim() || isLoading) return;
 
     if (!currentUser) {
       toast.error("Debes iniciar sesión para crear playlists");
@@ -50,25 +48,21 @@ export const PlaylistModal = ({
     const trimmedName = newPlaylistName.trim();
 
     setIsLoading(true);
-    console.log("🚀 Iniciando creación de playlist:", trimmedName);
 
     try {
       const newPlaylist = await api.createPlaylist(trimmedName);
-      console.log("✅ Playlist creada:", newPlaylist);
+      "Playlist creada:", newPlaylist;
 
       toast.success("Playlist creada correctamente");
       setNewPlaylistName("");
       setIsCreatingNew(false);
 
-      // Recargar playlists desde el backend
       if (loadUserPlaylists) {
-        console.log("🔄 Recargando playlists...");
         await loadUserPlaylists();
-        console.log("✅ Playlists recargadas");
       }
     } catch (error) {
-      console.error("❌ Error creando playlist:", error);
-      // Mostrar mensaje específico del backend para duplicados
+      console.error("Error creando playlist:", error);
+
       if (error.message === "Ya existe una playlist con ese nombre") {
         toast.warning(error.message);
       } else {
@@ -79,17 +73,15 @@ export const PlaylistModal = ({
     }
   };
 
-  // ➤ Agregar video a playlist usando api.js con loading state
   const handleAddToExistingPlaylist = async (playlistId, e) => {
-    if (e) e.preventDefault(); // Evitar refresh
-    if (isLoading) return; // Prevenir múltiples clicks
+    if (e) e.preventDefault();
+    if (isLoading) return;
 
     setIsLoading(true);
     try {
       await api.addVideoToPlaylist(playlistId, video);
       toast.success("Video agregado");
 
-      // Recargar playlists y cerrar modal
       if (loadUserPlaylists) {
         await loadUserPlaylists();
       }
@@ -102,7 +94,6 @@ export const PlaylistModal = ({
     }
   };
 
-  // ➤ Eliminar video de playlist usando api.js
   const handleDeleteVideo = async (playlistId, videoId) => {
     try {
       await api.removeVideoFromPlaylist(playlistId, videoId);
@@ -114,7 +105,6 @@ export const PlaylistModal = ({
     }
   };
 
-  // ➤ Eliminar playlist usando api.js
   const handleDeletePlaylist = async (playlistId) => {
     try {
       await api.deletePlaylist(playlistId);
@@ -211,27 +201,17 @@ export const PlaylistModal = ({
                                 <span>{v.title}</span>
                                 <button
                                   onClick={() => {
-                                    // Extraer videoId correctamente según la estructura real
                                     let videoId = null;
 
-                                    // Prioridad 1: youtubeId (estructura más común)
                                     if (v.youtubeId) {
                                       videoId = v.youtubeId;
-                                    }
-                                    // Prioridad 2: videoId directo
-                                    else if (v.videoId) {
+                                    } else if (v.videoId) {
                                       videoId = v.videoId;
-                                    }
-                                    // Prioridad 3: estructura anidada video.videoId
-                                    else if (v.video && v.video.videoId) {
+                                    } else if (v.video && v.video.videoId) {
                                       videoId = v.video.videoId;
-                                    }
-                                    // Prioridad 4: estructura anidada video.youtubeId
-                                    else if (v.video && v.video.youtubeId) {
+                                    } else if (v.video && v.video.youtubeId) {
                                       videoId = v.video.youtubeId;
-                                    }
-                                    // Fallback: extraer de thumbnail si es necesario
-                                    else if (
+                                    } else if (
                                       v.thumbnails &&
                                       v.thumbnails[0] &&
                                       v.thumbnails[0].url
@@ -244,16 +224,14 @@ export const PlaylistModal = ({
                                     }
 
                                     if (videoId) {
-                                      console.log(
-                                        "🗑️ Eliminando video:",
+                                      "🗑️ Eliminando video:",
                                         videoId,
                                         "de playlist:",
-                                        playlist._id
-                                      );
+                                        playlist._id;
                                       handleDeleteVideo(playlist._id, videoId);
                                     } else {
                                       console.error(
-                                        "❌ No se pudo extraer videoId de:",
+                                        "No se pudo extraer videoId de:",
                                         v
                                       );
                                       toast.error(
@@ -287,7 +265,6 @@ export const PlaylistModal = ({
               )}
             </div>
 
-            {/* Crear nueva playlist */}
             <div className="playlist-modal__create-section">
               {!isCreatingNew ? (
                 <button

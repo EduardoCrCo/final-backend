@@ -17,19 +17,17 @@ export const Reviews = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
 
   useEffect(() => {
-    // Verificar si hay un video seleccionado para review
     const videoForReview = localStorage.getItem("selectedVideoForReview");
     if (videoForReview) {
       const video = JSON.parse(videoForReview);
       setSelectedVideo(video);
-      // Limpiar el localStorage después de usar el video
+
       localStorage.removeItem("selectedVideoForReview");
     }
   }, []);
 
   const handleAddReview = async (reviewData) => {
     try {
-      // Obtener thumbnail de diferentes formas posibles
       let thumbnail = null;
       if (selectedVideo?.thumbnails) {
         if (Array.isArray(selectedVideo.thumbnails)) {
@@ -43,21 +41,21 @@ export const Reviews = () => {
       }
 
       const reviewPayload = {
-        videoId: selectedVideo?.videoId || "temp-video-id", // Temporal para prueba
+        videoId: selectedVideo?.videoId || "temp-video-id",
         videoTitle: selectedVideo?.title || "Video sin título",
         videoThumbnail: thumbnail || "",
         channelName:
           selectedVideo?.channelName || selectedVideo?.channelTitle || "",
         rating: reviewData.rating,
         title: reviewData.title,
-        content: reviewData.content || reviewData.text, // Compatibilidad con formato anterior
+        content: reviewData.content || reviewData.text,
         tags: reviewData.tags || [],
         isPublic:
           reviewData.isPublic !== undefined ? reviewData.isPublic : true,
       };
 
       await createReview(reviewPayload);
-      setSelectedVideo(null); // Cerrar el formulario después de enviar
+      setSelectedVideo(null);
     } catch (error) {
       console.error("Error creating review:", error);
     }

@@ -6,7 +6,6 @@ export const EditAvatar = ({ onClose }) => {
   const { handleUpdateAvatar } = useContext(CurrentUserContext);
   const formRef = useRef();
 
-  // 🔹 Función separada para inicializar validación
   const initializeValidation = (formElement) => {
     const validator = new FormValidator(formElement, {
       formSelector: ".form",
@@ -30,12 +29,9 @@ export const EditAvatar = ({ onClose }) => {
     e.preventDefault();
     const avatarUrl = formRef.current.link.value.trim();
 
-    console.log("🔄 Actualizando avatar con URL:", avatarUrl);
-
     if (avatarUrl) {
       handleUpdateAvatar(avatarUrl)
         .then(() => {
-          console.log("✅ Avatar actualizado exitosamente");
           formRef.current.reset();
           if (onClose) onClose();
         })

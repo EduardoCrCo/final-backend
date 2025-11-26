@@ -3,7 +3,7 @@ import {
   hashPasswordMiddleware,
   updateTimestampMiddleware,
 } from "../middleware/modelMiddleware.js";
-import { comparePassword } from "../services/hashService.js";
+import { comparePassword as comparePasswordService } from "../services/hashService.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -14,13 +14,7 @@ const userSchema = new mongoose.Schema(
       maxlength: [30, "El nombre no puede tener más de 30 caracteres"],
       trim: true,
     },
-    // about: {
-    //   type: String,
-    //   minlength: [2, "La descripción debe tener al menos 2 caracteres"],
-    //   maxlength: [30, "La descripción no puede tener más de 30 caracteres"],
-    //   default: "",
-    //   trim: true,
-    // },
+
     avatar: {
       type: String,
       default:
@@ -43,7 +37,6 @@ const userSchema = new mongoose.Schema(
       index: true,
       validate: {
         validator(v) {
-          // Usar una regex más estándar y robusta para emails
           return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
         },
         message: (props) => `${props.value} debe ser un email válido`,
@@ -73,29 +66,29 @@ const userSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Añade automáticamente createdAt y updatedAt
+    timestamps: true,
     toJSON: {
       transform(doc, ret) {
-        delete ret.password;
-        delete ret.__v;
-        return ret;
+        const userObject = { ...ret };
+        delete userObject.password;
+
+        delete userObject.__v;
+        return userObject;
       },
     },
   }
 );
 
-// Aplicar middleware de hashing (separado del modelo)
 userSchema.pre("save", hashPasswordMiddleware);
 
-// Método para verificar contraseña (delegando al servicio)
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await comparePassword(candidatePassword, this.password);
+userSchema.methods.comparePassword = async function comparePasswordMethod(
+  candidatePassword
+) {
+  return comparePasswordService(candidatePassword, this.password);
 };
 
-// Aplicar middleware de timestamp
 userSchema.pre(["updateOne", "findOneAndUpdate"], updateTimestampMiddleware);
 
-// Índices para optimizar consultas
 userSchema.index({ isActive: 1 });
 
 const User = mongoose.model("User", userSchema);

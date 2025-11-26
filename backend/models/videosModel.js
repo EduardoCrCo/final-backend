@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const VideoSchema = new mongoose.Schema(
   {
@@ -15,21 +15,21 @@ const VideoSchema = new mongoose.Schema(
 
     channelTitle: String,
     publishedAt: Date,
-    duration: String, // Formato "4:13" o "1:23:45"
+    duration: String,
 
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
 
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    savedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
     likesCount: { type: Number, default: 0 },
     savesCount: { type: Number, default: 0 },
   },
-  { timestamps: true },
-)
+  { timestamps: true }
+);
 
-export default mongoose.model('Video', VideoSchema)
+export default mongoose.model("Video", VideoSchema);

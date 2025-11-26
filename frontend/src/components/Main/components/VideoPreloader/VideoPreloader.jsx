@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 
+// Mover steps fuera del componente para evitar recreación
+const steps = [
+  "cargando video...",
+  "cargando video...",
+  "cargando video...",
+  "cargando video...",
+];
+
 export const VideoPreloader = ({ isVisible, videoTitle, onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState("");
-
-  const steps = [
-    "Conectando con YouTube...",
-    "Cargando información del video...",
-    "Preparando reproductor...",
-    "¡Listo para reproducir!",
-  ];
 
   useEffect(() => {
     if (!isVisible) {
@@ -25,7 +26,6 @@ export const VideoPreloader = ({ isVisible, videoTitle, onComplete }) => {
       setProgress((prev) => {
         const newProgress = prev + Math.random() * 15 + 5;
 
-        // Cambiar paso basado en el progreso
         if (newProgress > 25 && stepIndex === 0) {
           setCurrentStep(steps[1]);
           stepIndex = 1;
@@ -41,7 +41,7 @@ export const VideoPreloader = ({ isVisible, videoTitle, onComplete }) => {
           clearInterval(interval);
           setTimeout(() => {
             onComplete && onComplete();
-          }, 500);
+          }, 300);
           return 100;
         }
 
@@ -49,11 +49,9 @@ export const VideoPreloader = ({ isVisible, videoTitle, onComplete }) => {
       });
     };
 
-    // Inicializar
     setCurrentStep(steps[0]);
     setProgress(10);
 
-    // Actualizar progreso
     interval = setInterval(updateProgress, 200);
 
     return () => {

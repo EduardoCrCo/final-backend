@@ -1,6 +1,5 @@
 import { ERROR_MESSAGES, HTTP_STATUS } from "./constants.js";
 
-// Funciones para crear errores específicos
 export const createNotFoundError = (
   message = ERROR_MESSAGES.RESOURCE_NOT_FOUND
 ) => {
@@ -44,12 +43,10 @@ export const createExternalAPIError = (
   return error;
 };
 
-// Función principal para manejar errores de mongoose orFail
 const handleFailError = () => {
   throw createNotFoundError();
 };
 
-// Función para crear errores específicos
 export const createError = (type, message, statusCode) => {
   const error = new Error(message);
   error.name = type;
@@ -57,7 +54,6 @@ export const createError = (type, message, statusCode) => {
   return error;
 };
 
-// Función para manejar errores de validación de mongoose
 export const handleValidationError = (mongooseError) => {
   const messages = Object.values(mongooseError.errors).map(
     (err) => err.message
@@ -65,14 +61,12 @@ export const handleValidationError = (mongooseError) => {
   return createValidationError(ERROR_MESSAGES.VALIDATION_ERROR, messages);
 };
 
-// Función para manejar errores de duplicación de mongoose
 export const handleDuplicateError = (mongooseError) => {
   const field = Object.keys(mongooseError.keyValue)[0];
   const message = `El ${field} ya está en uso`;
   return createConflictError(message);
 };
 
-// Función para manejar errores de cast de mongoose
 export const handleCastError = (mongooseError) => {
   const message = `ID inválido: ${mongooseError.value}`;
   return createValidationError(message);
