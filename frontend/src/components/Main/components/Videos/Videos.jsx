@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { CurrentUserContext } from "../../../../context/CurrentUserContext";
+import { CurrentUserContext } from "../../../../context/CurrentUserContext.js";
 import trashIcon from "../../../../images/trash.png";
 import inactiveLike from "../../../../images/inactiveLike.svg";
 import activeLike from "../../../../images/activeLike.svg";
 import saveIcon from "../../../../images/saveIcon.png";
-import { PlaylistModal } from "../../../PlaylistModal/PlaylistModal";
-import { VideoPreloader } from "../VideoPreloader/VideoPreloader";
+import { PlaylistModal } from "../../../PlaylistModal/PlaylistModal.jsx";
+import { VideoPreloader } from "../VideoPreloader/VideoPreloader.jsx";
 import api from "../../../../utils/api.js";
 //import { set } from "mongoose";
 

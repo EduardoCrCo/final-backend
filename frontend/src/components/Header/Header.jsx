@@ -4,7 +4,7 @@ import EditAvatarIcon from "../../images/editAvatar.svg";
 import { NavBar } from "../NavBar/NavBar";
 import { useContext, useState } from "react";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
-import { RegisterForm } from "../../components/Main/components/forms/RegisterForm/RegisterForm";
+import { RegisterForm } from "../Main/components/forms/RegisterForm/RegisterForm";
 import { EditProfile } from "../Main/components/forms/EditProfile/EditProfile";
 import { EditAvatar } from "../Main/components/forms/EditAvatar/EditAvatar";
 

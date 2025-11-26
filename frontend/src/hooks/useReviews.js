@@ -3,8 +3,12 @@ import api from "../utils/api";
 import { toast } from "react-toastify";
 import { CurrentUserContext } from "../context/CurrentUserContext";
 
-export const useReviews = () => {
-  const { currentUser } = useContext(CurrentUserContext);
+export const useReviews = (externalCurrentUser = null) => {
+  // Usar currentUser externo si se proporciona, sino usar el del contexto
+  const { currentUser: contextUser } = useContext(CurrentUserContext);
+  const currentUser =
+    externalCurrentUser !== null ? externalCurrentUser : contextUser;
+
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -122,13 +126,7 @@ export const useReviews = () => {
     setError(null);
     try {
       const data = await api.getUserReviews();
-      const userReviews = data.reviews || data || [];
-      console.log(
-        "👤 loadUserReviews: Loaded",
-        userReviews.length,
-        "user reviews"
-      );
-      setReviews(userReviews);
+      setReviews(data);
     } catch (err) {
       console.error("Error loading user reviews:", err);
       setError(err.message);
@@ -189,57 +187,16 @@ export const useReviews = () => {
 
   // Cargar reviews al montar el hook y cuando cambie el usuario
   useEffect(() => {
-    const timestamp = new Date().toLocaleTimeString();
-    console.log(
-      `🎣 [${timestamp}] useReviews useEffect triggered. currentUser:`,
-      currentUser
-        ? "logged in"
-        : currentUser === null
-        ? "not logged in"
-        : "undefined"
-    );
-
     // Solo cargar si currentUser está definido (no undefined)
     if (currentUser !== undefined) {
-      console.log(`🚀 [${timestamp}] Triggering loadAllReviews...`);
-
-      // Delay pequeño para evitar múltiples cargas
-      const timeoutId = setTimeout(() => {
-        loadAllReviews();
-      }, 200);
-
-      return () => {
-        console.log(`🧹 [${timestamp}] Cleaning up timeout`);
-        clearTimeout(timeoutId);
-      };
-    } else {
-      console.log(`⏳ [${timestamp}] Waiting for currentUser to be defined...`);
+      loadAllReviews();
     }
   }, [currentUser]);
-
-  // Efecto adicional para debugging - mostrar cuando cambian las reviews
-  useEffect(() => {
-    const timestamp = new Date().toLocaleTimeString();
-    console.log(
-      `📊 [${timestamp}] Reviews state updated:`,
-      reviews.length,
-      "reviews"
-    );
-
-    if (reviews.length > 0) {
-      const privateCount = reviews.filter((r) => !r.isPublic).length;
-      const publicCount = reviews.filter((r) => r.isPublic).length;
-      console.log(
-        `📊 [${timestamp}] Breakdown: ${privateCount} private, ${publicCount} public`
-      );
-    }
-  }, [reviews]);
 
   return {
     reviews,
     loading,
     error,
-    debugInfo,
     loadAllReviews,
     loadUserReviews,
     createReview,

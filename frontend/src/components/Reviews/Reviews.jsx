@@ -1,31 +1,19 @@
 import { useState, useEffect, useContext } from "react";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
-import { ReviewForm } from "../Reviews/ReviewForm/ReviewForm";
+import { ReviewForm } from "./ReviewForm/ReviewForm";
 import { ReviewsList } from "./ReviewsList/ReviewsList";
 import { Link } from "react-router-dom";
 import { useReviews } from "../../hooks/useReviews";
 
 export const Reviews = () => {
-  console.log("🚨 REVIEWS COMPONENT RENDERING!");
-
   const { currentUser } = useContext(CurrentUserContext);
-
-  // Temporalmente comentar el hook para debug
-  const reviews = [];
-  const loading = false;
-  const error = null;
-  const debugInfo = "Hook disabled for debug";
-  const createReview = () => {};
-  const deleteReviewApi = () => {};
-
-  // const {
-  //   reviews,
-  //   loading,
-  //   error,
-  //   debugInfo,
-  //   createReview,
-  //   deleteReview: deleteReviewApi,
-  // } = useReviews();
+  const {
+    reviews,
+    loading,
+    error,
+    createReview,
+    deleteReview: deleteReviewApi,
+  } = useReviews(currentUser);
   const [selectedVideo, setSelectedVideo] = useState(null);
 
   useEffect(() => {
@@ -39,25 +27,7 @@ export const Reviews = () => {
     }
   }, []);
 
-  // Monitor cambios en reviews para debugging
-  useEffect(() => {
-    const timestamp = new Date().toLocaleTimeString();
-    console.log(`📊 [${timestamp}] Reviews.jsx - Reviews state changed:`, {
-      total: reviews.length,
-      private: reviews.filter((r) => !r.isPublic).length,
-      public: reviews.filter((r) => r.isPublic).length,
-      reviews: reviews.map((r) => ({
-        id: r._id,
-        title: r.title,
-        isPublic: r.isPublic,
-      })),
-    });
-  }, [reviews]);
-
   const handleAddReview = async (reviewData) => {
-    const timestamp = new Date().toLocaleTimeString();
-    console.log(`🚀 [${timestamp}] handleAddReview called with:`, reviewData);
-
     try {
       // Obtener thumbnail de diferentes formas posibles
       let thumbnail = null;
@@ -86,19 +56,10 @@ export const Reviews = () => {
           reviewData.isPublic !== undefined ? reviewData.isPublic : true,
       };
 
-      console.log(`📤 [${timestamp}] Enviando review payload:`, reviewPayload);
-      console.log(
-        `🔒 [${timestamp}] Review will be ${
-          reviewPayload.isPublic ? "PUBLIC" : "PRIVATE"
-        }`
-      );
-
-      const result = await createReview(reviewPayload);
-      console.log(`✅ [${timestamp}] Review created successfully:`, result);
-
+      await createReview(reviewPayload);
       setSelectedVideo(null); // Cerrar el formulario después de enviar
     } catch (error) {
-      console.error(`❌ [${timestamp}] Error creating review:`, error);
+      console.error("Error creating review:", error);
     }
   };
 
@@ -109,30 +70,6 @@ export const Reviews = () => {
       console.error("Error deleting review:", error);
     }
   };
-
-  // Debug logs
-  console.log("🔍 Reviews component render:", {
-    reviewsCount: reviews.length,
-    loading,
-    error,
-    debugInfo,
-    currentUser: currentUser
-      ? "logged in"
-      : currentUser === null
-      ? "not logged in"
-      : "undefined",
-    hasToken: !!localStorage.getItem("jwt"),
-  });
-
-  if (reviews.length > 0) {
-    const privateReviews = reviews.filter((r) => !r.isPublic);
-    const publicReviews = reviews.filter((r) => r.isPublic);
-    console.log("📊 Reviews breakdown:", {
-      total: reviews.length,
-      private: privateReviews.length,
-      public: publicReviews.length,
-    });
-  }
 
   if (loading) {
     return (
@@ -147,7 +84,7 @@ export const Reviews = () => {
   return (
     <div className="reviews">
       <div className="reviews__header">
-        <h2 className="reviews__title">🚨 TEST - Video Reviews 🚨</h2>
+        <h2 className="reviews__title">Video Reviews</h2>
         {currentUser && (
           <button
             className="reviews__add-button"
@@ -158,20 +95,6 @@ export const Reviews = () => {
         )}
       </div>
       <div className="reviews__container">
-        <div
-          style={{
-            background: "red",
-            color: "white",
-            padding: "20px",
-            margin: "20px 0",
-            fontSize: "16px",
-            fontWeight: "bold",
-          }}
-        >
-          DEBUG: Reviews = {reviews.length} | Loading = {loading ? "YES" : "NO"}{" "}
-          | User = {currentUser ? "YES" : "NO"}
-        </div>
-
         {error && (
           <div className="reviews__error">
             <p className="reviews__error-text">Error: {error}</p>

@@ -3,7 +3,7 @@ import { validateForm } from "../../../../../utils/validateForm";
 import { LoginForm } from "../LoginForm/LoginForm";
 import { register } from "../../../../../utils/auth";
 
-export const RegisterForm = ({ setPopupType, showInfoTooltip }) => {
+export const RegisterForm = ({ setPopupType, showInfoTooltip, onLogin }) => {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -44,6 +44,7 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip }) => {
       <LoginForm
         setPopupType={setPopupType}
         showInfoTooltip={showInfoTooltip}
+        onLogin={onLogin}
       />
     ),
     className: "form-popup",
@@ -56,6 +57,7 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip }) => {
         <LoginForm
           setPopupType={setPopupType}
           showInfoTooltip={showInfoTooltip}
+          onLogin={onLogin}
         />
       ),
       className: "form-popup",

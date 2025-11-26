@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { SearchBar } from "../Main/components/SearchBar/SearchBar";
-import { Videos } from "../Main/components/Videos/Videos";
-import { Preloader } from "../Main/components/Preloader/Preloader";
+import { SearchBar } from "./components/SearchBar/SearchBar";
+import { Videos } from "./components/Videos/Videos";
+import { Preloader } from "./components/Preloader/Preloader";
 import { toast } from "react-toastify";
 import api from "../../utils/api";
 
