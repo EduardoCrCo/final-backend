@@ -139,11 +139,6 @@ export const RegisterForm = ({ setPopupType, showInfoTooltip }) => {
               {errors.confirmPassword}
             </span>
           )}
-
-          {/* <span
-            className="confirm-password-error"
-            id="confirm-password-error"
-          ></span> */}
         </fieldset>
 
         <div className="register__footer">
