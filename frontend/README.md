@@ -138,8 +138,6 @@ Request → Agregaciones MongoDB → Cálculos → Gráficos Tremor → Visualiz
 - **React 18.3.1** - Biblioteca principal con Hooks
 - **Vite** - Build tool ultrarrápido
 - **React Router DOM** - Enrutamiento SPA
-- **Tremor** - Componentes de dashboard y gráficos
-- **Tailwind CSS** - Estilos utility-first
 - **React Toastify** - Notificaciones elegantes
 
 ### **Backend**
@@ -168,22 +166,6 @@ Request → Agregaciones MongoDB → Cálculos → Gráficos Tremor → Visualiz
 - Node.js v18+
 - MongoDB (local o Atlas)
 - Clave de YouTube Data API v3
-
-### **Instalación Rápida**
-
-**Windows:**
-
-```bash
-# Ejecutar script automático
-./start-full-stack.bat
-```
-
-**Linux/Mac:**
-
-```bash
-# Dar permisos y ejecutar
-chmod +x start-full-stack.sh && ./start-full-stack.sh
-```
 
 ### **Instalación Manual**
 
