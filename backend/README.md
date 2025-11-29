@@ -152,22 +152,6 @@ Request → Agregaciones MongoDB → Cálculos → Gráficos Tremor → Visualiz
 - MongoDB (local o Atlas)
 - Clave de YouTube Data API v3
 
-### **Instalación Rápida**
-
-**Windows:**
-
-```bash
-# Ejecutar script automático
-./start-full-stack.bat
-```
-
-**Linux/Mac:**
-
-```bash
-# Dar permisos y ejecutar
-chmod +x start-full-stack.sh && ./start-full-stack.sh
-```
-
 ### **Instalación Manual**
 
 **Backend:**
@@ -354,21 +338,8 @@ npm run lint     # ESLint para React
 ---
 
 _DroneVision - Conectando entusiastas de drones con el cielo 🌤️✈️_
-ático
-./start-full-stack.bat
 
-````
-
-
-**Linux/Mac:**
-```bash
-# Dar permisos y ejecutar
-chmod +x start-full-stack.sh && ./start-full-stack.sh
-````
-
-### \*\*Instal
-
-ación Manual\*\*
+### \*\*Instalación Manual\*\*
 
 **Backend:**
 
@@ -390,16 +361,8 @@ npm run dev         # Puerto 5173
 
 ### **Variables de Entorno**
 
-```env
-# Backend (.env)
-PORT=8080
-NODE_ENV=development
-
-MONGODB_URI=mongodb://127.0.0.1:27017/proyecto_final_db
-JWT_SECRET=tu-clave-super-secreta
-YOUTUBE_API_K
-EY=tu-clave-youtube-api
-```
+referencia a las variables de entorno:
+.env.example
 
 ---
 
