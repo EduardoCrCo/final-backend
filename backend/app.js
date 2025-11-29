@@ -21,16 +21,12 @@ import errorHandler from "./middleware/errorHandler.js";
 config();
 
 const app = express();
-const {
-  PORT = 8080,
-  MONGO_URI = "mongodb://127.0.0.1:27017/proyecto_final_db",
-  NODE_ENV = "development",
-} = process.env;
+const { PORT = 8080, MONGODB_URI, NODE_ENV = "development" } = process.env;
 
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGODB_URI)
   .then(() => {
-    if (NODE_ENV !== "test") console.log("✅ Conectado a MongoDB");
+    if (NODE_ENV !== "test") console.log("✅ Conectado a MongoDB", MONGODB_URI);
   })
   .catch((error) => {
     console.error(" Error conectando a MongoDB:", error);
