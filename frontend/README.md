@@ -206,14 +206,8 @@ npm run dev         # Puerto 5173
 
 ### **Variables de Entorno**
 
-```env
-# Backend (.env)
-PORT=8080
-NODE_ENV=development
-MONGODB_URI=mongodb://127.0.0.1:27017/proyecto_final_db
-JWT_SECRET=tu-clave-super-secreta
-YOUTUBE_API_KEY=tu-clave-youtube-api
-```
+referencia a las variables de entorno:
+.env.example
 
 ---
 
