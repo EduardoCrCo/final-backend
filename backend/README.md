@@ -189,14 +189,8 @@ npm run dev         # Puerto 5173
 
 ### **Variables de Entorno**
 
-```env
-# Backend (.env)
-PORT=8080
-NODE_ENV=development
-MONGODB_URI=mongodb://127.0.0.1:27017/proyecto_final_db
-JWT_SECRET=tu-clave-super-secreta
-YOUTUBE_API_KEY=tu-clave-youtube-api
-```
+referencia a las variables de entorno:
+.env.example
 
 ---
 
@@ -352,6 +346,226 @@ npm run lint     # ESLint para React
 ## 👨‍💻 Desarrollado por
 
 **Eduardo Cruz** - Full Stack Developer
+
+- 📧 Email: [contacto@eduardocruz.dev](mailto:contacto@eduardocruz.dev)
+- 🌐 Portfolio: [eduardocruz.dev](https://eduardocruz.dev)
+- 💼 LinkedIn: [linkedin.com/in/eduardocruz-dev](https://linkedin.com/in/eduardocruz-dev)
+
+---
+
+_DroneVision - Conectando entusiastas de drones con el cielo 🌤️✈️_
+ático
+./start-full-stack.bat
+
+````
+
+
+**Linux/Mac:**
+```bash
+# Dar permisos y ejecutar
+chmod +x start-full-stack.sh && ./start-full-stack.sh
+````
+
+### \*\*Instal
+
+ación Manual\*\*
+
+**Backend:**
+
+```bash
+cd backend
+npm install
+cp .env.example .env  # Configurar
+variables
+npm run dev          # Puerto 8080
+```
+
+**Frontend:**
+
+```bash
+cd frontend
+npm install
+npm run dev         # Puerto 5173
+```
+
+### **Variables de Entorno**
+
+```env
+# Backend (.env)
+PORT=8080
+NODE_ENV=development
+
+MONGODB_URI=mongodb://127.0.0.1:27017/proyecto_final_db
+JWT_SECRET=tu-clave-super-secreta
+YOUTUBE_API_K
+EY=tu-clave-youtube-api
+```
+
+---
+
+## 🔗 API Endpoints
+
+### **Autenticación**
+
+- `POST /signup` - Registro de usuario
+- `POST /s
+ignin` - Inicio de sesión
+
+### **Usuarios (Protegidas)**
+
+- `GET /users/me` - Perfil actual
+- `PATCH /users/me` - Actualizar perfil
+- `PATCH /users/me/ava
+tar` - Cambiar avatar
+
+### **Videos**
+
+- `GET /videos/search?q=drones` - Buscar en YouTube
+- `POST /videos/add` - Guardar video seleccionado
+- `DELETE /videos/:id` - Elimin
+  ar video
+
+### **Reseñas**
+
+- `GET /reviews` - Reseñas del usuario
+- `GET /reviews/public` - Reseñas públicas
+- `POST /reviews` - Crear
+  reseña
+- `PUT /reviews/:id` - Actualizar reseña
+
+### **Playlists**
+
+- `GET /playlists` - Obtener playlists
+- `POST /playlists` - Crear playlist
+- `POST /playlists/:id/add` - Añadir video
+
+### **Dashboard**
+
+- `GET /dashboard/users/stats` - Estadísticas de usuarios
+- `GET /dashboard/videos/stats` - Estadísticas de videos
+
+---
+
+## 📊 Características Técnic
+
+as Avanzadas
+
+### **1. Autenticación Robusta**
+
+- JWT con expiración configurable
+- Middleware de autenticación reutilizable
+- Manejo de tokens expirados
+- Protección de rutas se
+  nsibles
+
+### **2. Validación Comprensiva**
+
+- Schemas Joi para validación de entrada
+- Sanitización automática de datos
+- Mensajes de error descriptivos
+- Validación tanto en fronte
+  nd como backend
+
+### **3. Gestión de Estado**
+
+- Context API para estado global
+- Custom hooks para lógica reutilizable
+- Estado local optimizad
+  o con useState/useEffect
+- Sincronización automática con backend
+
+### **4. Performance**
+
+- Lazy loading de componentes
+- Debouncing en búsquedas
+- Paginación en listados
+- Compresión de respuestas HTTP
+
+### **5. Experiencia de Usuario**
+
+- Loading states en todas las operaciones
+- Error boundaries para fallos graceful
+- Toasts informativos
+- Responsive design mobile-first
+
+---
+
+## 🔒 Seguridad Implementada
+
+- **Autenticación**: JWT tokens con expiración
+- **Autorización**: Middleware de verificación de permisos
+- **Validación**: Sanitización de entrada en ambos extremos
+- **Headers**: Helmet para headers de seguridad HTTP
+- **Rate Limiting**: Protección contra ataques de fuerza bruta
+- **CORS**: Configuración restrictiva de dominios
+- **Hashing**: bcrypt para contraseñas con salt automático
+
+---
+
+## 📈 Métricas y Monitoreo
+
+- **Logs estructurados** con Winston
+- **Error tracking** centralizado
+- **Performance metrics** en dashboard **Health checks** automáticos
+- **Monitoring de API** con tiempos de respuesta
+
+---
+
+## 🚀 Comandos de Desarrollo
+
+```bash
+# Backend
+npm run dev      # Desarrollo con nodemon
+npm run lint     # ESLint con corrección automát
+ica
+npm start        # Producción
+
+# Frontend
+npm run d      # Vite dev server
+npm run build    # Build optimizado para producción
+
+npm run preview  # Preview del build
+npm run lint     # ESLint para React
+```
+
+---
+
+## 🎯 Roadmap Futuro
+
+### **Fase 1 - Funcionalidades Core** ✅
+
+- x] Autenticación completa
+- [x] CRUD de videos y playlists
+- [x] Sistema de reseñas
+- [x] Dashboard básico
+
+### **Fase 2 - Mejoras UX**
+
+- [ ] Notificaci
+      ones push
+- [ ] Compartir playlists
+- [ ]omentarios en videos
+- [ ] Sistema de seguimiento de usuarios
+
+### **Fase 3 - Analytics Avanzado**
+
+- [ ] Métricas avanzadas de engagement
+- [ ] Reportes exportables
+- [ ] Predicciones meteorológicas
+- [ ] Integración con mapas
+
+### **Fase 4 - Escalabilidad**
+
+- [ ] Microservicios
+- [ ] Cache con Redis
+- [ ] CDN para videos
+- [ ] Test\_ automatizados
+
+---
+
+## 👨‍💻 Desarrollado por
+
+**Eduardo C_uz** - Full Stack Developer
 
 - 📧 Email: [contacto@eduardocruz.dev](mailto:contacto@eduardocruz.dev)
 - 🌐 Portfolio: [eduardocruz.dev](https://eduardocruz.dev)

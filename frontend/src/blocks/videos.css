@@ -160,6 +160,11 @@
   color: #1976d2;
 }
 
+.videos__review-btn--disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .videos__like-button {
   margin-top: 8px;
   background-color: rgba(25, 118, 210, 0);

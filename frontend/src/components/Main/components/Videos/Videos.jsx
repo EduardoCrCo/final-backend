@@ -269,8 +269,18 @@ export const Videos = ({
                 </button>
 
                 <button
-                  className="videos__review-btn"
-                  onClick={() => onCreateReview && onCreateReview(item.video)}
+                  className={`videos__review-btn ${
+                    !currentUser ? "videos__review-btn--disabled" : ""
+                  }`}
+                  onClick={() =>
+                    currentUser && onCreateReview && onCreateReview(item.video)
+                  }
+                  disabled={!currentUser}
+                  title={
+                    !currentUser
+                      ? "Inicia sesión para escribir reseñas"
+                      : "Escribir una reseña de este video"
+                  }
                 >
                   Escribir Review
                 </button>
