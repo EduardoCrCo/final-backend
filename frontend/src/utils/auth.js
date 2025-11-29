@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "https://final-backend-q1ug.onrender.com";
 
 export const register = ({ name, email, password }) => {
   return fetch(`${BASE_URL}/signup`, {
