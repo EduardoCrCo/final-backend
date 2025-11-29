@@ -1,5 +1,5 @@
 import { useUserStats } from "../../../hooks/useUserStats";
-import "../../../blocks/UserStatsTable.css";
+import "../../../blocks/userStatsTable.css";
 
 export const UserStatsTable = () => {
   const { usersStats, globalStats, loading, error, lastUpdated, refreshStats } =
