@@ -45,7 +45,7 @@ app.use(limiter);
 const corsOptions = {
   origin:
     NODE_ENV === "production"
-      ? ["https://tu-dominio-frontend.com"]
+      ? ["https://final-backend-page.onrender.com"]
       : [
           "http://localhost:5173",
           "http://127.0.0.1:5173",
