@@ -232,6 +232,6 @@ class Api {
   }
 }
 
-const api = new Api("https://final-backend-q1ug.onrender.com");
+const api = new Api("https://final-backend-q1ug.onrender.com/");
 
 export default api;
