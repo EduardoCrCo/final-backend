@@ -1,5 +1,6 @@
 import gitHub from "../../images/gitHub.png";
 import linkedIn from "../../images/In.png";
+import Me from "../../images/yo.jpg";
 
 export const AboutMe = () => {
   return (
@@ -17,11 +18,7 @@ export const AboutMe = () => {
         </div>
 
         <div className="about__photo-wrapper">
-          <img
-            src="/images/author-photo.jpg"
-            alt="Foto del autor"
-            className="about__photo"
-          />
+          <img src={Me} alt="Foto del autor" className="about__photo" />
         </div>
 
         <div className="about__card">
