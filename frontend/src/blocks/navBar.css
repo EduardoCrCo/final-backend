@@ -84,12 +84,12 @@
 /* RESPONSIVE DESIGN - TABLET (641px - 920px)*/
 @media screen and (min-width: 641px) and (max-width: 920px) {
   .navbar__list {
-    gap: 15px;
+    gap: 10px;
   }
 
   .navbar__link-home,
   .navbar__link {
-    font-size: 13px;
+    font-size: 11px;
   }
 }
 
