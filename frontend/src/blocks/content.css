@@ -116,3 +116,23 @@
     opacity: 1;
   }
 }
+
+@media screen and (min-width: 641px) and (max-width: 920px) {
+  .hero__title {
+    font-size: 2rem;
+    margin-bottom: 0.1rem;
+  }
+  .hero__subtitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .hero__title {
+    font-size: 1.8rem;
+    margin-bottom: 0.1rem;
+  }
+  .hero__subtitle {
+    font-size: 1.2rem;
+  }
+}

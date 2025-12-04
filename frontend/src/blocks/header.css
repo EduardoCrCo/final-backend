@@ -267,6 +267,13 @@
   .header__logo-name-container {
     padding-left: 0;
   }
+
+  .header__spacer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
 }
 
 @media screen and (max-width: 897px) {
@@ -311,6 +318,18 @@
 
   .header__spacer {
     width: 100%;
-    justify-content: center;
+    justify-content: flex-end;
+  }
+}
+
+@media screen and (max-width: 458px) {
+  .header-profile__avatar-image-container {
+    width: 45px;
+    height: 45px;
+  }
+
+  .header-profile__avatar-image {
+    width: 45px;
+    height: 45px;
   }
 }
