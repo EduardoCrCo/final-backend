@@ -80,11 +80,14 @@ export const AboutMe = () => {
         </div>
 
         <div className="about__links">
-          <a href="https://github.com/tu-usuario" className="about__link">
+          <a href="https://github.com/EduardoCrCo" className="about__link">
             GitHub
             <img className="about__icon" src={gitHub} alt="GitHub" />
           </a>
-          <a href="https://linkedin.com/in/tu-perfil" className="about__link">
+          <a
+            href="https://www.linkedin.com/in/eduardocruzc/"
+            className="about__link"
+          >
             LinkedIn
             <img className="about__icon" src={linkedIn} alt="LinkedIn" />
           </a>
