@@ -2,7 +2,7 @@
 
 ## 📋 Descripción General
 
-**DroneVision** es una aplicación web completa para entusiastas de drones que permite gestionar videos, crear playlists, escribir reseñas y consultar estadísticas meteorológicas para planificar vuelos. La aplicación combina un frontend moderno en React con un backend robusto en Node.js.
+**DroneVision** es una aplicación web completa para entusiastas de drones que permite gestionar videos, crear playlists, escribir reseñas.La aplicación combina un frontend moderno en React con un backend robusto en Node.js.
 
 ### 🎯 Funcionalidades Principales
 
@@ -11,7 +11,6 @@
 - 📝 **Sistema de reseñas** - Reseñas públicas y privadas con calificaciones
 - 📚 **Playlists personalizadas** - Organización de videos en colecciones
 - 📊 **Dashboard con estadísticas** - Métricas de usuarios y contenido
-- 🌤️ **Información meteorológica** - Condiciones climáticas para vuelos
 - 📱 **Diseño responsivo** - Compatible con dispositivos móviles
 
 ---
@@ -104,12 +103,10 @@ Usuario → Escribe Reseña → Validación → MongoDB → Vista Pública/Priva
 ### **4. Dashboard y Estadísticas**
 
 ```mermaid
-Request → Agregaciones MongoDB → Cálculos → Gráficos Tremor → Visualización
+Request → Agregaciones MongoDB → Cálculos → Visualización
 ```
 
 - Estadísticas en tiempo real usando agregaciones de MongoDB
-- Integración con la API meteorológica para condiciones de vuelo
-- Gráficos interactivos con Tremor (built on Recharts)
 - Métricas de usuarios, videos y reseñas
 
 ---
@@ -121,8 +118,6 @@ Request → Agregaciones MongoDB → Cálculos → Gráficos Tremor → Visualiz
 - **React 18.3.1** - Biblioteca principal con Hooks
 - **Vite** - Build tool ultrarrápido
 - **React Router DOM** - Enrutamiento SPA
-- **Tremor** - Componentes de dashboard y gráficos
-- **Tailwind CSS** - Estilos utility-first
 - **React Toastify** - Notificaciones elegantes
 
 ### **Backend**
