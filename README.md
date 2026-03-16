@@ -1,8 +1,8 @@
-# DroneVision - Aplicación Full Stack 🚁
+# De Drones - Aplicación Full Stack 🚁
 
 ## 📋 Descripción General
 
-**DroneVision** es una aplicación web completa para entusiastas de drones que permite gestionar videos, crear playlists, escribir reseñas. La aplicación combina un frontend moderno en React con un backend robusto en Node.js.
+**De Drones** es una aplicación web completa para entusiastas de drones que permite gestionar videos, crear playlists, escribir reseñas. La aplicación combina un frontend moderno en React con un backend robusto en Node.js.
 
 ### 🎯 Funcionalidades Principales
 
