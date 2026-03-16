@@ -326,9 +326,9 @@ npm run lint     # ESLint para React
 
 **Eduardo Cruz** - Full Stack Developer
 
-- 📧 Email: [contacto@eduardocruz.dev](mailto:contacto@eduardocruz.dev)
-- 🌐 Portfolio: [eduardocruz.dev](https://eduardocruz.dev)
-- 💼 LinkedIn: [linkedin.com/in/eduardocruz-dev](https://linkedin.com/in/eduardocruz-dev)
+- 📧 Email: [eduardo.cruz.c@icloud.com)
+- 🌐 Portfolio: [eduardocruz.dev](https://eduardocrco.github.io)
+- 💼 LinkedIn: [linkedin.com/in/eduardocruz-dev](https://www.linkedin.com/in/eduardocruzc)
 
 ---
 
@@ -523,10 +523,10 @@ npm run lint     # ESLint para React
 
 ## 👨‍💻 Desarrollado por
 
-**Eduardo C_uz** - Full Stack Developer
+**Eduardo C_uz** - Desarrollador Web Full Stack
 
-- 📧 Email: [ecc.informatik@icloud.com]
-- 💼 LinkedIn: [linkedin.com/in/eduardo-cruz-20bb9b392](https://linkedin.com/in/eduardo-cruz-20bb9b392)
+- 📧 Email: [eduardo.cruz.c@icloud.com]
+- 💼 LinkedIn: [linkedin.com/in/eduardocruzc]
 
 ---
 
