@@ -70,7 +70,12 @@ backend/
 ### **1. Autenticación y Autorización**
 
 ```mermaid
-Usuario → LoginForm → Backend(/signin) → JWT Token → LocalStorage → Headers automáticos
+flowchart LR
+    A[Usuario] --> B[LoginForm]
+    B --> C[Backend /signin]
+    C --> D[JWT Token]
+    D --> E[LocalStorage]
+    E --> F[Headers automáticos]
 ```
 
 - El usuario ingresa credenciales en el frontend
@@ -81,7 +86,13 @@ Usuario → LoginForm → Backend(/signin) → JWT Token → LocalStorage → He
 ### **2. Gestión de Videos**
 
 ```mermaid
-Búsqueda → YouTube API → Resultados → Selección → Backend(/videos) → MongoDB → Playlist
+flowchart LR
+    A[Búsqueda] --> B[YouTube API]
+    B --> C[Resultados]
+    C --> D[Selección]
+    D --> E[Backend /videos]
+    E --> F[MongoDB]
+    F --> G[Playlist]
 ```
 
 - Búsqueda integrada con YouTube Data API v3
@@ -92,7 +103,11 @@ Búsqueda → YouTube API → Resultados → Selección → Backend(/videos) →
 ### **3. Sistema de Reseñas**
 
 ```mermaid
-Usuario → Escribe Reseña → Validación → MongoDB → Vista Pública/Privada
+flowchart LR
+    A[Usuario] --> B[Escribe Reseña]
+    B --> C[Validación]
+    C --> D[MongoDB]
+    D --> E[Vista Pública/Privada]
 ```
 
 - Reseñas con calificación de 1-5 estrellas
@@ -103,7 +118,10 @@ Usuario → Escribe Reseña → Validación → MongoDB → Vista Pública/Priva
 ### **4. Dashboard y Estadísticas**
 
 ```mermaid
-Request → Agregaciones MongoDB → Cálculos → Visualización
+flowchart LR
+    A[Request] --> B[Agregaciones MongoDB]
+    B --> C[Cálculos]
+    C --> D[Visualización]
 ```
 
 - Estadísticas en tiempo real usando agregaciones de MongoDB
