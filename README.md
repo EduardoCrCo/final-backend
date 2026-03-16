@@ -1,8 +1,8 @@
-# DroneVision - Aplicación Full Stack 🚁
+# De Drones - Aplicación Full Stack 🚁
 
 ## 📋 Descripción General
 
-**DroneVision** es una aplicación web completa para entusiastas de drones que permite gestionar videos, crear playlists, escribir reseñas.La aplicación combina un frontend moderno en React con un backend robusto en Node.js.
+**De Drones** es una aplicación web completa para entusiastas de drones que permite gestionar videos, crear playlists, escribir reseñas.La aplicación combina un frontend moderno en React con un backend robusto en Node.js.
 
 ### 🎯 Funcionalidades Principales
 
@@ -77,11 +77,13 @@ flowchart LR
     D --> E[LocalStorage]
     E --> F[Headers automáticos]
 ```
-
 - El usuario ingresa credenciales en el frontend
 - Se validan contra la base de datos MongoDB
 - Se genera un JWT token con expiración de 7 días
 - El token se almacena en localStorage y se incluye automáticamente en requests
+![dedronesregister](https://github.com/user-attachments/assets/aa5705c7-11cd-4910-98cd-1b9a936c1178)
+
+  
 
 ### **2. Gestión de Videos**
 
@@ -94,11 +96,11 @@ flowchart LR
     E --> F[MongoDB]
     F --> G[Playlist]
 ```
-
 - Búsqueda integrada con YouTube Data API v3
 - Selección y guardado de videos en la base de datos
 - Organización en playlists personalizadas
 - Sistema de "me gusta" para videos favoritos
+![dedrones PNG](https://github.com/user-attachments/assets/fb0fd2eb-65ad-4fbe-9e2b-df047bba94f3)
 
 ### **3. Sistema de Reseñas**
 
@@ -109,11 +111,12 @@ flowchart LR
     C --> D[MongoDB]
     D --> E[Vista Pública/Privada]
 ```
-
 - Reseñas con calificación de 1-5 estrellas
 - Modo público (visible para todos) y privado (solo usuario)
 - Validación de datos y prevención de duplicados
 - Agregación de estadísticas automática
+  <img width="1387" height="931" alt="dedronesreview" src="https://github.com/user-attachments/assets/9e1649c1-c803-48b4-985c-09112880211d" />
+
 
 ### **4. Dashboard y Estadísticas**
 
@@ -123,9 +126,9 @@ flowchart LR
     B --> C[Cálculos]
     C --> D[Visualización]
 ```
-
 - Estadísticas en tiempo real usando agregaciones de MongoDB
 - Métricas de usuarios, videos y reseñas
+![dedronesstats](https://github.com/user-attachments/assets/e09ef501-9710-44d4-b387-2e662add08b4)
 
 ---
 
@@ -344,13 +347,13 @@ npm run lint     # ESLint para React
 
 **Eduardo Cruz** - Full Stack Developer
 
-- 📧 Email: [contacto@eduardocruz.dev](mailto:contacto@eduardocruz.dev)
-- 🌐 Portfolio: [eduardocruz.dev](https://eduardocruz.dev)
-- 💼 LinkedIn: [linkedin.com/in/eduardocruz-dev](https://linkedin.com/in/eduardocruz-dev)
+- 📧 Email: eduardo.cruz.c@icloud.com
+- 🌐 Portfolio: [eduardocrco.github.io](https://eduardocrco.github.io)
+- 💼 LinkedIn: [linkedin.com/in/eduardocruzc](https://www.linkedin.com/in/eduardocruzc)
 
 ---
 
-_DroneVision - Conectando entusiastas de drones con el cielo 🌤️✈️_
+_De Drones - Conectando entusiastas de drones con el cielo 🌤️✈️_
 
 ### \*\*Instalación Manual\*\*
 
@@ -541,14 +544,14 @@ npm run lint     # ESLint para React
 
 ## 👨‍💻 Desarrollado por
 
-**Eduardo C_uz** - Full Stack Developer
+**Eduardo C_uz** - Desarrollador Web Full Stack
 
-- 📧 Email: [ecc.informatik@icloud.com]
-- 💼 LinkedIn: [linkedin.com/in/eduardo-cruz-20bb9b392](https://linkedin.com/in/eduardo-cruz-20bb9b392)
+- 📧 Email: eduardo.cruz.c@icloud.com
+- 💼 LinkedIn: [linkedin.com/in/eduardocruzc](https://www.linkedin.com/in/eduardocruzc)
 
 ---
 
-_DroneVision - Conectando entusiastas de drones con el cielo 🌤️✈️_
+_De Drones - Conectando entusiastas de drones con el cielo 🌤️✈️_
 
 ### Direccion de la pagina:
 
