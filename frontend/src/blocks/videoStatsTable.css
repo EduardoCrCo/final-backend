@@ -2,7 +2,8 @@
 .video-stats {
   width: 100%;
   padding: 24px;
-  background: #ffffff;
+  background: #4b4a4a63;
+  backdrop-filter: blur(10px);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin: 24px 0;
