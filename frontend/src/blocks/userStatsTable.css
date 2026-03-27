@@ -64,7 +64,7 @@
   padding: 16px 20px;
   border-bottom: 1px solid #e2e8f0;
   background: #4b4a4a63;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(3px);
 }
 
 .user-stats-table__global-stats {
@@ -141,7 +141,7 @@
   transition: background-color 0.2s ease;
   border-bottom: 1px solid #f1f5f9;
   background: #cecdcd63;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(3px);
 }
 
 .user-stats-table__table-row:hover {
