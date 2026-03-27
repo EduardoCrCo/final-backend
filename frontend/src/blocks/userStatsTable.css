@@ -3,7 +3,9 @@
 /* Block: user-stats-table */
 .user-stats-table {
   width: 100%;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
+  background: #4b4a4a63;
+  backdrop-filter: blur(10px);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -127,6 +129,8 @@
 .user-stats-table__table-row {
   transition: background-color 0.2s ease;
   border-bottom: 1px solid #f1f5f9;
+  background: #cecdcd63;
+  backdrop-filter: blur(10px);
 }
 
 .user-stats-table__table-row:hover {
