@@ -4,8 +4,8 @@
 .user-stats-table {
   width: 100%;
   /* background-color: #ffffff; */
-  background: #4b4a4a63;
-  backdrop-filter: blur(8px);
+  background: #4b4a4a1f;
+  backdrop-filter: blur(3px);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -140,7 +140,7 @@
 .user-stats-table__table-row {
   transition: background-color 0.2s ease;
   border-bottom: 1px solid #f1f5f9;
-  background: #cecdcd63;
+  background: #cecdcd1e;
   backdrop-filter: blur(3px);
 }
 
