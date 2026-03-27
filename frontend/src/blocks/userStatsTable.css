@@ -5,7 +5,7 @@
   width: 100%;
   /* background-color: #ffffff; */
   background: #4b4a4a63;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -21,6 +21,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-collapse: separate; /* Importante */
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
 }
 
 .user-stats-table__title {
@@ -56,9 +60,11 @@
 
 /* Element: stats-summary */
 .user-stats-table__stats-summary {
-  background-color: #f8fafc;
+  /* background-color: #f8fafc; */
   padding: 16px 20px;
   border-bottom: 1px solid #e2e8f0;
+  background: #4b4a4a63;
+  backdrop-filter: blur(8px);
 }
 
 .user-stats-table__global-stats {
@@ -70,7 +76,8 @@
 .user-stats-table__stat-item {
   text-align: center;
   padding: 12px;
-  background: white;
+  background: #adacaca6;
+  backdrop-filter: blur(8px);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -94,6 +101,10 @@
 .user-stats-table__container {
   overflow-x: auto;
   max-height: 70vh;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 0 0 8px 8px;
 }
 
 /* Element: table */
