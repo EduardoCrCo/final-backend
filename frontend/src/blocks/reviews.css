@@ -2,7 +2,16 @@
 .reviews {
   padding: 24px;
   /* background-color: #5d9edf; */
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  /* background: linear-gradient(135deg, #007bff, #0056b3); */
+  /* background: linear-gradient(
+    90deg,
+    rgb(3, 9, 23) 0%,
+    rgb(41, 62, 40) 51%,
+    rgb(6, 13, 29) 100%
+  ); */
+  background-image: url("../images/atardecer.jpg");
+  background-size: cover;
+  background-position: center;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -140,7 +149,8 @@
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: slideUpAndFade 0.3s ease;
 }
@@ -219,7 +229,9 @@
   border: 2px solid #e9ecef;
   border-radius: 6px;
   font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   font-family: inherit;
 }
 
@@ -328,7 +340,8 @@
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #e9ecef;
 }
@@ -369,7 +382,9 @@
   border-radius: 8px;
   border-left: 4px solid #007bff;
   position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .reviews-list__review-card:hover {

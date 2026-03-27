@@ -9,12 +9,21 @@
   max-width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-  background: linear-gradient(
+  /* background: linear-gradient(
     90deg,
     rgb(12, 15, 24) 0%,
     rgb(61, 31, 22) 51%,
     rgb(2, 19, 57) 100%
-  );
+  ); */
+  /* background: linear-gradient(
+    90deg,
+    rgb(3, 9, 23) 0%,
+    rgb(41, 62, 40) 51%,
+    rgb(6, 13, 29) 100%
+  ); */
+  background-image: url("../images/atardecer.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
 .main-content__title {
