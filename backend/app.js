@@ -37,7 +37,7 @@ app.use(helmet());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 300,
   message: "Demasiadas peticiones desde esta IP, intente más tarde.",
 });
 app.use(limiter);
@@ -69,11 +69,11 @@ app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
   res.header(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS",
   );
   res.header(
     "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Access-Control-Allow-Origin"
+    "Content-Type, Authorization, Access-Control-Allow-Origin",
   );
   res.header("Access-Control-Allow-Credentials", "true");
   res.status(200).send();
