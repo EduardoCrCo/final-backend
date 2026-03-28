@@ -10,7 +10,7 @@
     rgb(6, 13, 29) 100%
   ); */
   background-image: url("../images/atardecer.jpg");
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   min-height: 100vh;
   display: flex;
