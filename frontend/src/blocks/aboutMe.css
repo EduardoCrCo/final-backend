@@ -10,8 +10,9 @@
     rgb(6, 13, 29) 100%
   ); */
   background-image: url("../images/atardecer.jpg");
-  background-size: contain;
+  background-size: cover;
   background-position: center;
+  object-fit: cover;
 }
 
 .about__container {

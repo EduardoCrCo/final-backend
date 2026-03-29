@@ -21,9 +21,10 @@
     rgb(41, 62, 40) 51%,
     rgb(6, 13, 29) 100%
   ); */
-  background-image: url("../images/atardecer.jpg");
-  background-size: contain;
+  /* background-image: url("../images/atardecer.jpg");
+  background-size: cover;
   background-position: center;
+  object-fit: cover; */
 }
 
 .main-content__title {
@@ -45,7 +46,7 @@
   text-align: center;
 }
 
-.search-bar__container {
+.search__container {
   background-image: cross-fade();
   width: 100vw;
   display: flex;

@@ -1,0 +1,328 @@
+/* ===================================================================
+   UNIVERSAL ANIMATED BACKGROUNDS
+   Animations que pueden aplicarse a cualquier página del proyecto
+   =================================================================== */
+
+/* ===================================================================
+   CSS VARIABLES - Controlled by JavaScript for performance
+   =================================================================== */
+
+:root {
+  /* Variables controladas dinámicamente por JavaScript */
+  --animation-duration: 25s;
+  --animation-timing: ease-in-out;
+}
+
+/* ===================================================================
+   BASE CLASS - Animated Background
+   =================================================================== */
+
+.animated-bg--page {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(255, 107, 107, 0.4) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(78, 205, 196, 0.4) 0%,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 60% 40%,
+      rgba(69, 183, 209, 0.35) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(150, 206, 180, 0.3) 0%,
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(254, 202, 87, 0.4) 0%,
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 40% 90%,
+      rgba(138, 43, 226, 0.35) 0%,
+      transparent 30%
+    ),
+    linear-gradient(135deg, #0f172a, #1e293b);
+  background-size:
+    200% 200%,
+    180% 180%,
+    220% 220%,
+    150% 150%,
+    190% 190%,
+    170% 170%,
+    100% 100%;
+  animation: multiFloatingBubbles var(--animation-duration, 25s)
+    var(--animation-timing, ease-in-out) infinite;
+  /* Optimization layer */
+  will-change: auto; /* Controlado por JS */
+  transform: translateZ(0); /* Hardware acceleration */
+  backface-visibility: hidden; /* Reduce repainting */
+  background-image: url("../images/atardecer.jpg");
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+}
+
+/* ===================================================================
+   VARIATIONS - Para diferentes páginas
+   =================================================================== */
+
+/* Para páginas de contenido principal */
+.animated-bg--page {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Para hero sections */
+.animated-bg--hero {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  /* Asegurar que el background animado tenga prioridad */
+  background:
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(255, 107, 107, 0.4) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(78, 205, 196, 0.4) 0%,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 60% 40%,
+      rgba(69, 183, 209, 0.35) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(150, 206, 180, 0.3) 0%,
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(254, 202, 87, 0.4) 0%,
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 40% 90%,
+      rgba(138, 43, 226, 0.35) 0%,
+      transparent 30%
+    ),
+    linear-gradient(135deg, #0f172a, #1e293b) !important;
+  background-size:
+    200% 200%,
+    180% 180%,
+    220% 220%,
+    150% 150%,
+    190% 190%,
+    170% 170%,
+    100% 100% !important;
+  animation: multiFloatingBubbles var(--animation-duration, 25s)
+    var(--animation-timing, ease-in-out) infinite !important;
+}
+
+/* Para secciones menores */
+.animated-bg--section {
+  min-height: 40vh;
+  padding: 30px;
+}
+
+/* Para footers o headers animados */
+.animated-bg--header {
+  min-height: 200px;
+  padding: 20px;
+}
+
+/* ===================================================================
+   PERFORMANCE OPTIMIZATION CLASSES
+   =================================================================== */
+
+/* Clase aplicada por JavaScript en dispositivos lentos */
+.animated-bg--optimized {
+  /* Reducir complejidad visual */
+  background:
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(30, 41, 59, 0.3) 0%,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(51, 65, 85, 0.3) 0%,
+      transparent 25%
+    ),
+    linear-gradient(135deg, #0f172a, #1e293b);
+  background-size:
+    150% 150%,
+    120% 120%,
+    100% 100%;
+  /* Animación más simple */
+  animation-duration: var(--animation-duration, 40s) !important;
+}
+
+/* Pausa completa de animaciones para accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .animated-bg {
+    animation: none !important;
+    background: linear-gradient(135deg, #0f172a, #1e293b, #334155) !important;
+  }
+}
+
+/* ===================================================================
+   ADDITIONAL HERO SPECIFIC SELECTORS - Para mayor especificidad
+   =================================================================== */
+
+/* Selector muy específico para el hero del home */
+.main-content .hero.animated-bg,
+.main-content .search-bar__container.animated-bg,
+section.animated-bg.home-hero {
+  background:
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(255, 107, 107, 0.4) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(78, 205, 196, 0.4) 0%,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 60% 40%,
+      rgba(69, 183, 209, 0.35) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(150, 206, 180, 0.3) 0%,
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(254, 202, 87, 0.4) 0%,
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 40% 90%,
+      rgba(138, 43, 226, 0.35) 0%,
+      transparent 30%
+    ),
+    linear-gradient(135deg, #0f172a, #1e293b) !important;
+  background-size:
+    200% 200%,
+    180% 180%,
+    220% 220%,
+    150% 150%,
+    190% 190%,
+    170% 170%,
+    100% 100% !important;
+  animation: multiFloatingBubbles var(--animation-duration, 25s)
+    var(--animation-timing, ease-in-out) infinite !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* ===================================================================
+   ANIMATIONS - La misma animación del dashboard
+   =================================================================== */
+
+@keyframes multiFloatingBubbles {
+  0% {
+    background-position:
+      15% 85%,
+      /* Burbuja coral */ 85% 15%,
+      /* Burbuja turquesa */ 60% 40%,
+      /* Burbuja azul claro */ 25% 25%,
+      /* Burbuja verde menta */ 75% 75%,
+      /* Burbuja amarilla */ 40% 90%,
+      /* Burbuja violeta */ 0% 0%; /* Fondo */
+  }
+  20% {
+    background-position:
+      80% 20%,
+      /* Coral se mueve */ 20% 80%,
+      /* Turquesa se mueve */ 30% 70%,
+      /* Azul se mueve */ 90% 40%,
+      /* Verde se mueve */ 15% 30%,
+      /* Amarilla se mueve */ 70% 15%,
+      /* Violeta se mueve */ 0% 0%;
+  }
+  40% {
+    background-position:
+      50% 10%,
+      10% 50%,
+      85% 85%,
+      15% 70%,
+      90% 90%,
+      35% 45%,
+      0% 0%;
+  }
+  60% {
+    background-position:
+      20% 90%,
+      70% 30%,
+      15% 15%,
+      80% 80%,
+      45% 20%,
+      90% 70%,
+      0% 0%;
+  }
+  80% {
+    background-position:
+      90% 60%,
+      40% 10%,
+      75% 50%,
+      30% 90%,
+      10% 70%,
+      85% 35%,
+      0% 0%;
+  }
+  100% {
+    background-position:
+      15% 85%,
+      /* Vuelve al inicio */ 85% 15%,
+      60% 40%,
+      25% 25%,
+      75% 75%,
+      40% 90%,
+      0% 0%;
+  }
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN
+   =================================================================== */
+
+@media screen and (max-width: 768px) {
+  .animated-bg {
+    /* Reducir complejidad en móviles */
+    background-size:
+      150% 150%,
+      130% 130%,
+      170% 170%,
+      120% 120%,
+      160% 160%,
+      140% 140%,
+      100% 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .animated-bg {
+    /* Máxima simplicidad en pantallas muy pequeñas */
+    animation-duration: calc(var(--animation-duration, 25s) * 1.5) !important;
+  }
+}

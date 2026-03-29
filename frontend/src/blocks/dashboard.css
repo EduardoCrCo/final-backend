@@ -1,16 +1,72 @@
+/* ===================================================================
+   CSS VARIABLES - Controlled by JavaScript for performance
+   =================================================================== */
+
+:root {
+  /* Variables controladas dinámicamente por JavaScript */
+  --animation-duration: 25s;
+  --animation-timing: ease-in-out;
+}
+
+/* ===================================================================
+   DASHBOARD STYLES
+   =================================================================== */
+
 .dashboard {
   min-height: 100vh;
-  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-  /* background: linear-gradient(
-    90deg,
-    rgb(3, 9, 23) 0%,
-    rgb(41, 62, 40) 51%,
-    rgb(6, 13, 29) 100%
-  ); */
-  background-image: url("../images/atardecer.jpg");
-  background-size: contain;
-  background-position: center;
+  background:
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(255, 107, 107, 0.4) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(78, 205, 196, 0.4) 0%,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 60% 40%,
+      rgba(69, 183, 209, 0.35) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(150, 206, 180, 0.3) 0%,
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(254, 202, 87, 0.4) 0%,
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 40% 90%,
+      rgba(138, 43, 226, 0.35) 0%,
+      transparent 30%
+    ),
+    linear-gradient(135deg, #0f172a, #1e293b);
+  background-size:
+    200% 200%,
+    180% 180%,
+    220% 220%,
+    150% 150%,
+    190% 190%,
+    170% 170%,
+    100% 100%;
+  animation: multiFloatingBubbles var(--animation-duration, 25s)
+    var(--animation-timing, ease-in-out) infinite;
+  /* Optimization layer */
+  will-change: auto; /* Controlado por JS */
+  transform: translateZ(0); /* Hardware acceleration */
+  backface-visibility: hidden; /* Reduce repainting */
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+  background-image: url("../images/atardecer.jpg");
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
 }
 
 /* Element: container */
@@ -136,5 +192,73 @@
 
   .dashboard__content {
     gap: 0.75rem;
+  }
+}
+
+/* ===================================================================
+   ANIMATIONS
+   =================================================================== */
+
+/* Animación para múltiples burbujas flotantes */
+@keyframes multiFloatingBubbles {
+  0% {
+    background-position:
+      15% 85%,
+      /* Burbuja coral */ 85% 15%,
+      /* Burbuja turquesa */ 60% 40%,
+      /* Burbuja azul claro */ 25% 25%,
+      /* Burbuja verde menta */ 75% 75%,
+      /* Burbuja amarilla */ 40% 90%,
+      /* Burbuja violeta */ 0% 0%; /* Fondo */
+  }
+  20% {
+    background-position:
+      80% 20%,
+      /* Coral se mueve */ 20% 80%,
+      /* Turquesa se mueve */ 30% 70%,
+      /* Azul se mueve */ 90% 40%,
+      /* Verde se mueve */ 15% 30%,
+      /* Amarilla se mueve */ 70% 15%,
+      /* Violeta se mueve */ 0% 0%;
+  }
+  40% {
+    background-position:
+      50% 10%,
+      10% 50%,
+      85% 85%,
+      15% 70%,
+      90% 90%,
+      35% 45%,
+      0% 0%;
+  }
+  60% {
+    background-position:
+      20% 90%,
+      70% 30%,
+      15% 15%,
+      80% 80%,
+      45% 20%,
+      90% 70%,
+      0% 0%;
+  }
+  80% {
+    background-position:
+      90% 60%,
+      40% 10%,
+      75% 50%,
+      30% 90%,
+      10% 70%,
+      85% 35%,
+      0% 0%;
+  }
+  100% {
+    background-position:
+      15% 85%,
+      /* Vuelve al inicio */ 85% 15%,
+      60% 40%,
+      25% 25%,
+      75% 75%,
+      40% 90%,
+      0% 0%;
   }
 }

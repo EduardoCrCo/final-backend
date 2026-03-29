@@ -43,13 +43,13 @@ export const EditAvatar = ({ onClose }) => {
 
   return (
     <form
-      className="form form__avatar"
+      className="form avatar-form"
       onSubmit={handleSubmit}
       ref={formRef}
       noValidate
     >
-      <h1 className="form__avatar-title">Cambiar foto del perfil</h1>
-      <fieldset className="form__avatar-fieldset">
+      <h1 className="avatar-form__title">Cambiar foto del perfil</h1>
+      <fieldset className="avatar-form__fieldset">
         <input
           id="inputAvatarUrl"
           type="url"

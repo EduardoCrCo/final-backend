@@ -56,7 +56,7 @@ export const LoginForm = ({ onLogin, setPopupType, showInfoTooltip }) => {
           id="email"
           name="email"
           type="email"
-          className="form__input form__input-email"
+          className="form__input form__input--email"
           placeholder="e-mail"
           value={form.email}
           onChange={handleChange}
@@ -66,7 +66,7 @@ export const LoginForm = ({ onLogin, setPopupType, showInfoTooltip }) => {
           id="password"
           name="password"
           type="password"
-          className="form__input form__input-password"
+          className="form__input form__input--password"
           placeholder="Password"
           value={form.password}
           onChange={handleChange}
@@ -77,7 +77,7 @@ export const LoginForm = ({ onLogin, setPopupType, showInfoTooltip }) => {
       <div className="login__footer">
         <button
           type="submit"
-          className="login__form-submit_button"
+          className="login-form__submit-button"
           disabled={isLoading}
           style={{
             opacity: isLoading ? 0.6 : 1,

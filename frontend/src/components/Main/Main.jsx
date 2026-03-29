@@ -27,7 +27,7 @@ export const Main = ({
 
     try {
       const exists = selectedVideos.some(
-        (v) => v.video.videoId === video.video.videoId
+        (v) => v.video.videoId === video.video.videoId,
       );
 
       if (exists) {
@@ -63,8 +63,8 @@ export const Main = ({
   };
 
   return (
-    <main className="main-content">
-      <section className="search-bar__container hero">
+    <main className="animated-bg--page main-content">
+      <section className="search__container hero">
         <div className="hero__overlay"></div>
 
         <div className="hero__content">

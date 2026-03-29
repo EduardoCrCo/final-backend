@@ -1,4 +1,4 @@
-.form__profile {
+.profile-form {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -8,14 +8,14 @@
   width: 80%;
 }
 
-.form__profile-title {
+.profile-form__title {
   padding: 5px;
   color: azure;
   margin: 10px auto;
   font-size: medium;
 }
 
-.form__profile-fieldset {
+.profile-form__fieldset {
   margin-bottom: 10px auto;
   width: 358px;
   border: none;

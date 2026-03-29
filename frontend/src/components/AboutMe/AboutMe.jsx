@@ -4,7 +4,7 @@ import Me from "../../images/yo.jpg";
 
 export const AboutMe = () => {
   return (
-    <section className="about">
+    <section className="animated-bg--page about">
       <div className="about__container">
         <div className="about__card">
           <h2 className="about__title">Quién soy</h2>

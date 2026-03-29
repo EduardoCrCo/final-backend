@@ -71,7 +71,7 @@ export const Reviews = () => {
 
   if (loading) {
     return (
-      <div className="reviews">
+      <div className="animated-bg--page reviews">
         <div className="reviews__loading">
           <p className="reviews__loading-text">Cargando reviews...</p>
         </div>
@@ -80,7 +80,7 @@ export const Reviews = () => {
   }
 
   return (
-    <div className="reviews">
+    <div className="animated-bg--page reviews">
       <div className="reviews__header">
         <h2 className="reviews__title">Video Reviews</h2>
         {currentUser && (

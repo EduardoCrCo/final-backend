@@ -129,7 +129,7 @@ export const Header = ({
                 />
 
                 <button
-                  className={`header__profile-avatar__edit_button ${
+                  className={`profile-avatar__edit-button profile-avatar__edit-button--${
                     currentUser ? "enabled" : "disabled"
                   }`}
                   onClick={() =>
@@ -138,7 +138,7 @@ export const Header = ({
                   disabled={!currentUser}
                 >
                   <img
-                    className="header__profile-avatar__edit_button-icon"
+                    className="profile-avatar__edit-button__icon"
                     src={EditAvatarIcon}
                     alt="icono de editar imagen de perfil"
                   />

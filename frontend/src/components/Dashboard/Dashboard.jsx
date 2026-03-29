@@ -4,7 +4,7 @@ import "../../blocks/dashboard.css";
 
 export const Dashboard = () => {
   return (
-    <div className="dashboard">
+    <div className="animated-bg--page dashboard">
       <div className="dashboard__container">
         <header className="dashboard__header">
           <h1 className="dashboard__title">📊 Panel de Administración</h1>
